@@ -10,7 +10,7 @@ VERSION=$(git describe --always --dirty | tr '-' '.' )
 
 glide install
 
-go test $(glide nv)
+go test -v $(glide nv)
 
 go build \
 	-o target/kubernetes-deployment \
