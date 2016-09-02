@@ -1,0 +1,24 @@
+services:
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /dns
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /elasticsearch
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /mongodb
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /ingress-controller
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /graylog
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /solr
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /zookeeper
+  - repo: github.com/rebuy-de/solr-management-silo
+    path: /kubernetes/manifests
+    branch: cloud-350
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /kubernetes/manifests
+    branch: dockerize
+  - repo: github.com/rebuy-de/blue-web
+  - repo: github.com/rebuy-de/my-web
+    branch: cloud-424-dockerize
