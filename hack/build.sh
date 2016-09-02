@@ -8,9 +8,7 @@ mkdir -p target
 
 VERSION=$(git describe --always --dirty | tr '-' '.' )
 
-glide install
-
-go test -v $(glide nv)
+go test -v ./...
 
 go build \
 	-o target/kubernetes-deployment \
