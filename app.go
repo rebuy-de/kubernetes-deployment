@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 )
@@ -55,7 +56,12 @@ func (app *App) Run() error {
 		return err
 	}
 
-	for _, service := range *config.Services {
+	for i, service := range *config.Services {
+		if i != 0 {
+			log.Printf("Sleeping %d seconds...", app.SleepInterval)
+			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
+		}
+
 		err := app.DeployService(service)
 		if err != nil {
 			return err
