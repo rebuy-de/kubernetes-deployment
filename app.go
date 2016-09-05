@@ -1,23 +1,20 @@
 package main
 
 import (
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 )
 
 type App struct {
-	KubeConfigPath string
-
+	KubeConfigPath    string
 	ProjectConfigPath string
-	ProjectOutputPath string
-
-	CheckoutDirectory string
+	OutputPath        string
 
 	SleepInterval int
 	SkipShuffle   bool
@@ -40,14 +37,29 @@ func (app *App) Run() error {
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
 
-	log.Printf("Writing applying configuration to %s", app.ProjectOutputPath)
-	config.WriteTo(app.ProjectOutputPath)
+	log.Printf("Wiping output directory '%s'!", app.OutputPath)
+	err = os.RemoveAll(app.OutputPath)
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(app.OutputPath, 0755)
+	if err != nil {
+		return err
+	}
+
+	projectOutputPath := path.Join(app.OutputPath, "config.yml")
+	log.Printf("Writing applying configuration to %s", projectOutputPath)
+	config.WriteTo(projectOutputPath)
 	if err != nil {
 		return err
 	}
 
 	for _, service := range *config.Services {
-		app.DeployService(service)
+		err := app.DeployService(service)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -71,7 +83,35 @@ func (app *App) DeployService(service *Service) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Found these manifests: %v", manifests)
+
+	outputPath := path.Join(app.OutputPath, service.Name)
+	err = os.MkdirAll(outputPath, 0755)
+	if err != nil {
+		return err
+	}
+
+	for _, manifest := range manifests {
+		name := path.Base(manifest)
+		target := path.Join(outputPath, name)
+		log.Printf("Copying manifest to '%s'", target)
+
+		src, err := os.Open(manifest)
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		dst, err := os.Create(target)
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		_, err = io.Copy(dst, src)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
@@ -85,11 +125,7 @@ func findManifests(dir string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		for _, m := range matches {
-			m = strings.TrimPrefix(m, dir)
-			result = append(result, m)
-		}
+		result = append(result, matches...)
 	}
 
 	return result, nil

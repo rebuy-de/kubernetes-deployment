@@ -12,6 +12,7 @@ const (
 )
 
 type Service struct {
+	Name       string `yaml:"name,omitempty"`
 	Repository string `yaml:"repo"`
 	Path       string `yaml:"path,omitempty"`
 	Branch     string `yaml:"branch,omitempty"`
@@ -32,4 +33,28 @@ func (s *Service) Clean() {
 	}
 
 	s.Path = filepath.Clean("/" + s.Path)
+	s.Name = s.GuessName()
+}
+
+func (s *Service) GuessName() string {
+	parts := []string{}
+
+	repo := s.Repository
+	repo = strings.TrimPrefix(repo, "git@github.com:rebuy-de/")
+	repo = strings.TrimSuffix(repo, ".git")
+	repo = strings.Replace(repo, "/", "-", -1)
+	parts = append(parts, repo)
+
+	if s.Path != DEFAULT_PATH {
+		path := s.Path
+		path = strings.Trim(path, "/")
+		path = strings.Replace(path, "/", "-", -1)
+		parts = append(parts, path)
+	}
+
+	if s.Branch != DEFAULT_BRANCH {
+		parts = append(parts, s.Branch)
+	}
+
+	return strings.Join(parts, "-")
 }

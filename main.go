@@ -22,9 +22,9 @@ func main() {
 		"config", "config/services.yaml",
 		"project configuration file")
 	flag.StringVar(
-		&app.ProjectOutputPath,
-		"output-config", "config/services-out.yaml",
-		"output path of configuration file after shuffling")
+		&app.OutputPath,
+		"output", "./output",
+		"output path of configuration file after shuffling and Kubernetes manifests")
 	flag.IntVar(
 		&app.SleepInterval,
 		"sleep", 0,
@@ -47,8 +47,8 @@ func main() {
 
 	err := app.Run()
 	if err != nil {
-		fmt.Fprint(os.Stderr, "Execution of the deployment failed:")
-		fmt.Fprint(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, "Execution of the deployment failed:")
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
