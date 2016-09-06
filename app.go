@@ -1,12 +1,10 @@
 package main
 
 import (
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
@@ -67,14 +65,20 @@ func (app *App) Run() error {
 			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
 		}
 
-		if !app.SkipFetch {
+		log.Printf("Deploying %s", service.Name)
+
+		if app.SkipFetch {
+			log.Printf("Skip fetching manifests via git.")
+		} else {
 			err := app.FetchService(service)
 			if err != nil {
 				return err
 			}
 		}
 
-		if !app.SkipDeploy {
+		if app.SkipDeploy {
+			log.Printf("Skip deploying manifests to Kubernetes.")
+		} else {
 			log.Printf("TODO: kubectl apply")
 			if err != nil {
 				return err
@@ -87,8 +91,6 @@ func (app *App) Run() error {
 }
 
 func (app *App) FetchService(service *Service) error {
-	log.Printf("Deploying %+v", *service)
-
 	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
 	if err != nil {
 		return err
@@ -100,7 +102,7 @@ func (app *App) FetchService(service *Service) error {
 		return err
 	}
 
-	manifests, err := findManifests(path.Join(tempDir, service.Path))
+	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
 	if err != nil {
 		return err
 	}
@@ -116,38 +118,11 @@ func (app *App) FetchService(service *Service) error {
 		target := path.Join(outputPath, name)
 		log.Printf("Copying manifest to '%s'", target)
 
-		src, err := os.Open(manifest)
-		if err != nil {
-			return err
-		}
-		defer src.Close()
-
-		dst, err := os.Create(target)
-		if err != nil {
-			return err
-		}
-		defer src.Close()
-
-		_, err = io.Copy(dst, src)
+		err := CopyFile(manifest, target)
 		if err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-func findManifests(dir string) ([]string, error) {
-	dir = path.Clean(dir) + "/"
-	result := []string{}
-
-	for _, ext := range []string{"*.yml", "*.yaml"} {
-		matches, err := filepath.Glob(path.Join(dir, ext))
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, matches...)
-	}
-
-	return result, nil
 }
