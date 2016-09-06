@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 type Git struct {
@@ -43,13 +44,13 @@ func (g *Git) Exec(args ...string) error {
 	if err != nil {
 		return err
 	}
-	go pipeToLog(" ", stdout)
+	go util.PipeToLog(" ", stdout)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return err
 	}
-	go pipeToLog("!", stderr)
+	go util.PipeToLog("!", stderr)
 
 	log.Printf("$ git %s", strings.Join(args, " "))
 	return cmd.Run()
