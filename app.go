@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 )
 
 type App struct {
@@ -79,7 +81,7 @@ func (app *App) Run() error {
 		if app.SkipDeploy {
 			log.Printf("Skip deploying manifests to Kubernetes.")
 		} else {
-			log.Printf("TODO: kubectl apply")
+			err := app.DeployService(service)
 			if err != nil {
 				return err
 			}
@@ -119,6 +121,34 @@ func (app *App) FetchService(service *Service) error {
 		log.Printf("Copying manifest to '%s'", target)
 
 		err := CopyFile(manifest, target)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (app *App) DeployService(service *Service) error {
+	kubectl, err := kubernetes.New(app.KubeConfigPath)
+	if err != nil {
+		return err
+	}
+
+	manifestPath := path.Join(app.OutputPath, service.Name)
+	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
+	if err != nil {
+		return err
+	}
+
+	if len(manifests) == 0 {
+		return fmt.Errorf("Did not find any manifest for '%s' in '%s'",
+			service.Name, manifestPath)
+	}
+
+	for _, manifest := range manifests {
+		log.Printf("Applying manifest '%s'", manifest)
+		err := kubectl.Apply(manifest)
 		if err != nil {
 			return err
 		}
