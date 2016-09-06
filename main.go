@@ -33,6 +33,14 @@ func main() {
 		&app.SkipShuffle,
 		"skip-shuffle", false,
 		"skip shuffling of project order")
+	flag.BoolVar(
+		&app.SkipFetch,
+		"skip-fetch", false,
+		"skip fetching files via git; requires valid files in the output directory")
+	flag.BoolVar(
+		&app.SkipDeploy,
+		"skip-deploy", false,
+		"skip applying the manifests to kubectl")
 
 	printVersion := flag.Bool(
 		"version", false,

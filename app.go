@@ -18,7 +18,10 @@ type App struct {
 	OutputPath        string
 
 	SleepInterval int
-	SkipShuffle   bool
+
+	SkipShuffle bool
+	SkipFetch   bool
+	SkipDeploy  bool
 }
 
 func (app *App) Run() error {
@@ -38,15 +41,17 @@ func (app *App) Run() error {
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
 
-	log.Printf("Wiping output directory '%s'!", app.OutputPath)
-	err = os.RemoveAll(app.OutputPath)
-	if err != nil {
-		return err
-	}
+	if !app.SkipFetch {
+		log.Printf("Wiping output directory '%s'!", app.OutputPath)
+		err = os.RemoveAll(app.OutputPath)
+		if err != nil {
+			return err
+		}
 
-	err = os.MkdirAll(app.OutputPath, 0755)
-	if err != nil {
-		return err
+		err = os.MkdirAll(app.OutputPath, 0755)
+		if err != nil {
+			return err
+		}
 	}
 
 	projectOutputPath := path.Join(app.OutputPath, "config.yml")
@@ -57,21 +62,31 @@ func (app *App) Run() error {
 	}
 
 	for i, service := range *config.Services {
-		if i != 0 {
+		if i != 0 && app.SleepInterval > 0 {
 			log.Printf("Sleeping %d seconds...", app.SleepInterval)
 			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
 		}
 
-		err := app.DeployService(service)
-		if err != nil {
-			return err
+		if !app.SkipFetch {
+			err := app.FetchService(service)
+			if err != nil {
+				return err
+			}
 		}
+
+		if !app.SkipDeploy {
+			log.Printf("TODO: kubectl apply")
+			if err != nil {
+				return err
+			}
+		}
+
 	}
 
 	return nil
 }
 
-func (app *App) DeployService(service *Service) error {
+func (app *App) FetchService(service *Service) error {
 	log.Printf("Deploying %+v", *service)
 
 	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
