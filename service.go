@@ -8,7 +8,7 @@ import (
 
 const (
 	DEFAULT_BRANCH = "master"
-	DEFAULT_PATH   = "deployment/kubernetes"
+	DEFAULT_PATH   = "/deployment/kubernetes"
 )
 
 type Service struct {

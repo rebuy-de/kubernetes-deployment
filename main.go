@@ -3,60 +3,78 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 )
 
 var (
-	version string
+	version = "unknown"
+
+	defaultKubeConfigPath    = "~/.kube/config"
+	defaultProjectConfigPath = "config/services.yaml"
+	defaultOutputPath        = "./output"
 )
 
 func main() {
+	os.Exit(Main(os.Args...))
+}
+
+func Main(args ...string) int {
+	log.SetOutput(os.Stdout)
+
 	app := &App{}
 
-	flag.StringVar(
+	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+
+	fs.StringVar(
 		&app.KubeConfigPath,
-		"kubeconfig", "~/.kube/config",
+		"kubeconfig", defaultKubeConfigPath,
 		"path to the kubernetes configuration")
-	flag.StringVar(
+	fs.StringVar(
 		&app.ProjectConfigPath,
-		"config", "config/services.yaml",
+		"config", defaultProjectConfigPath,
 		"project configuration file")
-	flag.StringVar(
+	fs.StringVar(
 		&app.OutputPath,
-		"output", "./output",
+		"output", defaultOutputPath,
 		"output path of configuration file after shuffling and Kubernetes manifests")
-	flag.IntVar(
+	fs.IntVar(
 		&app.SleepInterval,
 		"sleep", 0,
 		"sleep interval between applying projects")
-	flag.BoolVar(
+	fs.BoolVar(
 		&app.SkipShuffle,
 		"skip-shuffle", false,
 		"skip shuffling of project order")
-	flag.BoolVar(
+	fs.BoolVar(
 		&app.SkipFetch,
 		"skip-fetch", false,
 		"skip fetching files via git; requires valid files in the output directory")
-	flag.BoolVar(
+	fs.BoolVar(
 		&app.SkipDeploy,
 		"skip-deploy", false,
 		"skip applying the manifests to kubectl")
 
-	printVersion := flag.Bool(
+	printVersion := fs.Bool(
 		"version", false,
 		"prints version and exits")
 
-	flag.Parse()
+	err := fs.Parse(args)
+	if err != nil {
+		return 2
+	}
 
 	if printVersion != nil && *printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
-		os.Exit(0)
+		return 0
 	}
 
-	err := app.Run()
+	err = app.Run()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Execution of the deployment failed:")
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return 1
 	}
+
+	return 0
 }
