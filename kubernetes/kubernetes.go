@@ -14,11 +14,7 @@ type Kubernetes struct {
 }
 
 func New(kubeconfig string) (*Kubernetes, error) {
-	kubectlPath, err := exec.LookPath("kubectl")
-	if err != nil {
-		return nil, err
-	}
-
+	kubectlPath, _ := exec.LookPath("kubectl")
 	return &Kubernetes{
 		Kubeconfig:  kubeconfig,
 		KubectlPath: kubectlPath,
