@@ -1,15 +1,13 @@
 #!/bin/bash
 
+REPO=github.com/rebuy-de/kubernetes-deployment
+ROOT=$(readlink -f $( dirname $0)/..)
+COMMAND=${1:-all}
+
 set -ex
 
-cd $( dirname $0 )/..
-
-mkdir -p target
-
-VERSION=$(git describe --always --dirty | tr '-' '.' )
-
-go test -v ./...
-
-go build \
-	-o target/kubernetes-deployment \
-	-ldflags "-X main.version=${VERSION}" 
+docker run \
+	--rm \
+	-v "${ROOT}:/go/src/${REPO}" \
+	074509403805.dkr.ecr.eu-west-1.amazonaws.com/rebuy-base-image-golang:latest \
+    /tools/build.sh ${COMMAND} ${REPO}
