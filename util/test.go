@@ -90,6 +90,17 @@ func AssertStringContains(t *testing.T, haystack string, needle string, msg stri
 	}
 }
 
+
+func AssertStringEquals(t *testing.T, expected string, tested string, msg string) {
+	if expected != tested {
+		t.Error("Strings are not equal expected:", expected, "but got:", tested)
+		if msg != "" {
+			t.Error(msg)
+		}
+		t.FailNow()
+	}
+}
+
 func AssertStringIsNotEmpty(t *testing.T, haystack string, msg string) {
 	if haystack == "" {
 		t.Error("String is empty!")
