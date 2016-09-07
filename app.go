@@ -13,7 +13,7 @@ import (
 )
 
 type App struct {
-	KubeConfigPath    string
+	Kubectl           kubernetes.API
 	ProjectConfigPath string
 	OutputPath        string
 
@@ -76,16 +76,16 @@ func (app *App) PrepareConfig() (*ProjectConfig, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
 
-		err = os.MkdirAll(app.OutputPath, 0755)
-		if err != nil {
-			return nil, err
-		}
+	err = os.MkdirAll(app.OutputPath, 0755)
+	if err != nil {
+		return nil, err
 	}
 
 	projectOutputPath := path.Join(app.OutputPath, "config.yml")
 	log.Printf("Writing applying configuration to %s", projectOutputPath)
-	config.WriteTo(projectOutputPath)
+	err = config.WriteTo(projectOutputPath)
 	if err != nil {
 		return nil, err
 	}
@@ -170,11 +170,6 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 }
 
 func (app *App) DeployService(service *Service) error {
-	kubectl, err := kubernetes.New(app.KubeConfigPath)
-	if err != nil {
-		return err
-	}
-
 	manifestPath := path.Join(app.OutputPath, service.Name)
 	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
 	if err != nil {
@@ -189,7 +184,8 @@ func (app *App) DeployService(service *Service) error {
 	for _, manifest := range manifests {
 		log.Printf("Applying manifest '%s'", manifest)
 		err := app.Retry(func() error {
-			return kubectl.Apply(manifest)
+			_, err := app.Kubectl.Apply(manifest)
+			return err
 		})
 		if err != nil && app.IgnoreDeployFailures {
 			log.Printf("Ignoring failed deployment of %s", service.Name)

@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"time"
+
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 )
 
 var (
@@ -27,8 +29,7 @@ func Main(args ...string) int {
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 
-	fs.StringVar(
-		&app.KubeConfigPath,
+	kubeConfigPath := fs.String(
 		"kubeconfig", defaultKubeConfigPath,
 		"path to the kubernetes configuration")
 	fs.StringVar(
@@ -80,6 +81,12 @@ func Main(args ...string) int {
 	if printVersion != nil && *printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
 		return 0
+	}
+
+	app.Kubectl, err = kubernetes.New(*kubeConfigPath)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
 	}
 
 	err = app.Run()

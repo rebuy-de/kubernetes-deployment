@@ -1,9 +1,10 @@
 package kubernetes
 
 import (
-	"testing"
-	"github.com/rebuy-de/kubernetes-deployment/util"
 	"strings"
+	"testing"
+
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 const local_k8r_config = "/.kube/config"
@@ -49,5 +50,3 @@ func TestKubernetes_Get_WithConfig(t *testing.T) {
 	util.AssertNoError(t, error)
 	util.AssertStringEquals(t, "--kubeconfig=/.kube/config get -f /some/none/existing/file.yml -o json", strings.TrimSpace(string(out[:])), "")
 }
-
-
