@@ -16,7 +16,7 @@ var (
 )
 
 func main() {
-	os.Exit(Main(os.Args...))
+	os.Exit(Main(os.Args[1:]...))
 }
 
 func Main(args ...string) int {

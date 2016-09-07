@@ -25,16 +25,37 @@ type App struct {
 }
 
 func (app *App) Run() error {
-	config, err := ReadProjectConfigFrom(app.ProjectConfigPath)
+	config, err := app.PrepareConfig()
 	if err != nil {
 		return err
+	}
+
+	err = app.FetchServices(config)
+	if err != nil {
+		return err
+	}
+
+	err = app.DeployServices(config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (app *App) PrepareConfig() (*ProjectConfig, error) {
+	config, err := ReadProjectConfigFrom(app.ProjectConfigPath)
+	if err != nil {
+		return nil, err
 	}
 
 	log.Printf("Read the following project configuration:\n%s", config)
 
 	config.Services.Clean()
 
-	if !app.SkipShuffle {
+	if app.SkipShuffle {
+		log.Printf("Skip shuffeling service order.")
+	} else {
 		log.Printf("Shuffling service list")
 		config.Services.Shuffle()
 	}
@@ -43,14 +64,14 @@ func (app *App) Run() error {
 
 	if !app.SkipFetch {
 		log.Printf("Wiping output directory '%s'!", app.OutputPath)
-		err = os.RemoveAll(app.OutputPath)
+		err := os.RemoveAll(app.OutputPath)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		err = os.MkdirAll(app.OutputPath, 0755)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
@@ -58,35 +79,23 @@ func (app *App) Run() error {
 	log.Printf("Writing applying configuration to %s", projectOutputPath)
 	config.WriteTo(projectOutputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	for i, service := range *config.Services {
-		if i != 0 && app.SleepInterval > 0 {
-			log.Printf("Sleeping %d seconds...", app.SleepInterval)
-			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
+	return config, nil
+}
+
+func (app *App) FetchServices(config *ProjectConfig) error {
+	if app.SkipFetch {
+		log.Printf("Skip fetching manifests via git.")
+		return nil
+	}
+
+	for _, service := range *config.Services {
+		err := app.FetchService(service)
+		if err != nil {
+			return err
 		}
-
-		log.Printf("Deploying %s", service.Name)
-
-		if app.SkipFetch {
-			log.Printf("Skip fetching manifests via git.")
-		} else {
-			err := app.FetchService(service)
-			if err != nil {
-				return err
-			}
-		}
-
-		if app.SkipDeploy {
-			log.Printf("Skip deploying manifests to Kubernetes.")
-		} else {
-			err := app.DeployService(service)
-			if err != nil {
-				return err
-			}
-		}
-
 	}
 
 	return nil
@@ -124,6 +133,27 @@ func (app *App) FetchService(service *Service) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (app *App) DeployServices(config *ProjectConfig) error {
+	for i, service := range *config.Services {
+		if i != 0 && app.SleepInterval > 0 {
+			log.Printf("Sleeping %d seconds...", app.SleepInterval)
+			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
+		}
+
+		if app.SkipDeploy {
+			log.Printf("Skip deploying manifests to Kubernetes.")
+		} else {
+			err := app.DeployService(service)
+			if err != nil {
+				return err
+			}
+		}
+
 	}
 
 	return nil
