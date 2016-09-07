@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 var (
@@ -38,9 +39,9 @@ func Main(args ...string) int {
 		&app.OutputPath,
 		"output", defaultOutputPath,
 		"output path of configuration file after shuffling and Kubernetes manifests")
-	fs.IntVar(
+	fs.DurationVar(
 		&app.SleepInterval,
-		"sleep", 0,
+		"sleep", time.Second,
 		"sleep interval between applying projects")
 	fs.BoolVar(
 		&app.SkipShuffle,
@@ -54,6 +55,14 @@ func Main(args ...string) int {
 		&app.SkipDeploy,
 		"skip-deploy", false,
 		"skip applying the manifests to kubectl")
+	fs.DurationVar(
+		&app.RetrySleep,
+		"retry-sleep", 250*time.Millisecond,
+		"sleep interval between applying projects")
+	fs.IntVar(
+		&app.RetryCount,
+		"retry-count", 3,
+		"sleep interval between applying projects")
 
 	printVersion := fs.Bool(
 		"version", false,

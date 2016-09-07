@@ -17,11 +17,17 @@ type App struct {
 	ProjectConfigPath string
 	OutputPath        string
 
-	SleepInterval int
+	SleepInterval time.Duration
+	RetrySleep    time.Duration
+	RetryCount    int
 
 	SkipShuffle bool
 	SkipFetch   bool
 	SkipDeploy  bool
+}
+
+func (app *App) Retry(task Retryer) error {
+	return Retry(app.RetryCount, app.RetrySleep, task)
 }
 
 func (app *App) Run() error {
@@ -92,7 +98,9 @@ func (app *App) FetchServices(config *ProjectConfig) error {
 	}
 
 	for _, service := range *config.Services {
-		err := app.FetchService(service)
+		err := app.Retry(func() error {
+			return app.FetchService(service)
+		})
 		if err != nil {
 			return err
 		}
@@ -141,14 +149,16 @@ func (app *App) FetchService(service *Service) error {
 func (app *App) DeployServices(config *ProjectConfig) error {
 	for i, service := range *config.Services {
 		if i != 0 && app.SleepInterval > 0 {
-			log.Printf("Sleeping %d seconds...", app.SleepInterval)
-			time.Sleep(time.Duration(app.SleepInterval) * time.Second)
+			log.Printf("Sleeping %v ...", app.SleepInterval)
+			time.Sleep(app.SleepInterval)
 		}
 
 		if app.SkipDeploy {
 			log.Printf("Skip deploying manifests to Kubernetes.")
 		} else {
-			err := app.DeployService(service)
+			err := app.Retry(func() error {
+				return app.DeployService(service)
+			})
 			if err != nil {
 				return err
 			}
