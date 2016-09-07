@@ -63,6 +63,10 @@ func Main(args ...string) int {
 		&app.RetryCount,
 		"retry-count", 3,
 		"sleep interval between applying projects")
+	fs.BoolVar(
+		&app.IgnoreDeployFailures,
+		"ignore-deploy-failures", false,
+		"continue deploying services, if any service fails")
 
 	printVersion := fs.Bool(
 		"version", false,

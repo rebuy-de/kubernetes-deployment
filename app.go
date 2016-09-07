@@ -17,9 +17,11 @@ type App struct {
 	ProjectConfigPath string
 	OutputPath        string
 
-	SleepInterval time.Duration
-	RetrySleep    time.Duration
-	RetryCount    int
+	SleepInterval        time.Duration
+	IgnoreDeployFailures bool
+
+	RetrySleep time.Duration
+	RetryCount int
 
 	SkipShuffle bool
 	SkipFetch   bool
@@ -156,9 +158,7 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 		if app.SkipDeploy {
 			log.Printf("Skip deploying manifests to Kubernetes.")
 		} else {
-			err := app.Retry(func() error {
-				return app.DeployService(service)
-			})
+			err := app.DeployService(service)
 			if err != nil {
 				return err
 			}
@@ -188,8 +188,13 @@ func (app *App) DeployService(service *Service) error {
 
 	for _, manifest := range manifests {
 		log.Printf("Applying manifest '%s'", manifest)
-		err := kubectl.Apply(manifest)
-		if err != nil {
+		err := app.Retry(func() error {
+			return kubectl.Apply(manifest)
+		})
+		if err != nil && app.IgnoreDeployFailures {
+			log.Printf("Ignoring failed deployment of %s", service.Name)
+		}
+		if err != nil && !app.IgnoreDeployFailures {
 			return err
 		}
 	}
