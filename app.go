@@ -26,6 +26,8 @@ type App struct {
 	SkipShuffle bool
 	SkipFetch   bool
 	SkipDeploy  bool
+
+	Errors []error
 }
 
 func (app *App) Retry(task Retryer) error {
@@ -47,6 +49,8 @@ func (app *App) Run() error {
 	if err != nil {
 		return err
 	}
+
+	app.DisplayErrors()
 
 	return nil
 }
@@ -189,6 +193,10 @@ func (app *App) DeployService(service *Service) error {
 		})
 		if err != nil && app.IgnoreDeployFailures {
 			log.Printf("Ignoring failed deployment of %s", service.Name)
+			app.Errors = append(app.Errors,
+				fmt.Errorf("Deployment of '%s' in service '%s' failed: %v",
+					manifest, service.Name, err),
+			)
 		}
 		if err != nil && !app.IgnoreDeployFailures {
 			return err
@@ -196,4 +204,15 @@ func (app *App) DeployService(service *Service) error {
 	}
 
 	return nil
+}
+
+func (app *App) DisplayErrors() {
+	if len(app.Errors) < 1 {
+		return
+	}
+
+	fmt.Fprintf(os.Stderr, "\nError(s) occured:\n")
+	for i, err := range app.Errors {
+		fmt.Fprintf(os.Stderr, "    #%2d: %v\n", i, err)
+	}
 }

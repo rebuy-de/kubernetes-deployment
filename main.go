@@ -13,7 +13,7 @@ import (
 var (
 	version = "unknown"
 
-	defaultKubeConfigPath    = "~/.kube/config"
+	defaultKubeConfigPath    = "config/kubeconfig.yaml"
 	defaultProjectConfigPath = "config/services.yaml"
 	defaultOutputPath        = "./output"
 )
@@ -81,6 +81,11 @@ func Main(args ...string) int {
 	if printVersion != nil && *printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
 		return 0
+	}
+
+	if _, err := os.Stat(*kubeConfigPath); os.IsNotExist(err) {
+		fmt.Fprintf(os.Stderr, "The kubeconfig '%s' does not exist.\n", *kubeConfigPath)
+		return 1
 	}
 
 	app.Kubectl, err = kubernetes.New(*kubeConfigPath)
