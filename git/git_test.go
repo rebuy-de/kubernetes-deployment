@@ -4,6 +4,7 @@ import (
 	"os/exec"
 	"path"
 	"testing"
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 func TestGitExec(t *testing.T) {
@@ -17,7 +18,7 @@ func TestGitExec(t *testing.T) {
 		t.FailNow()
 	}
 
-	assertDirExists(t, path.Join(git.Directory, ".git"))
+	util.AssertDirExists(t, path.Join(git.Directory, ".git"))
 }
 
 func TestGitExecWrongCommand(t *testing.T) {
@@ -49,5 +50,5 @@ func TestGitInit(t *testing.T) {
 		t.FailNow()
 	}
 
-	assertDirExists(t, path.Join(git.Directory, ".git"))
+	util.AssertDirExists(t, path.Join(git.Directory, ".git"))
 }

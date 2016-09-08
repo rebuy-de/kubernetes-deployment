@@ -6,6 +6,7 @@ import (
 	"path"
 	"testing"
 	"time"
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 func testCreateDirs(t *testing.T, base string, dirs ...string) {
@@ -35,9 +36,9 @@ func TestSparseCheckout(t *testing.T) {
 	git, cleanupParent := testCreateTempGitDir(t)
 	defer cleanupParent()
 
-	assertNoError(t, git.Init())
-	assertNoError(t, git.Exec("config", "user.email", "me@example.com"))
-	assertNoError(t, git.Exec("config", "user.name", "git example user"))
+	util.AssertNoError(t, git.Init())
+	util.AssertNoError(t, git.Exec("config", "user.email", "me@example.com"))
+	util.AssertNoError(t, git.Exec("config", "user.name", "git example user"))
 
 	testCreateDirs(t, git.Directory,
 		"foo/bar",
@@ -51,9 +52,9 @@ func TestSparseCheckout(t *testing.T) {
 		"bim/baz/c.yml",
 	)
 
-	assertNoError(t, git.Exec("add", "."))
-	assertNoError(t, git.Exec("commit", "-m", "initial commit"))
-	assertNoError(t, git.Exec("checkout", "-b", "second-branch"))
+	util.AssertNoError(t, git.Exec("add", "."))
+	util.AssertNoError(t, git.Exec("commit", "-m", "initial commit"))
+	util.AssertNoError(t, git.Exec("checkout", "-b", "second-branch"))
 
 	testTouchFiles(t, git.Directory,
 		"foo/bar/d.txt",
@@ -61,28 +62,28 @@ func TestSparseCheckout(t *testing.T) {
 		"bish/bash/bosh/f.yml",
 	)
 
-	assertNoError(t, git.Exec("add", "."))
-	assertNoError(t, git.Exec("commit", "-m", "second commit"))
+	util.AssertNoError(t, git.Exec("add", "."))
+	util.AssertNoError(t, git.Exec("commit", "-m", "second commit"))
 
-	targetMaster, cleanupTargetMaster := testCreateTempDir(t)
+	targetMaster, cleanupTargetMaster := util.TestCreateTempDir(t)
 	defer cleanupTargetMaster()
 
 	SparseCheckout(targetMaster, git.Directory, "master", "foo/bar")
-	assertFileExists(t, path.Join(targetMaster, "foo/bar/a.yml"))
-	assertFileNotExists(t, path.Join(targetMaster, "bim/baz/b.txt"))
-	assertFileNotExists(t, path.Join(targetMaster, "bim/baz/c.yml"))
-	assertFileNotExists(t, path.Join(targetMaster, "foo/bar/d.txt"))
-	assertFileNotExists(t, path.Join(targetMaster, "bim/baz/e.yml"))
-	assertFileNotExists(t, path.Join(targetMaster, "bish/bash/bosh/f.yml"))
+	util.AssertFileExists(t, path.Join(targetMaster, "foo/bar/a.yml"))
+	util.AssertFileNotExists(t, path.Join(targetMaster, "bim/baz/b.txt"))
+	util.AssertFileNotExists(t, path.Join(targetMaster, "bim/baz/c.yml"))
+	util.AssertFileNotExists(t, path.Join(targetMaster, "foo/bar/d.txt"))
+	util.AssertFileNotExists(t, path.Join(targetMaster, "bim/baz/e.yml"))
+	util.AssertFileNotExists(t, path.Join(targetMaster, "bish/bash/bosh/f.yml"))
 
-	targetBranch, cleanupTargetBranch := testCreateTempDir(t)
+	targetBranch, cleanupTargetBranch := util.TestCreateTempDir(t)
 	defer cleanupTargetBranch()
 
 	SparseCheckout(targetBranch, git.Directory, "second-branch", "foo/bar")
-	assertFileExists(t, path.Join(targetBranch, "foo/bar/a.yml"))
-	assertFileNotExists(t, path.Join(targetBranch, "bim/baz/b.txt"))
-	assertFileNotExists(t, path.Join(targetBranch, "bim/baz/c.yml"))
-	assertFileExists(t, path.Join(targetBranch, "foo/bar/d.txt"))
-	assertFileNotExists(t, path.Join(targetBranch, "bim/baz/e.yml"))
-	assertFileNotExists(t, path.Join(targetBranch, "bish/bash/bosh/f.yml"))
+	util.AssertFileExists(t, path.Join(targetBranch, "foo/bar/a.yml"))
+	util.AssertFileNotExists(t, path.Join(targetBranch, "bim/baz/b.txt"))
+	util.AssertFileNotExists(t, path.Join(targetBranch, "bim/baz/c.yml"))
+	util.AssertFileExists(t, path.Join(targetBranch, "foo/bar/d.txt"))
+	util.AssertFileNotExists(t, path.Join(targetBranch, "bim/baz/e.yml"))
+	util.AssertFileNotExists(t, path.Join(targetBranch, "bish/bash/bosh/f.yml"))
 }
