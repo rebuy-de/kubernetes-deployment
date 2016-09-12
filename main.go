@@ -26,6 +26,7 @@ func Main(args ...string) int {
 	log.SetOutput(os.Stdout)
 
 	app := &App{}
+	printVersion := false
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 
@@ -69,7 +70,8 @@ func Main(args ...string) int {
 		"ignore-deploy-failures", false,
 		"continue deploying services, if any service fails")
 
-	printVersion := fs.Bool(
+	fs.BoolVar(
+		&printVersion,
 		"version", false,
 		"prints version and exits")
 
@@ -78,7 +80,7 @@ func Main(args ...string) int {
 		return 2
 	}
 
-	if printVersion != nil && *printVersion {
+	if printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
 		return 0
 	}

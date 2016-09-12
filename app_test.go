@@ -30,7 +30,7 @@ func (k *testKubectl) Get(manifestFile string) ([]byte, error) {
 	return nil, fmt.Errorf("not implemented, yet")
 }
 
-func testCreateDirs(t *testing.T, base string, dirs ...string) {
+func createTestDirs(t *testing.T, base string, dirs ...string) {
 	for _, dir := range dirs {
 		err := os.MkdirAll(path.Join(base, dir), 0755)
 		if err != nil {
@@ -41,7 +41,7 @@ func testCreateDirs(t *testing.T, base string, dirs ...string) {
 	}
 }
 
-func testCreateGitRepo(t *testing.T, repopath string, branch string, subpath string, files ...string) func() {
+func createTestGitRepo(t *testing.T, repopath string, branch string, subpath string, files ...string) func() {
 	util.AssertNoError(t, os.MkdirAll(repopath, 0755))
 
 	git, err := git.New(repopath)
@@ -71,20 +71,20 @@ func testCreateGitRepo(t *testing.T, repopath string, branch string, subpath str
 	}
 }
 
-func testPrepareEnvironment(t *testing.T) (*App, *testKubectl, func()) {
+func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 	tempDir, cleanup := util.TestCreateTempDir(t)
 
-	cleanup = testCreateGitRepo(t,
+	cleanup = createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bish"),
 		"master", "/deployment/kubernetes",
 		"bish-a.yml", "bish-b.yml", "bish-c.yaml", "bish-d.txt", "foo/bish-e.yml")
 
-	cleanup = testCreateGitRepo(t,
+	cleanup = createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bash"),
 		"special", "/deployment/kubernetes",
 		"bash-a.yml", "bash-b.yml", "bash-c.yaml", "bash-d.txt", "foo/bash-e.yml")
 
-	cleanup = testCreateGitRepo(t,
+	cleanup = createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bosh"),
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
@@ -127,7 +127,7 @@ func testPrepareEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 }
 
 func TestSkipAll(t *testing.T) {
-	app, _, cleanup := testPrepareEnvironment(t)
+	app, _, cleanup := prepareTestEnvironment(t)
 	defer cleanup()
 
 	app.SkipShuffle = true
@@ -148,7 +148,7 @@ func TestSkipAll(t *testing.T) {
 }
 
 func TestWholeApplication(t *testing.T) {
-	app, kubectlMock, cleanup := testPrepareEnvironment(t)
+	app, kubectlMock, cleanup := prepareTestEnvironment(t)
 	defer cleanup()
 
 	err := app.Run()
