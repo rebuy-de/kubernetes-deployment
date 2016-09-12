@@ -13,6 +13,8 @@ services:
     path: /solr
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /zookeeper
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /kube-dashboard
   - repo: github.com/rebuy-de/solr-management-silo
     path: /kubernetes/manifests
     branch: cloud-350
