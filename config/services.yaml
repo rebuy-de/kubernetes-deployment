@@ -16,9 +16,11 @@ services:
   - repo: github.com/rebuy-de/solr-management-silo
     path: /kubernetes/manifests
     branch: cloud-350
-  - repo: github.com/rebuy-de/cloud-infrastructure
+  - repo: github.com/rebuy-de/green-web
     path: /kubernetes/manifests
     branch: dockerize
   - repo: github.com/rebuy-de/blue-web
+    path: /deployment/k8s/manifests
   - repo: github.com/rebuy-de/my-web
-    branch: cloud-424-dockerize
+    branch: CLOUD-424-dockerize
+    path: deployment/k8s/manifests

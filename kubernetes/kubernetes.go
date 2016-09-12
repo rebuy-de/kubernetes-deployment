@@ -1,11 +1,12 @@
 package kubernetes
 
 import (
-	"os/exec"
-	"log"
-	"strings"
-	"github.com/rebuy-de/kubernetes-deployment/util"
 	"io"
+	"log"
+	"os/exec"
+	"strings"
+
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 type Kubernetes struct {
@@ -53,4 +54,3 @@ func (k *Kubernetes) Apply(manifestFile string) ([]byte, error) {
 func (k *Kubernetes) Get(manifestFile string) ([]byte, error) {
 	return k.Exec("get", "-f", manifestFile, "-o", "json")
 }
-

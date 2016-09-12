@@ -1,2 +1,3 @@
 package: github.com/rebuy-de/kubernetes-deployment
-import: []
+import:
+- package: gopkg.in/yaml.v2
