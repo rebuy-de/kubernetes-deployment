@@ -13,4 +13,5 @@ type Settings struct {
 	RetryCount           *int `yaml:"retry-count"`
 	IgnoreDeployFailures *bool `yaml:"ignore-deploy-failures"`
 	TemplateValues       *[]TemplateValue `yaml:"template-values"`
+	TemplateValuesMap    map[string]string
 }

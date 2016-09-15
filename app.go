@@ -158,6 +158,18 @@ func mergeConfig(defaultConfig *ProjectConfig, localConfig *ProjectConfig) {
 		defaultConfig.Settings.IgnoreDeployFailures = localConfig.Settings.IgnoreDeployFailures
 	}
 
+	tempMap := make(map[string]string)
+
+	for _, templateValue := range *defaultConfig.Settings.TemplateValues {
+		tempMap[templateValue.Key] = templateValue.Value
+	}
+
+	for _, templateValue := range *localConfig.Settings.TemplateValues {
+		tempMap[templateValue.Key] = templateValue.Value
+	}
+
+	defaultConfig.Settings.TemplateValuesMap = tempMap
+
 	fmt.Println(defaultConfig)
 
 	os.Exit(1)
