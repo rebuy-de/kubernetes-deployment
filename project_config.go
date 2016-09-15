@@ -4,10 +4,12 @@ import (
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
+	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
 type ProjectConfig struct {
 	Services *Services
+	Settings *settings.Settings
 }
 
 func (c ProjectConfig) String() string {

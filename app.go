@@ -7,27 +7,26 @@ import (
 	"os"
 	"path"
 	"time"
-
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 )
 
 type App struct {
-	Kubectl           kubernetes.API
-	ProjectConfigPath string
-	OutputPath        string
+	Kubectl              kubernetes.API
+	ProjectConfigPath    string
+	OutputPath           string
 
 	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
 
-	RetrySleep time.Duration
-	RetryCount int
+	RetrySleep           time.Duration
+	RetryCount           int
 
-	SkipShuffle bool
-	SkipFetch   bool
-	SkipDeploy  bool
+	SkipShuffle          bool
+	SkipFetch            bool
+	SkipDeploy           bool
 
-	Errors []error
+	Errors               []error
 }
 
 func (app *App) Retry(task Retryer) error {
@@ -36,6 +35,20 @@ func (app *App) Retry(task Retryer) error {
 
 func (app *App) Run() error {
 	config, err := app.PrepareConfig()
+	if err != nil {
+		return err
+	}
+
+	app.OutputPath = config.Settings.Output
+	app.SleepInterval = config.Settings.Sleep
+	app.IgnoreDeployFailures = config.Settings.IgnoreDeployFailures
+	app.RetrySleep = config.Settings.RetrySleep
+	app.RetryCount = config.Settings.RetryCount
+	app.SkipShuffle = config.Settings.SkipShuffle
+	app.SkipFetch = config.Settings.SkipFetch
+	app.SkipDeploy = config.Settings.SkipDeploy
+
+	app.Kubectl, err = kubernetes.New(config.Settings.Kubeconfig)
 	if err != nil {
 		return err
 	}

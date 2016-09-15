@@ -1,3 +1,16 @@
+settings:
+  kubeconfig: ~/config/kubeconfig.yaml
+  output: ./output
+  sleep: 1s
+  skip-shuffle: false
+  skip-fetch: false
+  skip-deploy: false
+  retry-sleep: 250ms
+  retry-count: 3
+  ignore-deploy-failures: false
+  template-values:
+    - key: cluster-domain
+      value: test.rebuy.de
 services:
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /dns
