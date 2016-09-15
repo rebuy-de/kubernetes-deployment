@@ -23,9 +23,10 @@ func Main(args ...string) int {
 	printVersion := false
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	app.ProjectConfigPath = defaultProjectConfigPath
 
 	fs.StringVar(
-		&app.ProjectConfigPath,
+		&app.LocalConfigPath,
 		"config", defaultProjectConfigPath,
 		"project configuration file")
 	fs.BoolVar(

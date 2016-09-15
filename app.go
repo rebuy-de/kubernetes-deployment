@@ -14,6 +14,7 @@ import (
 type App struct {
 	Kubectl              kubernetes.API
 	ProjectConfigPath    string
+	LocalConfigPath      string
 	OutputPath           string
 
 	SleepInterval        time.Duration
@@ -39,16 +40,16 @@ func (app *App) Run() error {
 		return err
 	}
 
-	app.OutputPath = config.Settings.Output
-	app.SleepInterval = config.Settings.Sleep
-	app.IgnoreDeployFailures = config.Settings.IgnoreDeployFailures
-	app.RetrySleep = config.Settings.RetrySleep
-	app.RetryCount = config.Settings.RetryCount
-	app.SkipShuffle = config.Settings.SkipShuffle
-	app.SkipFetch = config.Settings.SkipFetch
-	app.SkipDeploy = config.Settings.SkipDeploy
+	app.OutputPath = *config.Settings.Output
+	app.SleepInterval = *config.Settings.Sleep
+	app.IgnoreDeployFailures = *config.Settings.IgnoreDeployFailures
+	app.RetrySleep = *config.Settings.RetrySleep
+	app.RetryCount = *config.Settings.RetryCount
+	app.SkipShuffle = *config.Settings.SkipShuffle
+	app.SkipFetch = *config.Settings.SkipFetch
+	app.SkipDeploy = *config.Settings.SkipDeploy
 
-	app.Kubectl, err = kubernetes.New(config.Settings.Kubeconfig)
+	app.Kubectl, err = kubernetes.New(*config.Settings.Kubeconfig)
 	if err != nil {
 		return err
 	}
@@ -69,10 +70,19 @@ func (app *App) Run() error {
 }
 
 func (app *App) PrepareConfig() (*ProjectConfig, error) {
+
 	config, err := ReadProjectConfigFrom(app.ProjectConfigPath)
 	if err != nil {
 		return nil, err
 	}
+
+	configLoc, err := ReadProjectConfigFrom(app.LocalConfigPath)
+	if err != nil {
+		return nil, err
+	}
+
+	mergeConfig(config, configLoc)
+
 
 	log.Printf("Read the following project configuration:\n%s", config)
 
@@ -109,6 +119,50 @@ func (app *App) PrepareConfig() (*ProjectConfig, error) {
 
 	return config, nil
 }
+
+func mergeConfig(defaultConfig *ProjectConfig, localConfig *ProjectConfig) {
+
+	if localConfig.Settings.Kubeconfig != nil {
+		defaultConfig.Settings.Kubeconfig = localConfig.Settings.Kubeconfig
+	}
+
+	if localConfig.Settings.Output != nil {
+		defaultConfig.Settings.Output = localConfig.Settings.Output
+	}
+
+	if localConfig.Settings.Sleep != nil {
+		defaultConfig.Settings.Sleep = localConfig.Settings.Sleep
+	}
+
+	if localConfig.Settings.SkipShuffle != nil {
+		defaultConfig.Settings.SkipShuffle = localConfig.Settings.SkipShuffle
+	}
+
+	if localConfig.Settings.SkipFetch != nil {
+		defaultConfig.Settings.SkipFetch = localConfig.Settings.SkipFetch
+	}
+
+	if localConfig.Settings.SkipDeploy != nil {
+		defaultConfig.Settings.SkipDeploy = localConfig.Settings.SkipDeploy
+	}
+
+	if localConfig.Settings.RetrySleep != nil {
+		defaultConfig.Settings.RetrySleep = localConfig.Settings.RetrySleep
+	}
+
+	if localConfig.Settings.RetryCount != nil {
+		defaultConfig.Settings.RetryCount = localConfig.Settings.RetryCount
+	}
+
+	if localConfig.Settings.IgnoreDeployFailures != nil {
+		defaultConfig.Settings.IgnoreDeployFailures = localConfig.Settings.IgnoreDeployFailures
+	}
+
+	fmt.Println(defaultConfig)
+
+	os.Exit(1)
+}
+
 
 func (app *App) FetchServices(config *ProjectConfig) error {
 	if app.SkipFetch {
