@@ -1,0 +1,19 @@
+settings:
+  kubeconfig: test-fixtures/kubeconfig.yml
+  output: target/test-output
+  sleep: 1s
+  skip-shuffle: false
+  skip-fetch: false
+  skip-deploy: false
+  retry-sleep: 250ms
+  retry-count: 3
+  ignore-deploy-failures: false
+  template-values:
+    - key: clusterDomain
+      value: test.rebuy.de
+services:
+  - repo: repos/bish
+  - repo: repos/bash
+    branch: special
+  - repo: repos/bosh
+    path: //deployment/foo

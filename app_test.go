@@ -89,20 +89,9 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
 
-	config := &ProjectConfig{
-		Services: &Services{
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bish"),
-			},
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bash"),
-				Branch:     "special",
-			},
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bosh"),
-				Path:       "/deployment/foo",
-			},
-		},
+	config, err := ReadProjectConfigFrom("config/services_test.yaml")
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	config.WriteTo(path.Join(tempDir, "config.yml"))
@@ -113,6 +102,7 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		Kubectl:           kubectlMock,
 		ProjectConfigPath: path.Join(tempDir, "config.yml"),
 		OutputPath:        path.Join(tempDir, "output"),
+		WorkPath:          tempDir,
 
 		SleepInterval:        250 * time.Millisecond,
 		IgnoreDeployFailures: false,
@@ -140,6 +130,7 @@ func TestSkipAll(t *testing.T) {
 	}
 
 	config, err := ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	fmt.Println(config)
 	util.AssertNoError(t, err)
 
 	if len(*config.Services) != 3 {

@@ -9,11 +9,12 @@ settings:
   retry-count: 3
   ignore-deploy-failures: false
   template-values:
-    - key: cluster-domain
+    - key: clusterDomain
       value: test.rebuy.de
 services:
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /dns
+    branch: CLOUD-352
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /elasticsearch
   - repo: github.com/rebuy-de/cloud-infrastructure
