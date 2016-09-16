@@ -33,6 +33,8 @@ type App struct {
 	Errors []error
 }
 
+const templatesSubfolder = "templates"
+
 func (app *App) Retry(task Retryer) error {
 	return Retry(app.RetryCount, app.RetrySleep, task)
 }
@@ -165,7 +167,7 @@ func (app *App) FetchService(service *Service, config *ProjectConfig) error {
 		return err
 	}
 
-	outputPath := path.Join(app.OutputPath, service.Name)
+	outputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
 	err = os.MkdirAll(outputPath, 0755)
 	if err != nil {
 		return err
@@ -204,7 +206,7 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 }
 
 func (app *App) DeployService(service *Service, templateValuesMap map[string]string) error {
-	manifestPath := path.Join(app.OutputPath, service.Name)
+	manifestPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
 	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
 	if err != nil {
 		return err
