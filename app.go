@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	//h"github.com/rebuy-de/kubernetes-deployment/templates"
+	"github.com/rebuy-de/kubernetes-deployment/templates"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	//"path/filepath"
+	"path/filepath"
 	"time"
 )
 
@@ -34,6 +34,7 @@ type App struct {
 }
 
 const templatesSubfolder = "templates"
+const renderedSubfolder = "rendered"
 
 func (app *App) Retry(task Retryer) error {
 	return Retry(app.RetryCount, app.RetrySleep, task)
@@ -46,6 +47,11 @@ func (app *App) Run() error {
 	}
 
 	err = app.FetchServices(config)
+	if err != nil {
+		return err
+	}
+
+	err = app.RenderTemplates(config)
 	if err != nil {
 		return err
 	}
@@ -186,6 +192,34 @@ func (app *App) FetchService(service *Service, config *ProjectConfig) error {
 	return nil
 }
 
+func (app *App) RenderTemplates(config *ProjectConfig) error {
+
+	for _, service := range *config.Services {
+		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
+		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
+		log.Printf("Create folder '%s'", manifestPath)
+
+		err := os.MkdirAll(manifestPath, 0755)
+		if err != nil {
+			return err
+		}
+
+		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
+
+		for _, manifestInputFile := range manifests {
+			_, manifestFileName := filepath.Split(manifestInputFile)
+
+			manifestOutputFile := path.Join(manifestPath, manifestFileName)
+			log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
+			err = templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (app *App) DeployServices(config *ProjectConfig) error {
 	for i, service := range *config.Services {
 		if i != 0 && app.SleepInterval > 0 {
@@ -196,7 +230,7 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 		if app.SkipDeploy {
 			log.Printf("Skip deploying manifests to Kubernetes.")
 		} else {
-			err := app.DeployService(service, config.Settings.TemplateValuesMap)
+			err := app.DeployService(service)
 			if err != nil {
 				return err
 			}
@@ -205,8 +239,8 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 	return nil
 }
 
-func (app *App) DeployService(service *Service, templateValuesMap map[string]string) error {
-	manifestPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
+func (app *App) DeployService(service *Service) error {
+	manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
 	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
 	if err != nil {
 		return err
@@ -218,13 +252,6 @@ func (app *App) DeployService(service *Service, templateValuesMap map[string]str
 	}
 
 	for _, manifestInputFile := range manifests {
-		//_, manifestFileName := filepath.Split(manifestInputFile)
-
-		//	manifestOutputFile := path.Join(app.WorkPath, service.Name, manifestFileName)
-		//log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
-
-		//err = templates.ParseManifestFile(manifestInputFile, manifestOutputFile, templateValuesMap)
-
 		if err != nil {
 			return err
 		}
