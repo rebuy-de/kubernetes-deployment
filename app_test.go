@@ -94,7 +94,19 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		t.Fatal(err)
 	}
 
-	config.WriteTo(path.Join(tempDir, "config.yml"))
+	var finalConfig ProjectConfig
+	finalConfig.Settings = config.Settings
+
+	var finalServicesInstance Services
+	for _, service := range *config.Services {
+		service.Repository = path.Join(tempDir, service.Repository)
+		var serviceInstance = *service
+		finalServicesInstance = append(finalServicesInstance, &serviceInstance)
+	}
+
+	finalConfig.Services = &finalServicesInstance
+
+	finalConfig.WriteTo(path.Join(tempDir, "config.yml"))
 
 	kubectlMock := new(testKubectl)
 
@@ -167,8 +179,8 @@ func TestWholeApplication(t *testing.T) {
 
 	if !reflect.DeepEqual(calls, kubectlMock.calls) {
 		t.Errorf("kubectl was called to often.")
-		t.Errorf("  Expected %v", calls)
-		t.Errorf("  Obtained %v", kubectlMock.calls)
+		t.Errorf("  Expected %#v", calls)
+		t.Errorf("  Obtained %#v", kubectlMock.calls)
 	}
 
 }

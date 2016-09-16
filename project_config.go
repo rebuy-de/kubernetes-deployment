@@ -1,10 +1,10 @@
 package main
 
 import (
-	"io/ioutil"
-
-	"gopkg.in/yaml.v2"
+	"fmt"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 type ProjectConfig struct {
@@ -24,7 +24,7 @@ func (c ProjectConfig) String() string {
 func ReadProjectConfigFrom(filename string) (*ProjectConfig, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Could not open '%s':'%v'", filename, err)
 	}
 
 	config := new(ProjectConfig)

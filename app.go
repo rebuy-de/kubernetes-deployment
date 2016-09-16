@@ -2,35 +2,35 @@ package main
 
 import (
 	"fmt"
+	"github.com/rebuy-de/kubernetes-deployment/git"
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
+	//h"github.com/rebuy-de/kubernetes-deployment/templates"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
+	//"path/filepath"
 	"time"
-	"github.com/rebuy-de/kubernetes-deployment/git"
-	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/templates"
-	"path/filepath"
 )
 
 type App struct {
-	Kubectl              kubernetes.API
-	ProjectConfigPath    string
-	LocalConfigPath      string
-	OutputPath           string
-	WorkPath             string
+	Kubectl           kubernetes.API
+	ProjectConfigPath string
+	LocalConfigPath   string
+	OutputPath        string
+	WorkPath          string
 
 	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
 
-	RetrySleep           time.Duration
-	RetryCount           int
+	RetrySleep time.Duration
+	RetryCount int
 
-	SkipShuffle          bool
-	SkipFetch            bool
-	SkipDeploy           bool
+	SkipShuffle bool
+	SkipFetch   bool
+	SkipDeploy  bool
 
-	Errors               []error
+	Errors []error
 }
 
 func (app *App) Retry(task Retryer) error {
@@ -65,12 +65,14 @@ func (app *App) PrepareConfig() (*ProjectConfig, error) {
 		return nil, err
 	}
 
-	configLoc, err := ReadProjectConfigFrom(app.LocalConfigPath)
-	if err != nil {
-		return nil, err
-	}
+	if app.LocalConfigPath != "" {
+		configLoc, err := ReadProjectConfigFrom(app.LocalConfigPath)
+		if err != nil {
+			return nil, err
+		}
 
-	config.MergeConfig(configLoc)
+		config.MergeConfig(configLoc)
+	}
 
 	workPath, err := ioutil.TempDir("", "k8s-deploy-")
 	if err != nil {
@@ -87,9 +89,11 @@ func (app *App) PrepareConfig() (*ProjectConfig, error) {
 	app.SkipDeploy = *config.Settings.SkipDeploy
 	app.WorkPath = workPath
 
-	app.Kubectl, err = kubernetes.New(*config.Settings.Kubeconfig)
-	if err != nil {
-		return nil, err
+	if app.Kubectl == nil {
+		app.Kubectl, err = kubernetes.New(*config.Settings.Kubeconfig)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	log.Printf("Read the following project configuration:\n%s", config)
@@ -212,18 +216,20 @@ func (app *App) DeployService(service *Service, templateValuesMap map[string]str
 	}
 
 	for _, manifestInputFile := range manifests {
-		_, manifestFileName := filepath.Split(manifestInputFile)
-		manifestOutputFile := path.Join(app.WorkPath, service.Name + "--" + manifestFileName)
-		log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
+		//_, manifestFileName := filepath.Split(manifestInputFile)
 
-		err = templates.ParseManifestFile(manifestInputFile, manifestOutputFile, templateValuesMap)
+		//	manifestOutputFile := path.Join(app.WorkPath, service.Name, manifestFileName)
+		//log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
+
+		//err = templates.ParseManifestFile(manifestInputFile, manifestOutputFile, templateValuesMap)
+
 		if err != nil {
 			return err
 		}
 
-		log.Printf("Applying manifest '%s'", manifestOutputFile)
+		log.Printf("Applying manifest '%s'", manifestInputFile)
 		err := app.Retry(func() error {
-			_, err := app.Kubectl.Apply(manifestOutputFile)
+			_, err := app.Kubectl.Apply(manifestInputFile)
 			return err
 		})
 		if err != nil && app.IgnoreDeployFailures {
