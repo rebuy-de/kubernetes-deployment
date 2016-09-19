@@ -1,15 +1,14 @@
-package main
+package settings
 
 import (
 	"fmt"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )
 
 type ProjectConfig struct {
 	Services *Services
-	Settings *settings.Settings
+	Settings *Settings
 }
 
 func (c ProjectConfig) String() string {

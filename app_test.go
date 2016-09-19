@@ -13,6 +13,7 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
 type testKubectl struct {
@@ -89,15 +90,15 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
 
-	config, err := ReadProjectConfigFrom("config/services_test.yaml")
+	config, err := settings.ReadProjectConfigFrom("config/services_test.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	var finalConfig ProjectConfig
+	var finalConfig settings.ProjectConfig
 	finalConfig.Settings = config.Settings
 
-	var finalServicesInstance Services
+	var finalServicesInstance settings.Services
 	for _, service := range *config.Services {
 		service.Repository = path.Join(tempDir, service.Repository)
 		var serviceInstance = *service
@@ -114,7 +115,6 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		Kubectl:           kubectlMock,
 		ProjectConfigPath: path.Join(tempDir, "config.yml"),
 		OutputPath:        path.Join(tempDir, "output"),
-		WorkPath:          tempDir,
 
 		SleepInterval:        250 * time.Millisecond,
 		IgnoreDeployFailures: false,
@@ -141,7 +141,7 @@ func TestSkipAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	config, err := ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	config, err := settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
 	fmt.Println(config)
 	util.AssertNoError(t, err)
 
@@ -159,7 +159,7 @@ func TestWholeApplication(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	_, err = settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
 	util.AssertNoError(t, err)
 
 	calls := []string{

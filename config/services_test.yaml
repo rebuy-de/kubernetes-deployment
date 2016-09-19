@@ -10,7 +10,7 @@ settings:
   ignore-deploy-failures: false
   template-values:
     - key: clusterDomain
-      value: test.rebuy.de
+      value: unit-test.rebuy.de
 services:
   - repo: repos/bish
   - repo: repos/bash
