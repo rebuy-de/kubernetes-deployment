@@ -2,35 +2,37 @@ package main
 
 import (
 	"fmt"
-	"github.com/rebuy-de/kubernetes-deployment/git"
-	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/templates"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
+
+	"github.com/rebuy-de/kubernetes-deployment/git"
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
+	"github.com/rebuy-de/kubernetes-deployment/templates"
+	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
 type App struct {
-	Kubectl           kubernetes.API
-	ProjectConfigPath string
-	LocalConfigPath   string
-	OutputPath        string
+	KubectlBuilder       func(kubeconfig *string) (kubernetes.API, error)
+	Kubectl              kubernetes.API
+	ProjectConfigPath    string
+	LocalConfigPath      string
+	OutputPath           string
 
 	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
 
-	RetrySleep time.Duration
-	RetryCount int
+	RetrySleep           time.Duration
+	RetryCount           int
 
-	SkipShuffle bool
-	SkipFetch   bool
-	SkipDeploy  bool
+	SkipShuffle          bool
+	SkipFetch            bool
+	SkipDeploy           bool
 
-	Errors []error
+	Errors               []error
 }
 
 const templatesSubfolder = "templates"
@@ -46,6 +48,11 @@ func (app *App) Run() error {
 		return err
 	}
 
+	app.Kubectl, err = app.KubectlBuilder(config.Settings.Kubeconfig)
+	if err != nil {
+		return err
+	}
+
 	err = app.FetchServices(config)
 	if err != nil {
 		return err
@@ -54,13 +61,6 @@ func (app *App) Run() error {
 	err = app.RenderTemplates(config)
 	if err != nil {
 		return err
-	}
-
-	if app.Kubectl == nil {
-		app.Kubectl, err = kubernetes.New(*config.Settings.Kubeconfig)
-		if err != nil {
-			return err
-		}
 	}
 
 	err = app.DeployServices(config)

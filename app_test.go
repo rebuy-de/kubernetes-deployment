@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 	"github.com/rebuy-de/kubernetes-deployment/util"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
@@ -112,7 +113,9 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 	kubectlMock := new(testKubectl)
 
 	return &App{
-		Kubectl:           kubectlMock,
+		KubectlBuilder: func(*string) (kubernetes.API, error) {
+			return kubectlMock, nil
+		},
 		ProjectConfigPath: path.Join(tempDir, "config.yml"),
 		OutputPath:        path.Join(tempDir, "output"),
 

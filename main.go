@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 )
 
 var (
@@ -42,6 +44,10 @@ func Main(args ...string) int {
 	if printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
 		return 0
+	}
+
+	app.KubectlBuilder = func(kubeconfig *string) (kubernetes.API, error) {
+		return kubernetes.New(*kubeconfig)
 	}
 
 	err = app.Run()
