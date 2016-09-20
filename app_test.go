@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
+	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
 type testKubectl struct {
@@ -89,28 +91,31 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
 
-	config := &ProjectConfig{
-		Services: &Services{
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bish"),
-			},
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bash"),
-				Branch:     "special",
-			},
-			&Service{
-				Repository: path.Join(tempDir, "repos", "bosh"),
-				Path:       "/deployment/foo",
-			},
-		},
+	config, err := settings.ReadProjectConfigFrom("config/services_test.yaml")
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	config.WriteTo(path.Join(tempDir, "config.yml"))
+	var finalConfig settings.ProjectConfig
+	finalConfig.Settings = config.Settings
+
+	var finalServicesInstance settings.Services
+	for _, service := range *config.Services {
+		service.Repository = path.Join(tempDir, service.Repository)
+		var serviceInstance = *service
+		finalServicesInstance = append(finalServicesInstance, &serviceInstance)
+	}
+
+	finalConfig.Services = &finalServicesInstance
+
+	finalConfig.WriteTo(path.Join(tempDir, "config.yml"))
 
 	kubectlMock := new(testKubectl)
 
 	return &App{
-		Kubectl:           kubectlMock,
+		KubectlBuilder: func(*string) (kubernetes.API, error) {
+			return kubectlMock, nil
+		},
 		ProjectConfigPath: path.Join(tempDir, "config.yml"),
 		OutputPath:        path.Join(tempDir, "output"),
 
@@ -133,13 +138,15 @@ func TestSkipAll(t *testing.T) {
 	app.SkipShuffle = true
 	app.SkipFetch = true
 	app.SkipDeploy = true
+	app.IgnoreDeployFailures = false
 
 	err := app.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	config, err := ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	config, err := settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	fmt.Println(config)
 	util.AssertNoError(t, err)
 
 	if len(*config.Services) != 3 {
@@ -156,7 +163,7 @@ func TestWholeApplication(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
+	_, err = settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
 	util.AssertNoError(t, err)
 
 	calls := []string{
@@ -176,8 +183,8 @@ func TestWholeApplication(t *testing.T) {
 
 	if !reflect.DeepEqual(calls, kubectlMock.calls) {
 		t.Errorf("kubectl was called to often.")
-		t.Errorf("  Expected %v", calls)
-		t.Errorf("  Obtained %v", kubectlMock.calls)
+		t.Errorf("  Expected %#v", calls)
+		t.Errorf("  Obtained %#v", kubectlMock.calls)
 	}
 
 }

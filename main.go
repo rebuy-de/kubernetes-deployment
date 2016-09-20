@@ -5,17 +5,13 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 )
 
 var (
 	version = "unknown"
-
-	defaultKubeConfigPath    = "config/kubeconfig.yaml"
 	defaultProjectConfigPath = "config/services.yaml"
-	defaultOutputPath        = "./output"
 )
 
 func main() {
@@ -29,22 +25,21 @@ func Main(args ...string) int {
 	printVersion := false
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	app.ProjectConfigPath = defaultProjectConfigPath
 
-	kubeConfigPath := fs.String(
-		"kubeconfig", defaultKubeConfigPath,
-		"path to the kubernetes configuration")
 	fs.StringVar(
-		&app.ProjectConfigPath,
+		&app.LocalConfigPath,
 		"config", defaultProjectConfigPath,
 		"project configuration file")
-	fs.StringVar(
-		&app.OutputPath,
-		"output", defaultOutputPath,
-		"output path of configuration file after shuffling and Kubernetes manifests")
-	fs.DurationVar(
-		&app.SleepInterval,
-		"sleep", time.Second,
-		"sleep interval between applying projects")
+	fs.BoolVar(
+		&printVersion,
+		"version", false,
+		"prints version and exits")
+
+	fs.BoolVar(
+		&app.IgnoreDeployFailures,
+		"ignore-deploy-failures", false,
+		"continue deploying services, if any service fails")
 	fs.BoolVar(
 		&app.SkipShuffle,
 		"skip-shuffle", false,
@@ -57,23 +52,6 @@ func Main(args ...string) int {
 		&app.SkipDeploy,
 		"skip-deploy", false,
 		"skip applying the manifests to kubectl")
-	fs.DurationVar(
-		&app.RetrySleep,
-		"retry-sleep", 250*time.Millisecond,
-		"sleep interval between applying projects")
-	fs.IntVar(
-		&app.RetryCount,
-		"retry-count", 3,
-		"sleep interval between applying projects")
-	fs.BoolVar(
-		&app.IgnoreDeployFailures,
-		"ignore-deploy-failures", false,
-		"continue deploying services, if any service fails")
-
-	fs.BoolVar(
-		&printVersion,
-		"version", false,
-		"prints version and exits")
 
 	err := fs.Parse(args)
 	if err != nil {
@@ -85,15 +63,8 @@ func Main(args ...string) int {
 		return 0
 	}
 
-	if _, err := os.Stat(*kubeConfigPath); os.IsNotExist(err) {
-		fmt.Fprintf(os.Stderr, "The kubeconfig '%s' does not exist.\n", *kubeConfigPath)
-		return 1
-	}
-
-	app.Kubectl, err = kubernetes.New(*kubeConfigPath)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		return 1
+	app.KubectlBuilder = func(kubeconfig *string) (kubernetes.API, error) {
+		return kubernetes.New(*kubeconfig)
 	}
 
 	err = app.Run()

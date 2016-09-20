@@ -6,29 +6,37 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
+	"github.com/rebuy-de/kubernetes-deployment/templates"
+	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
 type App struct {
-	Kubectl           kubernetes.API
-	ProjectConfigPath string
-	OutputPath        string
+	KubectlBuilder       func(kubeconfig *string) (kubernetes.API, error)
+	Kubectl              kubernetes.API
+	ProjectConfigPath    string
+	LocalConfigPath      string
+	OutputPath           string
 
 	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
 
-	RetrySleep time.Duration
-	RetryCount int
+	RetrySleep           time.Duration
+	RetryCount           int
 
-	SkipShuffle bool
-	SkipFetch   bool
-	SkipDeploy  bool
+	SkipShuffle          bool
+	SkipFetch            bool
+	SkipDeploy           bool
 
-	Errors []error
+	Errors               []error
 }
+
+const templatesSubfolder = "templates"
+const renderedSubfolder = "rendered"
 
 func (app *App) Retry(task Retryer) error {
 	return Retry(app.RetryCount, app.RetrySleep, task)
@@ -40,7 +48,17 @@ func (app *App) Run() error {
 		return err
 	}
 
+	app.Kubectl, err = app.KubectlBuilder(config.Settings.Kubeconfig)
+	if err != nil {
+		return err
+	}
+
 	err = app.FetchServices(config)
+	if err != nil {
+		return err
+	}
+
+	err = app.RenderTemplates(config)
 	if err != nil {
 		return err
 	}
@@ -55,17 +73,40 @@ func (app *App) Run() error {
 	return nil
 }
 
-func (app *App) PrepareConfig() (*ProjectConfig, error) {
-	config, err := ReadProjectConfigFrom(app.ProjectConfigPath)
+func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
+
+	config, err := settings.ReadProjectConfigFrom(app.ProjectConfigPath)
 	if err != nil {
 		return nil, err
 	}
+
+	if app.LocalConfigPath != "" {
+		configLoc, err := settings.ReadProjectConfigFrom(app.LocalConfigPath)
+		if err != nil {
+			return nil, err
+		}
+
+		config.MergeConfig(configLoc)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	app.OutputPath = *config.Settings.Output
+	app.SleepInterval = *config.Settings.Sleep
+	app.RetrySleep = *config.Settings.RetrySleep
+	app.RetryCount = *config.Settings.RetryCount
+	config.Settings.IgnoreDeployFailures = &app.IgnoreDeployFailures
+	config.Settings.SkipShuffle = &app.SkipShuffle
+	config.Settings.SkipFetch = &app.SkipFetch
+	config.Settings.SkipDeploy = &app.SkipDeploy
 
 	log.Printf("Read the following project configuration:\n%s", config)
 
 	config.Services.Clean()
 
-	if app.SkipShuffle {
+	if *config.Settings.SkipShuffle {
 		log.Printf("Skip shuffeling service order.")
 	} else {
 		log.Printf("Shuffling service list")
@@ -74,30 +115,29 @@ func (app *App) PrepareConfig() (*ProjectConfig, error) {
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
 
-	if !app.SkipFetch {
-		log.Printf("Wiping output directory '%s'!", app.OutputPath)
-		err := os.RemoveAll(app.OutputPath)
+	if !*config.Settings.SkipFetch {
+		log.Printf("Wiping output directory '%s'!", *config.Settings.Output)
+		err := os.RemoveAll(*config.Settings.Output)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	err = os.MkdirAll(app.OutputPath, 0755)
+	err = os.MkdirAll(*config.Settings.Output, 0755)
 	if err != nil {
 		return nil, err
 	}
 
-	projectOutputPath := path.Join(app.OutputPath, "config.yml")
+	projectOutputPath := path.Join(*config.Settings.Output, "config.yml")
 	log.Printf("Writing applying configuration to %s", projectOutputPath)
 	err = config.WriteTo(projectOutputPath)
 	if err != nil {
 		return nil, err
 	}
-
 	return config, nil
 }
 
-func (app *App) FetchServices(config *ProjectConfig) error {
+func (app *App) FetchServices(config *settings.ProjectConfig) error {
 	if app.SkipFetch {
 		log.Printf("Skip fetching manifests via git.")
 		return nil
@@ -105,17 +145,16 @@ func (app *App) FetchServices(config *ProjectConfig) error {
 
 	for _, service := range *config.Services {
 		err := app.Retry(func() error {
-			return app.FetchService(service)
+			return app.FetchService(service, config)
 		})
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
-func (app *App) FetchService(service *Service) error {
+func (app *App) FetchService(service *settings.Service, config *settings.ProjectConfig) error {
 	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
 	if err != nil {
 		return err
@@ -132,7 +171,7 @@ func (app *App) FetchService(service *Service) error {
 		return err
 	}
 
-	outputPath := path.Join(app.OutputPath, service.Name)
+	outputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
 	err = os.MkdirAll(outputPath, 0755)
 	if err != nil {
 		return err
@@ -148,11 +187,46 @@ func (app *App) FetchService(service *Service) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
-func (app *App) DeployServices(config *ProjectConfig) error {
+func (app *App) RenderTemplates(config *settings.ProjectConfig) error {
+
+	for _, service := range *config.Services {
+		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
+		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
+		log.Printf("Create folder '%s'", manifestPath)
+
+		err := os.MkdirAll(manifestPath, 0755)
+		if err != nil {
+			return err
+		}
+
+		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
+
+		for _, manifestInputFile := range manifests {
+			err = app.renderTemplate(manifestInputFile, manifestPath, config)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (app *App) renderTemplate(manifestInputFile string, manifestPath string, config *settings.ProjectConfig) error {
+	_, manifestFileName := filepath.Split(manifestInputFile)
+
+	manifestOutputFile := path.Join(manifestPath, manifestFileName)
+	log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
+	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (app *App) DeployServices(config *settings.ProjectConfig) error {
 	for i, service := range *config.Services {
 		if i != 0 && app.SleepInterval > 0 {
 			log.Printf("Sleeping %v ...", app.SleepInterval)
@@ -167,14 +241,12 @@ func (app *App) DeployServices(config *ProjectConfig) error {
 				return err
 			}
 		}
-
 	}
-
 	return nil
 }
 
-func (app *App) DeployService(service *Service) error {
-	manifestPath := path.Join(app.OutputPath, service.Name)
+func (app *App) DeployService(service *settings.Service) error {
+	manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
 	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
 	if err != nil {
 		return err
@@ -185,31 +257,31 @@ func (app *App) DeployService(service *Service) error {
 			service.Name, manifestPath)
 	}
 
-	for _, manifest := range manifests {
-		log.Printf("Applying manifest '%s'", manifest)
+	for _, manifestInputFile := range manifests {
+		if err != nil {
+			return err
+		}
+
+		log.Printf("Applying manifest '%s'", manifestInputFile)
 		err := app.Retry(func() error {
-			_, err := app.Kubectl.Apply(manifest)
+			_, err := app.Kubectl.Apply(manifestInputFile)
 			return err
 		})
 		if err != nil && app.IgnoreDeployFailures {
 			log.Printf("Ignoring failed deployment of %s", service.Name)
 			app.Errors = append(app.Errors,
 				fmt.Errorf("Deployment of '%s' in service '%s' failed: %v",
-					manifest, service.Name, err),
+					manifestInputFile, service.Name, err),
 			)
 		}
 		if err != nil && !app.IgnoreDeployFailures {
 			return err
 		}
 	}
-
 	return nil
 }
 
 func (app *App) DisplayErrors() {
-	if len(app.Errors) < 1 {
-		return
-	}
 
 	fmt.Fprintf(os.Stderr, "\nError(s) occured:\n")
 	for i, err := range app.Errors {

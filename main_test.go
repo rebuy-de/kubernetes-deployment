@@ -6,9 +6,7 @@ func init() {
 	version = "go-test"
 
 	// changing defaults to prevent actual running real shit
-	defaultKubeConfigPath = "test-fixtures/kubeconfig.yml"
 	defaultProjectConfigPath = "test-fixtures/services.yaml"
-	defaultOutputPath = "target/test-output"
 }
 
 func runMainForTest(t *testing.T, wantedExit int, args ...string) {

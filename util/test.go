@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 	"strings"
+	"time"
 )
 
 func TestCreateTempDir(t *testing.T) (string, func()) {
@@ -94,6 +95,36 @@ func AssertStringContains(t *testing.T, haystack string, needle string, msg stri
 func AssertStringEquals(t *testing.T, expected string, tested string, msg string) {
 	if expected != tested {
 		t.Error("Strings are not equal expected:", expected, "but got:", tested)
+		if msg != "" {
+			t.Error(msg)
+		}
+		t.FailNow()
+	}
+}
+
+func AssertBooleanEquals(t *testing.T, expected bool, tested bool, msg string) {
+	if expected != tested {
+		t.Error("Booleans are not equal expected:", expected, "but got:", tested)
+		if msg != "" {
+			t.Error(msg)
+		}
+		t.FailNow()
+	}
+}
+
+func AssertIntEquals(t *testing.T, expected int, tested int, msg string) {
+	if expected != tested {
+		t.Error("Ints are not equal expected:", expected, "but got:", tested)
+		if msg != "" {
+			t.Error(msg)
+		}
+		t.FailNow()
+	}
+}
+
+func AssertDurationEquals(t *testing.T, expected time.Duration, tested time.Duration, msg string) {
+	if expected != tested {
+		t.Error("Durations are not equal expected:", expected, "but got:", tested)
 		if msg != "" {
 			t.Error(msg)
 		}
