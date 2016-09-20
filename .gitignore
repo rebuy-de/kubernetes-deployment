@@ -2,3 +2,4 @@
 /vendor
 /config/services-out.yaml
 /output
+/kubernetes-deployment

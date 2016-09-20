@@ -10,7 +10,6 @@ settings:
 services:
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /dns
-    branch: CLOUD-352
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /elasticsearch
   - repo: github.com/rebuy-de/cloud-infrastructure
