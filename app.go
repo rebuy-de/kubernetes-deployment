@@ -95,14 +95,12 @@ func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
 
 	app.OutputPath = *config.Settings.Output
 	app.SleepInterval = *config.Settings.Sleep
-	app.IgnoreDeployFailures = *config.Settings.IgnoreDeployFailures
 	app.RetrySleep = *config.Settings.RetrySleep
 	app.RetryCount = *config.Settings.RetryCount
-	app.SkipShuffle = *config.Settings.SkipShuffle
-	app.SkipFetch = *config.Settings.SkipFetch
-	app.SkipDeploy = *config.Settings.SkipDeploy
-
-
+	config.Settings.IgnoreDeployFailures = &app.IgnoreDeployFailures
+	config.Settings.SkipShuffle = &app.SkipShuffle
+	config.Settings.SkipFetch = &app.SkipFetch
+	config.Settings.SkipDeploy = &app.SkipDeploy
 
 	log.Printf("Read the following project configuration:\n%s", config)
 

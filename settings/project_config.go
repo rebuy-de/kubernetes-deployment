@@ -58,28 +58,12 @@ func (c *ProjectConfig) MergeConfig(localConfig *ProjectConfig) {
 		c.Settings.Sleep = localConfig.Settings.Sleep
 	}
 
-	if localConfig.Settings.SkipShuffle != nil {
-		c.Settings.SkipShuffle = localConfig.Settings.SkipShuffle
-	}
-
-	if localConfig.Settings.SkipFetch != nil {
-		c.Settings.SkipFetch = localConfig.Settings.SkipFetch
-	}
-
-	if localConfig.Settings.SkipDeploy != nil {
-		c.Settings.SkipDeploy = localConfig.Settings.SkipDeploy
-	}
-
 	if localConfig.Settings.RetrySleep != nil {
 		c.Settings.RetrySleep = localConfig.Settings.RetrySleep
 	}
 
 	if localConfig.Settings.RetryCount != nil {
 		c.Settings.RetryCount = localConfig.Settings.RetryCount
-	}
-
-	if localConfig.Settings.IgnoreDeployFailures != nil {
-		c.Settings.IgnoreDeployFailures = localConfig.Settings.IgnoreDeployFailures
 	}
 
 	tempMap := make(map[string]string)

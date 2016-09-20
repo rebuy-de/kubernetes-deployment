@@ -138,6 +138,7 @@ func TestSkipAll(t *testing.T) {
 	app.SkipShuffle = true
 	app.SkipFetch = true
 	app.SkipDeploy = true
+	app.IgnoreDeployFailures = false
 
 	err := app.Run()
 	if err != nil {

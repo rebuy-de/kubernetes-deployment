@@ -66,66 +66,6 @@ func TestMergeConfig_Sleep_nill(t *testing.T) {
 	util.AssertDurationEquals(t, 1 * time.Second, *pc_default.Settings.Sleep, "Sleep")
 }
 
-func TestMergeConfig_SkipShuffle(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	*pc_local.Settings.SkipShuffle = true
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, true, *pc_default.Settings.SkipShuffle, "SkipShuffle")
-}
-
-func TestMergeConfig_SkipShuffle_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local.Settings.SkipShuffle = nil
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, false, *pc_default.Settings.SkipShuffle, "SkipShuffle")
-}
-
-func TestMergeConfig_SkipFetch(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	*pc_local.Settings.SkipFetch = true
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, true, *pc_default.Settings.SkipFetch, "SkipFetch")
-}
-
-func TestMergeConfig_SkipFetch_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local.Settings.SkipFetch = nil
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, false, *pc_default.Settings.SkipFetch, "SkipFetch")
-}
-
-func TestMergeConfig_SkipDeploy(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	*pc_local.Settings.SkipDeploy = true
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, true, *pc_default.Settings.SkipDeploy, "SkipDeploy")
-}
-
-func TestMergeConfig_SkipDeploy_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local.Settings.SkipDeploy = nil
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, false, *pc_default.Settings.SkipDeploy, "SkipDeploy")
-}
-
 func TestMergeConfig_RetrySleep(t *testing.T) {
 	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
 	util.AssertNoError(t, err)
@@ -164,26 +104,6 @@ func TestMergeConfig_RetryCount_nill(t *testing.T) {
 	pc_local.Settings.RetryCount = nil
 	pc_default.MergeConfig(pc_local)
 	util.AssertIntEquals(t, 3, *pc_default.Settings.RetryCount, "RetryCount")
-}
-
-func TestMergeConfig_IgnoreDeployFailures(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	*pc_local.Settings.IgnoreDeployFailures = true
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, true, *pc_default.Settings.IgnoreDeployFailures, "IgnoreDeployFailures")
-}
-
-func TestMergeConfig_IgnoreDeployFailures_nil(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
-	util.AssertNoError(t, err)
-	pc_local.Settings.IgnoreDeployFailures = nil
-	pc_default.MergeConfig(pc_local)
-	util.AssertBooleanEquals(t, false, *pc_default.Settings.IgnoreDeployFailures, "IgnoreDeployFailures")
 }
 
 func TestMergeConfig_templateValues(t *testing.T) {

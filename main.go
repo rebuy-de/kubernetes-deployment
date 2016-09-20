@@ -36,6 +36,23 @@ func Main(args ...string) int {
 		"version", false,
 		"prints version and exits")
 
+	fs.BoolVar(
+		&app.IgnoreDeployFailures,
+		"ignore-deploy-failures", false,
+		"continue deploying services, if any service fails")
+	fs.BoolVar(
+		&app.SkipShuffle,
+		"skip-shuffle", false,
+		"skip shuffling of project order")
+	fs.BoolVar(
+		&app.SkipFetch,
+		"skip-fetch", false,
+		"skip fetching files via git; requires valid files in the output directory")
+	fs.BoolVar(
+		&app.SkipDeploy,
+		"skip-deploy", false,
+		"skip applying the manifests to kubectl")
+
 	err := fs.Parse(args)
 	if err != nil {
 		return 2
