@@ -6,11 +6,10 @@ settings:
   retry-count: 3
   template-values:
     - key: clusterDomain
-      value: test.rebuy.de
+      value: main.cloud.rebuy.loc
 services:
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /dns
-    branch: CLOUD-352
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /elasticsearch
   - repo: github.com/rebuy-de/cloud-infrastructure
