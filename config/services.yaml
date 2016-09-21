@@ -1,5 +1,5 @@
 settings:
-  kubeconfig: /home/ptroc/.kube/config
+  kubeconfig: ~/.kube/kubeconfig.yml
   output: ./output
   sleep: 1s
   retry-sleep: 250ms
