@@ -1,5 +1,5 @@
 settings:
-  kubeconfig: ~/config/kubeconfig.yaml
+  kubeconfig: ~/.kube/kubeconfig.yml
   output: ./output
   sleep: 1s
   retry-sleep: 250ms
@@ -28,10 +28,11 @@ services:
     path: /kubernetes/manifests
     branch: cloud-350
   - repo: github.com/rebuy-de/green-web
-    path: /kubernetes/manifests
+    path: /deployment/k8s
     branch: dockerize
   - repo: github.com/rebuy-de/blue-web
-    path: /deployment/k8s/manifests
+    path: /deployment/k8s
+    branch: k8s-build
   - repo: github.com/rebuy-de/my-web
+    path: /deployment/k8s
     branch: CLOUD-424-dockerize
-    path: deployment/k8s/manifests
