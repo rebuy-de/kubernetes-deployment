@@ -13,8 +13,8 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/util"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 type testKubectl struct {
@@ -78,12 +78,12 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 
 	cleanup = createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bish"),
-		"master", "/deployment/kubernetes",
+		"master", "/deployment/k8s",
 		"bish-a.yml", "bish-b.yml", "bish-c.yaml", "bish-d.txt", "foo/bish-e.yml")
 
 	cleanup = createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bash"),
-		"special", "/deployment/kubernetes",
+		"special", "/deployment/k8s",
 		"bash-a.yml", "bash-b.yml", "bash-c.yaml", "bash-d.txt", "foo/bash-e.yml")
 
 	cleanup = createTestGitRepo(t,

@@ -14,7 +14,7 @@ func TestClean(t *testing.T) {
 			Service{
 				Name:       "something",
 				Repository: "git@github.com:rebuy-de/something.git",
-				Path:       "/deployment/kubernetes",
+				Path:       "/deployment/k8s",
 				Branch:     "master",
 			},
 		},
@@ -25,7 +25,7 @@ func TestClean(t *testing.T) {
 			Service{
 				Name:       "http:--veryspecial.com-repos-foo",
 				Repository: "http://veryspecial.com/repos/foo",
-				Path:       "/deployment/kubernetes",
+				Path:       "/deployment/k8s",
 				Branch:     "master",
 			},
 		},
@@ -37,7 +37,7 @@ func TestClean(t *testing.T) {
 			Service{
 				Name:       "blubber-special",
 				Repository: "git@github.com:rebuy-de/blubber.git",
-				Path:       "/deployment/kubernetes",
+				Path:       "/deployment/k8s",
 				Branch:     "special",
 			},
 		},

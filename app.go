@@ -11,28 +11,28 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/templates"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"github.com/rebuy-de/kubernetes-deployment/templates"
 )
 
 type App struct {
-	KubectlBuilder       func(kubeconfig *string) (kubernetes.API, error)
-	Kubectl              kubernetes.API
-	ProjectConfigPath    string
-	LocalConfigPath      string
-	OutputPath           string
+	KubectlBuilder    func(kubeconfig *string) (kubernetes.API, error)
+	Kubectl           kubernetes.API
+	ProjectConfigPath string
+	LocalConfigPath   string
+	OutputPath        string
 
 	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
 
-	RetrySleep           time.Duration
-	RetryCount           int
+	RetrySleep time.Duration
+	RetryCount int
 
-	SkipShuffle          bool
-	SkipFetch            bool
-	SkipDeploy           bool
+	SkipShuffle bool
+	SkipFetch   bool
+	SkipDeploy  bool
 
-	Errors               []error
+	Errors []error
 }
 
 const templatesSubfolder = "templates"
@@ -282,6 +282,9 @@ func (app *App) DeployService(service *settings.Service) error {
 }
 
 func (app *App) DisplayErrors() {
+	if len(app.Errors) == 0 {
+		return
+	}
 
 	fmt.Fprintf(os.Stderr, "\nError(s) occured:\n")
 	for i, err := range app.Errors {
