@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+
 	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
@@ -74,5 +75,6 @@ func (g *Git) PullShallow(branch string) error {
 
 func (g *Git) SetCheckoutPath(dir string) error {
 	infoFile := path.Join(g.Directory, ".git", "info", "sparse-checkout")
+	log.Printf("Writing '%s' to %s", dir, infoFile)
 	return ioutil.WriteFile(infoFile, []byte(dir), 0644)
 }
