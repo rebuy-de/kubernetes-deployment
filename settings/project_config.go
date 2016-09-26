@@ -72,8 +72,10 @@ func (c *ProjectConfig) MergeConfig(localConfig *ProjectConfig) {
 		tempMap[templateValue.Key] = templateValue.Value
 	}
 
-	for _, templateValue := range *localConfig.Settings.TemplateValues {
-		tempMap[templateValue.Key] = templateValue.Value
+	if localConfig.Settings.TemplateValues != nil {
+		for _, templateValue := range *localConfig.Settings.TemplateValues {
+			tempMap[templateValue.Key] = templateValue.Value
+		}
 	}
 
 	c.Settings.TemplateValuesMap = tempMap
