@@ -115,4 +115,15 @@ func TestMergeConfig_templateValues(t *testing.T) {
 	util.AssertStringEquals(t, "unit-test.rebuy.de", pc_default.Settings.TemplateValuesMap["clusterDomain"], "clusterDomainValue")
 }
 
+func TestMergeConfig_emptyLocalTemplateValues(t *testing.T) {
+	pc_default, err := ReadProjectConfigFrom("../config/services.yaml")
+	util.AssertNoError(t, err)
+	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	util.AssertNoError(t, err)
+	pc_local.Settings.TemplateValues = nil
+	pc_default.MergeConfig(pc_local)
+	util.AssertStringEquals(t, "main.cloud.rebuy.loc", pc_default.Settings.TemplateValuesMap["clusterDomain"], "clusterDomainValue")
+}
+
+
 
