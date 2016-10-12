@@ -24,10 +24,11 @@ services:
     path: /zookeeper
   - repo: github.com/rebuy-de/cloud-infrastructure
     path: /kube-dashboard
+  - repo: github.com/rebuy-de/cloud-infrastructure
+    path: /heapster
   - repo: github.com/rebuy-de/solr-management-silo
     branch: cloud-350
   - repo: github.com/rebuy-de/green-web
     branch: dockerize
   - repo: github.com/rebuy-de/blue-web
   - repo: github.com/rebuy-de/my-web
-    branch: CLOUD-424-dockerize
