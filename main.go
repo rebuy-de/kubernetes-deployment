@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	version = "unknown"
+	version                  = "unknown"
 	defaultProjectConfigPath = "config/services.yaml"
 )
 

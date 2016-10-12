@@ -3,8 +3,8 @@ package util
 import (
 	"io/ioutil"
 	"os"
-	"testing"
 	"strings"
+	"testing"
 	"time"
 )
 
@@ -90,7 +90,6 @@ func AssertStringContains(t *testing.T, haystack string, needle string, msg stri
 		t.FailNow()
 	}
 }
-
 
 func AssertStringEquals(t *testing.T, expected string, tested string, msg string) {
 	if expected != tested {
