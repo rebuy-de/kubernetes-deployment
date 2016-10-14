@@ -1,9 +1,8 @@
 package git
 
 import (
-	"testing"
 	"github.com/rebuy-de/kubernetes-deployment/util"
-
+	"testing"
 )
 
 func testCreateTempGitDir(t *testing.T) (*Git, func()) {
@@ -18,4 +17,3 @@ func testCreateTempGitDir(t *testing.T) (*Git, func()) {
 
 	return git, tempDirDefer
 }
-

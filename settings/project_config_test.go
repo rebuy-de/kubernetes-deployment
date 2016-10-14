@@ -1,8 +1,8 @@
 package settings
 
 import (
-	"testing"
 	"github.com/rebuy-de/kubernetes-deployment/util"
+	"testing"
 	"time"
 )
 
@@ -53,7 +53,7 @@ func TestMergeConfig_Sleep(t *testing.T) {
 	util.AssertNoError(t, err)
 	*pc_local.Settings.Sleep = 1000 * time.Second
 	pc_default.MergeConfig(pc_local)
-	util.AssertDurationEquals(t, 1000 * time.Second, *pc_default.Settings.Sleep, "Sleep")
+	util.AssertDurationEquals(t, 1000*time.Second, *pc_default.Settings.Sleep, "Sleep")
 }
 
 func TestMergeConfig_Sleep_nill(t *testing.T) {
@@ -63,7 +63,7 @@ func TestMergeConfig_Sleep_nill(t *testing.T) {
 	util.AssertNoError(t, err)
 	pc_local.Settings.Sleep = nil
 	pc_default.MergeConfig(pc_local)
-	util.AssertDurationEquals(t, 1 * time.Second, *pc_default.Settings.Sleep, "Sleep")
+	util.AssertDurationEquals(t, 1*time.Second, *pc_default.Settings.Sleep, "Sleep")
 }
 
 func TestMergeConfig_RetrySleep(t *testing.T) {
@@ -73,7 +73,7 @@ func TestMergeConfig_RetrySleep(t *testing.T) {
 	util.AssertNoError(t, err)
 	*pc_local.Settings.RetrySleep = 2000 * time.Second
 	pc_default.MergeConfig(pc_local)
-	util.AssertDurationEquals(t, 2000 * time.Second, *pc_default.Settings.RetrySleep, "RetrySleep")
+	util.AssertDurationEquals(t, 2000*time.Second, *pc_default.Settings.RetrySleep, "RetrySleep")
 }
 
 func TestMergeConfig_RetrySleep_nill(t *testing.T) {
@@ -83,7 +83,7 @@ func TestMergeConfig_RetrySleep_nill(t *testing.T) {
 	util.AssertNoError(t, err)
 	pc_local.Settings.RetrySleep = nil
 	pc_default.MergeConfig(pc_local)
-	util.AssertDurationEquals(t, 250 * time.Millisecond, *pc_default.Settings.RetrySleep, "RetrySleep")
+	util.AssertDurationEquals(t, 250*time.Millisecond, *pc_default.Settings.RetrySleep, "RetrySleep")
 }
 
 func TestMergeConfig_RetryCount(t *testing.T) {
@@ -124,6 +124,3 @@ func TestMergeConfig_emptyLocalTemplateValues(t *testing.T) {
 	pc_default.MergeConfig(pc_local)
 	util.AssertStringEquals(t, "main.cloud.rebuy.loc", pc_default.Settings.TemplateValuesMap["clusterDomain"], "clusterDomainValue")
 }
-
-
-

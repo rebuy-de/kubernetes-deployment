@@ -1,10 +1,10 @@
 package git
 
 import (
+	"github.com/rebuy-de/kubernetes-deployment/util"
 	"os/exec"
 	"path"
 	"testing"
-	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
 func TestGitExec(t *testing.T) {
