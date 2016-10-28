@@ -29,6 +29,5 @@ services:
   - repo: github.com/rebuy-de/solr-management-silo
     branch: cloud-350
   - repo: github.com/rebuy-de/green-web
-    branch: dockerize
   - repo: github.com/rebuy-de/blue-web
   - repo: github.com/rebuy-de/my-web
