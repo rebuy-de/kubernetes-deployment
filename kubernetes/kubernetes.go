@@ -2,9 +2,10 @@ package kubernetes
 
 import (
 	"io"
-	"log"
 	"os/exec"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/rebuy-de/kubernetes-deployment/util"
 )
@@ -29,20 +30,23 @@ func (k *Kubernetes) Exec(args ...string) (out []byte, err error) {
 		config = []string{"--kubeconfig=" + k.Kubeconfig}
 	}
 	config = append(config, args...)
-	log.Printf("$ kubectl %s", strings.Join(config, " "))
+	log.Infof("$ kubectl %s", strings.Join(config, " "))
 	cmd := exec.Command(k.KubectlPath, config...)
 
 	stderr, err = cmd.StderrPipe()
 	if err != nil {
 		return out, err
 	}
-	go util.PipeToLog("!", stderr)
+	go util.PipeToLogrus(log.WithFields(log.Fields{
+		"args":   cmd.Args,
+		"stream": "stderr",
+	}), stderr)
 
 	out, err = cmd.Output()
 	if err != nil {
 		return out, err
 	}
-	log.Printf("  %s", out)
+	log.Debugf("  %s", out)
 
 	return out, err
 }

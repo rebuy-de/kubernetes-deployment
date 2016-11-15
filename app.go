@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
@@ -102,21 +103,21 @@ func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
 	config.Settings.SkipFetch = &app.SkipFetch
 	config.Settings.SkipDeploy = &app.SkipDeploy
 
-	log.Printf("Read the following project configuration:\n%s", config)
+	log.Debugf("Read the following project configuration:\n%s", config)
 
 	config.Services.Clean()
 
 	if *config.Settings.SkipShuffle {
-		log.Printf("Skip shuffeling service order.")
+		log.Infof("Skip shuffeling service order.")
 	} else {
-		log.Printf("Shuffling service list")
+		log.Infof("Shuffling service list")
 		config.Services.Shuffle()
 	}
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
 
 	if !*config.Settings.SkipFetch {
-		log.Printf("Wiping output directory '%s'!", *config.Settings.Output)
+		log.Warnf("Wiping output directory '%s'!", *config.Settings.Output)
 		err := os.RemoveAll(*config.Settings.Output)
 		if err != nil {
 			return nil, err
@@ -129,7 +130,7 @@ func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
 	}
 
 	projectOutputPath := path.Join(*config.Settings.Output, "config.yml")
-	log.Printf("Writing applying configuration to %s", projectOutputPath)
+	log.Debugf("Writing applying configuration to %s", projectOutputPath)
 	err = config.WriteTo(projectOutputPath)
 	if err != nil {
 		return nil, err
@@ -139,7 +140,7 @@ func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
 
 func (app *App) FetchServices(config *settings.ProjectConfig) error {
 	if app.SkipFetch {
-		log.Printf("Skip fetching manifests via git.")
+		log.Warn("Skip fetching manifests via git.")
 		return nil
 	}
 
@@ -180,7 +181,7 @@ func (app *App) FetchService(service *settings.Service, config *settings.Project
 	for _, manifest := range manifests {
 		name := path.Base(manifest)
 		target := path.Join(outputPath, name)
-		log.Printf("Copying manifest to '%s'", target)
+		log.Infof("Copying manifest to '%s'", target)
 
 		err := CopyFile(manifest, target)
 		if err != nil {
@@ -195,7 +196,7 @@ func (app *App) RenderTemplates(config *settings.ProjectConfig) error {
 	for _, service := range *config.Services {
 		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
 		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
-		log.Printf("Create folder '%s'", manifestPath)
+		log.Debugf("Create folder '%s'", manifestPath)
 
 		err := os.MkdirAll(manifestPath, 0755)
 		if err != nil {
@@ -218,7 +219,7 @@ func (app *App) renderTemplate(manifestInputFile string, manifestPath string, co
 	_, manifestFileName := filepath.Split(manifestInputFile)
 
 	manifestOutputFile := path.Join(manifestPath, manifestFileName)
-	log.Printf("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
+	log.Infof("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
 	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
 	if err != nil {
 		return err
@@ -229,12 +230,12 @@ func (app *App) renderTemplate(manifestInputFile string, manifestPath string, co
 func (app *App) DeployServices(config *settings.ProjectConfig) error {
 	for i, service := range *config.Services {
 		if i != 0 && app.SleepInterval > 0 {
-			log.Printf("Sleeping %v ...", app.SleepInterval)
+			log.Infof("Sleeping %v ...", app.SleepInterval)
 			time.Sleep(app.SleepInterval)
 		}
 
 		if app.SkipDeploy {
-			log.Printf("Skip deploying manifests to Kubernetes.")
+			log.Warn("Skip deploying manifests to Kubernetes.")
 		} else {
 			err := app.DeployService(service)
 			if err != nil {
@@ -262,13 +263,13 @@ func (app *App) DeployService(service *settings.Service) error {
 			return err
 		}
 
-		log.Printf("Applying manifest '%s'", manifestInputFile)
+		log.Infof("Applying manifest '%s'", manifestInputFile)
 		err := app.Retry(func() error {
 			_, err := app.Kubectl.Apply(manifestInputFile)
 			return err
 		})
 		if err != nil && app.IgnoreDeployFailures {
-			log.Printf("Ignoring failed deployment of %s", service.Name)
+			log.Errorf("Ignoring failed deployment of %s", service.Name)
 			app.Errors = append(app.Errors,
 				fmt.Errorf("Deployment of '%s' in service '%s' failed: %v",
 					manifestInputFile, service.Name, err),

@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 type Retryer func() error
@@ -18,10 +19,10 @@ func Retry(count int, wait time.Duration, task Retryer) error {
 		}
 		left := count - i - 1
 		if left > 0 {
-			log.Printf("Task failed. %d retries left. Retrying in %v.", left, wait)
+			log.Warnf("Task failed. %d retries left. Retrying in %v.", left, wait)
 			time.Sleep(wait)
 		} else {
-			log.Printf("Task failed. No more retries left.")
+			log.Error("Task failed. No more retries left.")
 		}
 	}
 
