@@ -5,19 +5,20 @@ import (
 	"os"
 	"path"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
-func (app *App) FetchServices(config *settings.ProjectConfig) error {
+func FetchServicesCommand(app *App) error {
 	if app.SkipFetch {
 		log.Warn("Skip fetching manifests via git.")
 		return nil
 	}
 
-	for _, service := range *config.Services {
+	for _, service := range *app.Config.Services {
 		err := app.Retry(func() error {
-			return app.FetchService(service, config)
+			return app.FetchService(service, app.Config)
 		})
 		if err != nil {
 			return err

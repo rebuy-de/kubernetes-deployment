@@ -112,6 +112,11 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 
 	kubectlMock := new(testKubectl)
 
+	commands, err := GetCommands("all")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	return &App{
 		KubectlBuilder: func(*string) (kubernetes.API, error) {
 			return kubectlMock, nil
@@ -126,21 +131,24 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		RetryCount: 3,
 
 		SkipShuffle: false,
-		SkipFetch:   false,
-		SkipDeploy:  false,
+		Commands:    commands,
 	}, kubectlMock, cleanup
 }
 
 func TestSkipAll(t *testing.T) {
+	var err error
+
 	app, _, cleanup := prepareTestEnvironment(t)
 	defer cleanup()
 
 	app.SkipShuffle = true
-	app.SkipFetch = true
-	app.SkipDeploy = true
 	app.IgnoreDeployFailures = false
+	app.Commands, err = GetCommands("all")
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	err := app.Run()
+	err = app.Run()
 	if err != nil {
 		t.Fatal(err)
 	}

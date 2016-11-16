@@ -5,11 +5,12 @@ import (
 	"path"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
 )
 
-func (app *App) DeployServices(config *settings.ProjectConfig) error {
-	for i, service := range *config.Services {
+func DeployServicesCommand(app *App) error {
+	for i, service := range *app.Config.Services {
 		if i != 0 && app.SleepInterval > 0 {
 			log.Infof("Sleeping %v ...", app.SleepInterval)
 			time.Sleep(app.SleepInterval)

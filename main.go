@@ -44,14 +44,6 @@ func Main(args ...string) int {
 		&app.SkipShuffle,
 		"skip-shuffle", false,
 		"skip shuffling of project order")
-	fs.BoolVar(
-		&app.SkipFetch,
-		"skip-fetch", false,
-		"skip fetching files via git; requires valid files in the output directory")
-	fs.BoolVar(
-		&app.SkipDeploy,
-		"skip-deploy", false,
-		"skip applying the manifests to kubectl")
 
 	err := fs.Parse(args)
 	if err != nil {
@@ -61,6 +53,17 @@ func Main(args ...string) int {
 	if printVersion {
 		fmt.Printf("kubernetes-deployment version %s\n", version)
 		return 0
+	}
+
+	app.Commands, err = GetCommands(fs.Args()...)
+	if err != nil {
+		fmt.Println(err)
+		return 2
+	}
+
+	if len(app.Commands) == 0 {
+		fmt.Printf("You have to specify at least one of these commands: %v\n", CommandOrder)
+		return 2
 	}
 
 	app.KubectlBuilder = func(kubeconfig *string) (kubernetes.API, error) {

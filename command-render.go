@@ -5,14 +5,14 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/cloudflare/cfssl/log"
+	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
 	"github.com/rebuy-de/kubernetes-deployment/templates"
 )
 
-func (app *App) RenderTemplates(config *settings.ProjectConfig) error {
+func RenderTemplatesCommand(app *App) error {
 
-	for _, service := range *config.Services {
+	for _, service := range *app.Config.Services {
 		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
 		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
 		log.Debugf("Create folder '%s'", manifestPath)
@@ -25,7 +25,7 @@ func (app *App) RenderTemplates(config *settings.ProjectConfig) error {
 		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
 
 		for _, manifestInputFile := range manifests {
-			err = app.renderTemplate(manifestInputFile, manifestPath, config)
+			err = app.renderTemplate(manifestInputFile, manifestPath, app.Config)
 			if err != nil {
 				return err
 			}
