@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/rebuy-de/kubernetes-deployment/git"
 	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
 	"github.com/rebuy-de/kubernetes-deployment/settings"
-	"github.com/rebuy-de/kubernetes-deployment/templates"
 )
 
 type App struct {
@@ -136,150 +132,6 @@ func (app *App) PrepareConfig() (*settings.ProjectConfig, error) {
 		return nil, err
 	}
 	return config, nil
-}
-
-func (app *App) FetchServices(config *settings.ProjectConfig) error {
-	if app.SkipFetch {
-		log.Warn("Skip fetching manifests via git.")
-		return nil
-	}
-
-	for _, service := range *config.Services {
-		err := app.Retry(func() error {
-			return app.FetchService(service, config)
-		})
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (app *App) FetchService(service *settings.Service, config *settings.ProjectConfig) error {
-	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
-	if err != nil {
-		return err
-	}
-	defer os.RemoveAll(tempDir)
-
-	err = git.SparseCheckout(tempDir, service.Repository, service.Branch, service.Path)
-	if err != nil {
-		return err
-	}
-
-	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
-	if err != nil {
-		return err
-	}
-
-	outputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
-	err = os.MkdirAll(outputPath, 0755)
-	if err != nil {
-		return err
-	}
-
-	for _, manifest := range manifests {
-		name := path.Base(manifest)
-		target := path.Join(outputPath, name)
-		log.Infof("Copying manifest to '%s'", target)
-
-		err := CopyFile(manifest, target)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (app *App) RenderTemplates(config *settings.ProjectConfig) error {
-
-	for _, service := range *config.Services {
-		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
-		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
-		log.Debugf("Create folder '%s'", manifestPath)
-
-		err := os.MkdirAll(manifestPath, 0755)
-		if err != nil {
-			return err
-		}
-
-		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
-
-		for _, manifestInputFile := range manifests {
-			err = app.renderTemplate(manifestInputFile, manifestPath, config)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func (app *App) renderTemplate(manifestInputFile string, manifestPath string, config *settings.ProjectConfig) error {
-	_, manifestFileName := filepath.Split(manifestInputFile)
-
-	manifestOutputFile := path.Join(manifestPath, manifestFileName)
-	log.Infof("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
-	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (app *App) DeployServices(config *settings.ProjectConfig) error {
-	for i, service := range *config.Services {
-		if i != 0 && app.SleepInterval > 0 {
-			log.Infof("Sleeping %v ...", app.SleepInterval)
-			time.Sleep(app.SleepInterval)
-		}
-
-		if app.SkipDeploy {
-			log.Warn("Skip deploying manifests to Kubernetes.")
-		} else {
-			err := app.DeployService(service)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func (app *App) DeployService(service *settings.Service) error {
-	manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
-	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
-	if err != nil {
-		return err
-	}
-
-	if len(manifests) == 0 {
-		return fmt.Errorf("Did not find any manifest for '%s' in '%s'",
-			service.Name, manifestPath)
-	}
-
-	for _, manifestInputFile := range manifests {
-		if err != nil {
-			return err
-		}
-
-		log.Infof("Applying manifest '%s'", manifestInputFile)
-		err := app.Retry(func() error {
-			_, err := app.Kubectl.Apply(manifestInputFile)
-			return err
-		})
-		if err != nil && app.IgnoreDeployFailures {
-			log.Errorf("Ignoring failed deployment of %s", service.Name)
-			app.Errors = append(app.Errors,
-				fmt.Errorf("Deployment of '%s' in service '%s' failed: %v",
-					manifestInputFile, service.Name, err),
-			)
-		}
-		if err != nil && !app.IgnoreDeployFailures {
-			return err
-		}
-	}
-	return nil
 }
 
 func (app *App) DisplayErrors() {
