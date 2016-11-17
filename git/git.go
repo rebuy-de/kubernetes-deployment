@@ -2,11 +2,11 @@ package git
 
 import (
 	"io/ioutil"
-	"log"
 	"os/exec"
 	"path"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/util"
 )
 
@@ -45,15 +45,23 @@ func (g *Git) Exec(args ...string) error {
 	if err != nil {
 		return err
 	}
-	go util.PipeToLog(" ", stdout)
+	go util.PipeToLogrus(log.WithFields(log.Fields{
+		"args":      cmd.Args,
+		"directory": g.Directory,
+		"stream":    "stdout",
+	}), stdout)
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return err
 	}
-	go util.PipeToLog("!", stderr)
+	go util.PipeToLogrus(log.WithFields(log.Fields{
+		"args":      cmd.Args,
+		"directory": g.Directory,
+		"stream":    "stderr",
+	}), stderr)
 
-	log.Printf("$ git %s", strings.Join(args, " "))
+	log.Infof("$ git %s", strings.Join(args, " "))
 	return cmd.Run()
 }
 
@@ -75,6 +83,6 @@ func (g *Git) PullShallow(branch string) error {
 
 func (g *Git) SetCheckoutPath(dir string) error {
 	infoFile := path.Join(g.Directory, ".git", "info", "sparse-checkout")
-	log.Printf("Writing '%s' to %s", dir, infoFile)
+	log.Infof("Writing '%s' to %s", dir, infoFile)
 	return ioutil.WriteFile(infoFile, []byte(dir), 0644)
 }
