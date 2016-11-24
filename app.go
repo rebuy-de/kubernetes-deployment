@@ -31,6 +31,7 @@ type App struct {
 	SkipShuffle bool
 	SkipFetch   bool
 	SkipDeploy  bool
+	Target      string
 
 	Errors []error
 }
@@ -101,6 +102,24 @@ func (app *App) PrepareConfig() error {
 	} else {
 		log.Infof("Shuffling service list")
 		config.Services.Shuffle()
+	}
+
+	if app.Target != "" {
+		services := config.Services
+		config.Services = nil
+
+		for _, service := range *services {
+			if service.Name == app.Target {
+				config.Services = &settings.Services{
+					service,
+				}
+				break
+			}
+		}
+
+		if config.Services == nil {
+			return fmt.Errorf("Target '%s' not found.", app.Target)
+		}
 	}
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
