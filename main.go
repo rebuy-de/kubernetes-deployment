@@ -44,6 +44,10 @@ func Main(args ...string) int {
 		&app.SkipShuffle,
 		"skip-shuffle", false,
 		"skip shuffling of project order")
+	fs.StringVar(
+		&app.Target,
+		"target", "",
+		"only deploy this project")
 
 	err := fs.Parse(args)
 	if err != nil {
