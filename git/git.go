@@ -1,9 +1,11 @@
 package git
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
@@ -35,6 +37,31 @@ func New(directory string) (*Git, error) {
 
 	return git, nil
 
+}
+
+func (g *Git) CommitID() (string, error) {
+	cmd := exec.Command(g.GitPath, "rev-parse", "--short", "HEAD")
+	cmd.Dir = g.Directory
+
+	log.Infof("$ git %s", strings.Join(cmd.Args, " "))
+
+	raw, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", err
+	}
+
+	id := strings.ToLower(strings.TrimSpace(string(raw)))
+
+	matched, err := regexp.MatchString("[0-9a-f]{7}", id)
+	if err != nil {
+		return "", err
+	}
+
+	if !matched {
+		return "", fmt.Errorf("Invalid return value from git: %s", id)
+	}
+
+	return id, nil
 }
 
 func (g *Git) Exec(args ...string) error {
