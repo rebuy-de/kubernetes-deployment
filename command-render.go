@@ -39,7 +39,7 @@ func (app *App) renderTemplate(manifestInputFile string, manifestPath string, co
 
 	manifestOutputFile := path.Join(manifestPath, manifestFileName)
 	log.Infof("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
-	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
+	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValues)
 	if err != nil {
 		return err
 	}

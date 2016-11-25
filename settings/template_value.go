@@ -1,6 +1,17 @@
 package settings
 
-type TemplateValue struct {
-	Key   string `yaml:"key"`
-	Value string `yaml:"value"`
+type TemplateValue map[string]string
+
+func (tv TemplateValue) Merge(other TemplateValue) TemplateValue {
+	result := make(TemplateValue)
+
+	for k, v := range tv {
+		result[k] = v
+	}
+
+	for k, v := range other {
+		result[k] = v
+	}
+
+	return result
 }
