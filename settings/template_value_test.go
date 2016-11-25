@@ -49,4 +49,16 @@ func TestTemplateValueMerge(t *testing.T) {
 		t.Fail()
 	}
 
+	var tvNil TemplateValues
+	tvNilG := tvNil.Merge(tv1)
+
+	if !reflect.DeepEqual(tv21, tv21g) {
+		t.Errorf("Generated values are wrong for merging tv1 into nil:")
+		t.Errorf("  tvNil:     %#v", tvNil)
+		t.Errorf("  tv1:       %#v", tv1)
+		t.Errorf("  expected:  %#v", tv1)
+		t.Errorf("  generated: %#v", tvNilG)
+		t.Fail()
+	}
+
 }
