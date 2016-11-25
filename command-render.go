@@ -11,6 +11,12 @@ import (
 )
 
 func RenderTemplatesCommand(app *App) error {
+	var err error
+
+	err = app.wipeDirectory(renderedSubfolder)
+	if err != nil {
+		return err
+	}
 
 	for _, service := range *app.Config.Services {
 		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
