@@ -1,9 +1,9 @@
 package settings
 
-type TemplateValue map[string]string
+type TemplateValues map[string]string
 
-func (tv TemplateValue) Merge(other TemplateValue) TemplateValue {
-	result := make(TemplateValue)
+func (tv TemplateValues) Merge(other TemplateValues) TemplateValues {
+	result := make(TemplateValues)
 
 	for k, v := range tv {
 		result[k] = v

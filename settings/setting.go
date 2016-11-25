@@ -10,5 +10,5 @@ type Settings struct {
 	RetrySleep           *time.Duration `yaml:"retry-sleep"`
 	RetryCount           *int           `yaml:"retry-count"`
 	IgnoreDeployFailures *bool          `yaml:"ignore-deploy-failures"`
-	TemplateValues       TemplateValue  `yaml:"template-values"`
+	TemplateValues       TemplateValues `yaml:"template-values"`
 }

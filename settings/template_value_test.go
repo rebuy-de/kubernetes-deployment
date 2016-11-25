@@ -6,23 +6,23 @@ import (
 )
 
 func TestTemplateValueMerge(t *testing.T) {
-	tv1 := TemplateValue{
+	tv1 := TemplateValues{
 		"bish": "a",
 		"bash": "foo",
 	}
 
-	tv2 := TemplateValue{
+	tv2 := TemplateValues{
 		"bosh": "blubber",
 		"bash": "bar",
 	}
 
-	tv12 := TemplateValue{
+	tv12 := TemplateValues{
 		"bosh": "blubber",
 		"bash": "bar",
 		"bish": "a",
 	}
 
-	tv21 := TemplateValue{
+	tv21 := TemplateValues{
 		"bosh": "blubber",
 		"bash": "foo",
 		"bish": "a",
