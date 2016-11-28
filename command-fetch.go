@@ -11,9 +11,21 @@ import (
 )
 
 func FetchServicesCommand(app *App) error {
+	var err error
+
 	if app.SkipFetch {
 		log.Warn("Skip fetching manifests via git.")
 		return nil
+	}
+
+	err = app.wipeDirectory(templatesSubfolder)
+	if err != nil {
+		return err
+	}
+
+	err = app.wipeDirectory(renderedSubfolder)
+	if err != nil {
+		return err
 	}
 
 	for _, service := range *app.Config.Services {
@@ -31,6 +43,8 @@ func FetchServicesCommand(app *App) error {
 }
 
 func (app *App) FetchService(service *settings.Service, config *settings.ProjectConfig) error {
+	var err error
+
 	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
 	if err != nil {
 		return err

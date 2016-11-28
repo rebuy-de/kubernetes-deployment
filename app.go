@@ -124,12 +124,6 @@ func (app *App) PrepareConfig() error {
 
 	log.Printf("Deploying with this project configuration:\n%s", config)
 
-	log.Warnf("Wiping output directory '%s'!", *config.Settings.Output)
-	err = os.RemoveAll(*config.Settings.Output)
-	if err != nil {
-		return err
-	}
-
 	err = os.MkdirAll(*config.Settings.Output, 0755)
 	if err != nil {
 		return err
@@ -155,4 +149,16 @@ func (app *App) DisplayErrors() {
 	for i, err := range app.Errors {
 		fmt.Fprintf(os.Stderr, "    #%2d: %v\n", i, err)
 	}
+}
+
+func (app *App) wipeDirectory(dir string) error {
+	targetDirectory := path.Join(app.OutputPath, dir)
+	log.Infof("Wiping directory %s", targetDirectory)
+
+	err := os.RemoveAll(targetDirectory)
+	if err != nil {
+		return err
+	}
+
+	return os.MkdirAll(targetDirectory, 0755)
 }
