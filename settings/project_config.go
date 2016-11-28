@@ -2,8 +2,9 @@ package settings
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
 type ProjectConfig struct {
@@ -66,17 +67,7 @@ func (c *ProjectConfig) MergeConfig(localConfig *ProjectConfig) {
 		c.Settings.RetryCount = localConfig.Settings.RetryCount
 	}
 
-	tempMap := make(map[string]string)
-
-	for _, templateValue := range *c.Settings.TemplateValues {
-		tempMap[templateValue.Key] = templateValue.Value
-	}
-
 	if localConfig.Settings.TemplateValues != nil {
-		for _, templateValue := range *localConfig.Settings.TemplateValues {
-			tempMap[templateValue.Key] = templateValue.Value
-		}
+		c.Settings.TemplateValues = c.Settings.TemplateValues.Merge(localConfig.Settings.TemplateValues)
 	}
-
-	c.Settings.TemplateValuesMap = tempMap
 }

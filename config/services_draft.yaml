@@ -5,5 +5,4 @@ settings:
   retry-sleep: 250ms
   retry-count: 3
   template-values:
-    - key: clusterDomain
-      value: test.rebuy.de
+    clusterDomain: test.rebuy.de

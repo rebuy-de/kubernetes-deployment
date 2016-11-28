@@ -5,8 +5,7 @@ settings:
   retry-sleep: 250ms
   retry-count: 3
   template-values:
-    - key: clusterDomain
-      value: main.cloud.example.org
+    clusterDomain: main.cloud.example.org
 services:
   - repo: repos/bish
   - repo: repos/bash

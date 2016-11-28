@@ -25,7 +25,7 @@ func RenderTemplatesCommand(app *App) error {
 		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
 
 		for _, manifestInputFile := range manifests {
-			err = app.renderTemplate(manifestInputFile, manifestPath, app.Config)
+			err = app.renderTemplate(manifestInputFile, manifestPath, app.Config.Settings.TemplateValues.Merge(service.TemplateValues))
 			if err != nil {
 				return err
 			}
@@ -34,12 +34,12 @@ func RenderTemplatesCommand(app *App) error {
 	return nil
 }
 
-func (app *App) renderTemplate(manifestInputFile string, manifestPath string, config *settings.ProjectConfig) error {
+func (app *App) renderTemplate(manifestInputFile string, manifestPath string, values settings.TemplateValues) error {
 	_, manifestFileName := filepath.Split(manifestInputFile)
 
 	manifestOutputFile := path.Join(manifestPath, manifestFileName)
 	log.Infof("Templating '%s' to '%s'", manifestInputFile, manifestOutputFile)
-	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, config.Settings.TemplateValuesMap)
+	err := templates.ParseManifestFile(manifestInputFile, manifestOutputFile, values)
 	if err != nil {
 		return err
 	}

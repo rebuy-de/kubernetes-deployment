@@ -1,6 +1,9 @@
 package settings
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestClean(t *testing.T) {
 	var cleantests = []struct {
@@ -60,7 +63,7 @@ func TestClean(t *testing.T) {
 		generated := tt.in
 		generated.Clean()
 
-		if tt.out != generated {
+		if !reflect.DeepEqual(tt.out, generated) {
 			t.Errorf("Test %d failed:", i)
 			t.Errorf("  Input:    %#v", tt.in)
 			t.Errorf("  Output:   %#v", generated)

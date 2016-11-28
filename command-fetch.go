@@ -24,7 +24,10 @@ func FetchServicesCommand(app *App) error {
 			return err
 		}
 	}
-	return nil
+
+	projectOutputPath := path.Join(*app.Config.Settings.Output, "config.yml")
+	log.Debugf("Writing applying configuration to %s", projectOutputPath)
+	return app.Config.WriteTo(projectOutputPath)
 }
 
 func (app *App) FetchService(service *settings.Service, config *settings.ProjectConfig) error {
@@ -34,10 +37,20 @@ func (app *App) FetchService(service *settings.Service, config *settings.Project
 	}
 	defer os.RemoveAll(tempDir)
 
-	err = git.SparseCheckout(tempDir, service.Repository, service.Branch, service.Path)
+	repo, err := git.SparseCheckout(tempDir, service.Repository, service.Branch, service.Path)
 	if err != nil {
 		return err
 	}
+
+	commitID, err := repo.CommitID()
+	if err != nil {
+		return err
+	}
+
+	log.Infof("Checked out %s", commitID)
+	service.TemplateValues = service.TemplateValues.Merge(settings.TemplateValues{
+		"gitCommitID": commitID,
+	})
 
 	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
 	if err != nil {
@@ -60,5 +73,6 @@ func (app *App) FetchService(service *settings.Service, config *settings.Project
 			return err
 		}
 	}
+
 	return nil
 }

@@ -12,10 +12,11 @@ const (
 )
 
 type Service struct {
-	Name       string `yaml:"name,omitempty"`
-	Repository string `yaml:"repo"`
-	Path       string `yaml:"path,omitempty"`
-	Branch     string `yaml:"branch,omitempty"`
+	Name           string         `yaml:"name,omitempty"`
+	Repository     string         `yaml:"repo"`
+	Path           string         `yaml:"path,omitempty"`
+	Branch         string         `yaml:"branch,omitempty"`
+	TemplateValues TemplateValues `yaml:"template-values"`
 }
 
 func (s *Service) Clean() {
