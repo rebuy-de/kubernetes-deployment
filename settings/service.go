@@ -8,7 +8,7 @@ import (
 
 const (
 	DEFAULT_BRANCH = "master"
-	DEFAULT_PATH   = "/deployment/k8s"
+	DEFAULT_PATH   = "deployment/k8s/"
 )
 
 type Service struct {
@@ -33,7 +33,7 @@ func (s *Service) Clean() {
 		s.Repository = fmt.Sprintf("git@github.com:%s.git", base)
 	}
 
-	s.Path = filepath.Clean("/" + s.Path)
+	s.Path = filepath.Clean(strings.Trim(s.Path, "/")) + "/"
 	s.Name = s.GuessName()
 }
 
