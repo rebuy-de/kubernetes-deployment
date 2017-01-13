@@ -57,6 +57,20 @@ func TestClean(t *testing.T) {
 				Branch:     "some-branch",
 			},
 		},
+		{
+			Service{
+				Name:       "project",
+				Repository: "github.com/rebuy-de/project",
+				Branch:     "some-branch",
+				Path:       "/i/dont/care/about/conventions",
+			},
+			Service{
+				Name:       "project",
+				Repository: "git@github.com:rebuy-de/project.git",
+				Path:       "i/dont/care/about/conventions/",
+				Branch:     "some-branch",
+			},
+		},
 	}
 
 	for i, tt := range cleantests {
