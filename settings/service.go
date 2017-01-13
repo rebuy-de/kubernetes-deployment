@@ -34,7 +34,9 @@ func (s *Service) Clean() {
 	}
 
 	s.Path = filepath.Clean(strings.Trim(s.Path, "/")) + "/"
-	s.Name = s.GuessName()
+	if strings.TrimSpace(s.Name) == "" {
+		s.Name = s.GuessName()
+	}
 }
 
 func (s *Service) GuessName() string {
