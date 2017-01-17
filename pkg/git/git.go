@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 type Git struct {

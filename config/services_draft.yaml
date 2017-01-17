@@ -1,8 +1,0 @@
-settings:
-  kubeconfig: /home/USER/.kube/config
-  output: ./output
-  sleep: 1s
-  retry-sleep: 250ms
-  retry-count: 3
-  template-values:
-    clusterDomain: test.rebuy.de

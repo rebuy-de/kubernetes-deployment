@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 func DeployServicesCommand(app *App) error {

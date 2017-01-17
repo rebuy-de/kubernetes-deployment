@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rebuy-de/kubernetes-deployment/git"
-	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
-	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/git"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 type testKubectl struct {
@@ -91,7 +91,7 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
 
-	config, err := settings.ReadProjectConfigFrom("config/services_test.yaml")
+	config, err := settings.ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}

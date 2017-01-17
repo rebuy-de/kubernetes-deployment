@@ -6,7 +6,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 func TestGitExec(t *testing.T) {
