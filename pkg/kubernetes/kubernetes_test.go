@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 const local_k8r_config = "/.kube/config"

@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"io/ioutil"
@@ -6,8 +6,8 @@ import (
 	"path"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/git"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/git"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 func FetchServicesCommand(app *App) error {

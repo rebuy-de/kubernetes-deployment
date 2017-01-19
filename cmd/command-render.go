@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"os"
@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
-	"github.com/rebuy-de/kubernetes-deployment/templates"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 )
 
 func RenderTemplatesCommand(app *App) error {

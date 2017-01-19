@@ -1,12 +1,13 @@
 package git
 
 import (
-	"github.com/rebuy-de/kubernetes-deployment/util"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
 	"time"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 func testCreateDirs(t *testing.T, base string, dirs ...string) {

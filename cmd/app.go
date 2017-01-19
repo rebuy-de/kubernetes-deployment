@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/rebuy-de/kubernetes-deployment/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 type App struct {

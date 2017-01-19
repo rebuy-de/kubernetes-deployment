@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rebuy-de/kubernetes-deployment/util"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
 
 func TestMergeConfig_Kubeconfig(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	*pc_local.Settings.Kubeconfig = "Kubeconfig_DEFAULT"
 	pc_default.MergeConfig(pc_local)
@@ -18,9 +18,9 @@ func TestMergeConfig_Kubeconfig(t *testing.T) {
 }
 
 func TestMergeConfig_Kubeconfig_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.Kubeconfig = nil
 	pc_default.MergeConfig(pc_local)
@@ -28,9 +28,9 @@ func TestMergeConfig_Kubeconfig_nill(t *testing.T) {
 }
 
 func TestMergeConfig_Output(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	*pc_local.Settings.Output = "Output_DEFAULT"
 	pc_default.MergeConfig(pc_local)
@@ -38,9 +38,9 @@ func TestMergeConfig_Output(t *testing.T) {
 }
 
 func TestMergeConfig_Output_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.Output = nil
 	pc_default.MergeConfig(pc_local)
@@ -48,9 +48,9 @@ func TestMergeConfig_Output_nill(t *testing.T) {
 }
 
 func TestMergeConfig_Sleep(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	*pc_local.Settings.Sleep = 1000 * time.Second
 	pc_default.MergeConfig(pc_local)
@@ -58,9 +58,9 @@ func TestMergeConfig_Sleep(t *testing.T) {
 }
 
 func TestMergeConfig_Sleep_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.Sleep = nil
 	pc_default.MergeConfig(pc_local)
@@ -68,9 +68,9 @@ func TestMergeConfig_Sleep_nill(t *testing.T) {
 }
 
 func TestMergeConfig_RetrySleep(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	*pc_local.Settings.RetrySleep = 2000 * time.Second
 	pc_default.MergeConfig(pc_local)
@@ -78,9 +78,9 @@ func TestMergeConfig_RetrySleep(t *testing.T) {
 }
 
 func TestMergeConfig_RetrySleep_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.RetrySleep = nil
 	pc_default.MergeConfig(pc_local)
@@ -88,9 +88,9 @@ func TestMergeConfig_RetrySleep_nill(t *testing.T) {
 }
 
 func TestMergeConfig_RetryCount(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	*pc_local.Settings.RetryCount = 10001
 	pc_default.MergeConfig(pc_local)
@@ -98,9 +98,9 @@ func TestMergeConfig_RetryCount(t *testing.T) {
 }
 
 func TestMergeConfig_RetryCount_nill(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.RetryCount = nil
 	pc_default.MergeConfig(pc_local)
@@ -108,18 +108,18 @@ func TestMergeConfig_RetryCount_nill(t *testing.T) {
 }
 
 func TestMergeConfig_templateValues(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test2.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test2.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_default.MergeConfig(pc_local)
 	util.AssertStringEquals(t, "unit-test.example.org", pc_default.Settings.TemplateValues["clusterDomain"], "clusterDomainValue")
 }
 
 func TestMergeConfig_emptyLocalTemplateValues(t *testing.T) {
-	pc_default, err := ReadProjectConfigFrom("../config/services_test2.yaml")
+	pc_default, err := ReadProjectConfigFrom("test-fixtures/services_test2.yaml")
 	util.AssertNoError(t, err)
-	pc_local, err := ReadProjectConfigFrom("../config/services_test.yaml")
+	pc_local, err := ReadProjectConfigFrom("test-fixtures/services_test.yaml")
 	util.AssertNoError(t, err)
 	pc_local.Settings.TemplateValues = nil
 	pc_default.MergeConfig(pc_local)
