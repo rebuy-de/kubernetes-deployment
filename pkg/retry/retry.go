@@ -1,4 +1,4 @@
-package cmd
+package retry
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ type Retryer func() error
 func Retry(count int, wait time.Duration, task Retryer) error {
 	var err error
 
-	for i := 0; i < count; i++ {
+	for i := 0; i <= count; i++ {
 		err = task()
 		if err == nil {
 			return nil

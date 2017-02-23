@@ -4,29 +4,22 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/retry"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 type App struct {
-	KubectlBuilder    func(kubeconfig *string) (kubernetes.API, error)
-	Kubectl           kubernetes.API
-	ProjectConfigPath string
-	LocalConfigPath   string
-	OutputPath        string
+	KubectlBuilder func(kubeconfig *string) (kubernetes.API, error)
+	Kubectl        kubernetes.API
 
-	Commands []Command
-	Config   *settings.ProjectConfig
+	Goals  []string
+	Config settings.ProjectConfig
 
-	SleepInterval        time.Duration
 	IgnoreDeployFailures bool
-
-	RetrySleep time.Duration
-	RetryCount int
 
 	SkipShuffle bool
 	SkipFetch   bool
@@ -39,23 +32,21 @@ type App struct {
 const templatesSubfolder = "templates"
 const renderedSubfolder = "rendered"
 
-func (app *App) Retry(task Retryer) error {
-	return Retry(app.RetryCount, app.RetrySleep, task)
+func (app *App) Retry(task retry.Retryer) error {
+	return retry.Retry(app.Config.Settings.RetryCount, app.Config.Settings.RetrySleep, task)
 }
 
 func (app *App) Run() error {
-	err := app.PrepareConfig()
+	var err error
+
+	app.Kubectl, err = app.KubectlBuilder(&app.Config.Settings.Kubeconfig)
 	if err != nil {
 		return err
 	}
 
-	app.Kubectl, err = app.KubectlBuilder(app.Config.Settings.Kubeconfig)
-	if err != nil {
-		return err
-	}
-
-	for _, command := range app.Commands {
-		err = command(app)
+	goals, err := GetGoals(app.Goals...)
+	for _, goal := range goals {
+		err = goal(app)
 		if err != nil {
 			return err
 		}
@@ -67,77 +58,47 @@ func (app *App) Run() error {
 }
 
 func (app *App) PrepareConfig() error {
-	config, err := settings.ReadProjectConfigFrom(app.ProjectConfigPath)
-	if err != nil {
-		return err
-	}
+	var err error
 
-	if app.LocalConfigPath != "" {
-		configLoc, err := settings.ReadProjectConfigFrom(app.LocalConfigPath)
-		if err != nil {
-			return err
-		}
+	log.Debugf("Read the following configuration:\n%+v", app.Config)
 
-		config.MergeConfig(configLoc)
-	}
+	app.Config.Services.Clean()
 
-	if err != nil {
-		return err
-	}
-
-	app.OutputPath = *config.Settings.Output
-	app.SleepInterval = *config.Settings.Sleep
-	app.RetrySleep = *config.Settings.RetrySleep
-	app.RetryCount = *config.Settings.RetryCount
-	config.Settings.IgnoreDeployFailures = &app.IgnoreDeployFailures
-
-	log.Debugf("Read the following project configuration:\n%s", config)
-
-	config.Services.Clean()
-
-	fmt.Printf("%#v\n", *config.Settings)
-
-	if config.Settings.SkipShuffle != nil && *config.Settings.SkipShuffle {
+	if app.Config.Settings.SkipShuffle {
 		log.Infof("Skip shuffeling service order.")
 	} else {
 		log.Infof("Shuffling service list")
-		config.Services.Shuffle()
+		app.Config.Services.Shuffle()
 	}
 
 	if app.Target != "" {
-		services := config.Services
-		config.Services = nil
+		services := app.Config.Services
+		app.Config.Services = nil
 
-		for _, service := range *services {
+		for _, service := range services {
 			if service.Name == app.Target {
-				config.Services = &settings.Services{
+				app.Config.Services = settings.Services{
 					service,
 				}
 				break
 			}
 		}
 
-		if config.Services == nil {
+		if app.Config.Services == nil {
 			return fmt.Errorf("Target '%s' not found.", app.Target)
 		}
 	}
 
-	log.Printf("Deploying with this project configuration:\n%s", config)
+	log.Debugf("Deploying with this project configuration:\n%+v", app.Config)
 
-	err = os.MkdirAll(*config.Settings.Output, 0755)
+	err = os.MkdirAll(app.Config.Settings.Output, 0755)
 	if err != nil {
 		return err
 	}
 
-	projectOutputPath := path.Join(*config.Settings.Output, "config.yml")
+	projectOutputPath := path.Join(app.Config.Settings.Output, "config.yml")
 	log.Debugf("Writing applying configuration to %s", projectOutputPath)
-	err = config.WriteTo(projectOutputPath)
-	if err != nil {
-		return err
-	}
-
-	app.Config = config
-	return nil
+	return app.Config.WriteTo(projectOutputPath)
 }
 
 func (app *App) DisplayErrors() {
@@ -152,7 +113,7 @@ func (app *App) DisplayErrors() {
 }
 
 func (app *App) wipeDirectory(dir string) error {
-	targetDirectory := path.Join(app.OutputPath, dir)
+	targetDirectory := path.Join(app.Config.Settings.Output, dir)
 	log.Infof("Wiping directory %s", targetDirectory)
 
 	err := os.RemoveAll(targetDirectory)

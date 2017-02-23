@@ -18,45 +18,45 @@ func TestGetCommands(t *testing.T) {
 		{
 			[]string{"all"},
 			[]string{
-				testGetNameOfFn(FetchServicesCommand),
-				testGetNameOfFn(RenderTemplatesCommand),
-				testGetNameOfFn(DeployServicesCommand),
+				testGetNameOfFn(FetchServicesGoal),
+				testGetNameOfFn(RenderTemplatesGoal),
+				testGetNameOfFn(DeployServicesGoal),
 			},
 		},
 		{
 			[]string{"fetch", "render", "deploy"},
 			[]string{
-				testGetNameOfFn(FetchServicesCommand),
-				testGetNameOfFn(RenderTemplatesCommand),
-				testGetNameOfFn(DeployServicesCommand),
+				testGetNameOfFn(FetchServicesGoal),
+				testGetNameOfFn(RenderTemplatesGoal),
+				testGetNameOfFn(DeployServicesGoal),
 			},
 		},
 		{
 			[]string{"all", "fetch", "render", "deploy"},
 			[]string{
-				testGetNameOfFn(FetchServicesCommand),
-				testGetNameOfFn(RenderTemplatesCommand),
-				testGetNameOfFn(DeployServicesCommand),
+				testGetNameOfFn(FetchServicesGoal),
+				testGetNameOfFn(RenderTemplatesGoal),
+				testGetNameOfFn(DeployServicesGoal),
 			},
 		},
 		{
 			[]string{"deploy", "render", "deploy", "fetch"},
 			[]string{
-				testGetNameOfFn(FetchServicesCommand),
-				testGetNameOfFn(RenderTemplatesCommand),
-				testGetNameOfFn(DeployServicesCommand),
+				testGetNameOfFn(FetchServicesGoal),
+				testGetNameOfFn(RenderTemplatesGoal),
+				testGetNameOfFn(DeployServicesGoal),
 			},
 		},
 		{
 			[]string{"fetch"},
 			[]string{
-				testGetNameOfFn(FetchServicesCommand),
+				testGetNameOfFn(FetchServicesGoal),
 			},
 		},
 	}
 
 	for i, tc := range cases {
-		commands, err := GetCommands(tc.names...)
+		commands, err := GetGoals(tc.names...)
 		if err != nil {
 			t.Errorf("Test case %d failed.", i)
 			t.Errorf("  in:    %v", tc.names)

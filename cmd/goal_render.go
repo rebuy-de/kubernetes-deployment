@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/imdario/mergo"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 )
 
-func RenderTemplatesCommand(app *App) error {
+func RenderTemplatesGoal(app *App) error {
 	var err error
 
 	err = app.wipeDirectory(renderedSubfolder)
@@ -18,9 +18,9 @@ func RenderTemplatesCommand(app *App) error {
 		return err
 	}
 
-	for _, service := range *app.Config.Services {
-		manifestInputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
-		manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
+	for _, service := range app.Config.Services {
+		manifestInputPath := path.Join(app.Config.Settings.Output, templatesSubfolder, service.Name)
+		manifestPath := path.Join(app.Config.Settings.Output, renderedSubfolder, service.Name)
 		log.Debugf("Create folder '%s'", manifestPath)
 
 		err := os.MkdirAll(manifestPath, 0755)
@@ -30,8 +30,10 @@ func RenderTemplatesCommand(app *App) error {
 
 		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
 
+		mergo.Merge(&service.TemplateValues, app.Config.Settings.TemplateValues)
+
 		for _, manifestInputFile := range manifests {
-			err = app.renderTemplate(manifestInputFile, manifestPath, app.Config.Settings.TemplateValues.Merge(service.TemplateValues))
+			err = app.renderTemplate(manifestInputFile, manifestPath, service.TemplateValues)
 			if err != nil {
 				return err
 			}
@@ -40,7 +42,7 @@ func RenderTemplatesCommand(app *App) error {
 	return nil
 }
 
-func (app *App) renderTemplate(manifestInputFile string, manifestPath string, values settings.TemplateValues) error {
+func (app *App) renderTemplate(manifestInputFile string, manifestPath string, values map[string]string) error {
 	_, manifestFileName := filepath.Split(manifestInputFile)
 
 	manifestOutputFile := path.Join(manifestPath, manifestFileName)

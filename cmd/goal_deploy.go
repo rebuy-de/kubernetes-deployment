@@ -9,11 +9,11 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
-func DeployServicesCommand(app *App) error {
-	for i, service := range *app.Config.Services {
-		if i != 0 && app.SleepInterval > 0 {
-			log.Infof("Sleeping %v ...", app.SleepInterval)
-			time.Sleep(app.SleepInterval)
+func DeployServicesGoal(app *App) error {
+	for i, service := range app.Config.Services {
+		if i != 0 && app.Config.Settings.Sleep > 0 {
+			log.Infof("Sleeping %v ...", app.Config.Settings.Sleep)
+			time.Sleep(app.Config.Settings.Sleep)
 		}
 
 		if app.SkipDeploy {
@@ -29,7 +29,7 @@ func DeployServicesCommand(app *App) error {
 }
 
 func (app *App) DeployService(service *settings.Service) error {
-	manifestPath := path.Join(app.OutputPath, renderedSubfolder, service.Name)
+	manifestPath := path.Join(app.Config.Settings.Output, renderedSubfolder, service.Name)
 	manifests, err := FindFiles(manifestPath, "*.yml", "*.yaml")
 	if err != nil {
 		return err

@@ -2,14 +2,15 @@ package settings
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
 )
 
 type ProjectConfig struct {
-	Services *Services
-	Settings *Settings
+	Services Services `json:"services"`
+	Settings Settings `json:"settings"`
 }
 
 func (c ProjectConfig) String() string {
@@ -45,29 +46,18 @@ func (c *ProjectConfig) WriteTo(filename string) error {
 	return ioutil.WriteFile(filename, data, 0644)
 }
 
-func (c *ProjectConfig) MergeConfig(localConfig *ProjectConfig) {
-
-	if localConfig.Settings.Kubeconfig != nil {
-		c.Settings.Kubeconfig = localConfig.Settings.Kubeconfig
-	}
-
-	if localConfig.Settings.Output != nil {
-		c.Settings.Output = localConfig.Settings.Output
-	}
-
-	if localConfig.Settings.Sleep != nil {
-		c.Settings.Sleep = localConfig.Settings.Sleep
-	}
-
-	if localConfig.Settings.RetrySleep != nil {
-		c.Settings.RetrySleep = localConfig.Settings.RetrySleep
-	}
-
-	if localConfig.Settings.RetryCount != nil {
-		c.Settings.RetryCount = localConfig.Settings.RetryCount
-	}
-
-	if localConfig.Settings.TemplateValues != nil {
-		c.Settings.TemplateValues = c.Settings.TemplateValues.Merge(localConfig.Settings.TemplateValues)
+func (c *ProjectConfig) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 'v':
+		if s.Flag('+') {
+			data, err := yaml.Marshal(c)
+			if err == nil {
+				io.WriteString(s, string(data))
+				return
+			}
+		}
+		fallthrough
+	case 's', 'q':
+		fmt.Fprintf(s, "foobar")
 	}
 }

@@ -6,11 +6,12 @@ import (
 	"path"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/imdario/mergo"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/git"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
-func FetchServicesCommand(app *App) error {
+func FetchServicesGoal(app *App) error {
 	var err error
 
 	if app.SkipFetch {
@@ -28,21 +29,19 @@ func FetchServicesCommand(app *App) error {
 		return err
 	}
 
-	for _, service := range *app.Config.Services {
+	for _, service := range app.Config.Services {
 		err := app.Retry(func() error {
-			return app.FetchService(service, app.Config)
+			return app.FetchService(service)
 		})
 		if err != nil {
 			return err
 		}
 	}
 
-	projectOutputPath := path.Join(*app.Config.Settings.Output, "config.yml")
-	log.Debugf("Writing applying configuration to %s", projectOutputPath)
-	return app.Config.WriteTo(projectOutputPath)
+	return nil
 }
 
-func (app *App) FetchService(service *settings.Service, config *settings.ProjectConfig) error {
+func (app *App) FetchService(service *settings.Service) error {
 	var err error
 
 	tempDir, err := ioutil.TempDir("", "kubernetes-deployment-checkout-")
@@ -62,7 +61,7 @@ func (app *App) FetchService(service *settings.Service, config *settings.Project
 	}
 
 	log.Infof("Checked out %s", commitID)
-	service.TemplateValues = service.TemplateValues.Merge(settings.TemplateValues{
+	mergo.Merge(&service.TemplateValues, map[string]string{
 		"gitCommitID": commitID,
 	})
 
@@ -71,7 +70,7 @@ func (app *App) FetchService(service *settings.Service, config *settings.Project
 		return err
 	}
 
-	outputPath := path.Join(app.OutputPath, templatesSubfolder, service.Name)
+	outputPath := path.Join(app.Config.Settings.Output, templatesSubfolder, service.Name)
 	err = os.MkdirAll(outputPath, 0755)
 	if err != nil {
 		return err
