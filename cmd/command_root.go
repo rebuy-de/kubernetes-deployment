@@ -40,8 +40,9 @@ func NewRootCommand() *cobra.Command {
 		"gloal", "g", nil,
 		"select the goals to execute [all fetch render deploy]")
 
-	cmd.AddCommand(NewCmdBulk(app))
-	cmd.AddCommand(NewCmdDeploy(app))
+	cmd.AddCommand(NewBulkCommand(app))
+	cmd.AddCommand(NewDeployCommand(app))
+	cmd.AddCommand(NewVersionCommand())
 
 	return cmd
 }

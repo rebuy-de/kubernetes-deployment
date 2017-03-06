@@ -11,7 +11,7 @@ var (
 	defaultProjectConfigPath = "config/services.yaml"
 )
 
-func NewCmdBulk(app *App) *cobra.Command {
+func NewBulkCommand(app *App) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "bulk",

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdDeploy(app *App) *cobra.Command {
+func NewDeployCommand(app *App) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "deploy",
