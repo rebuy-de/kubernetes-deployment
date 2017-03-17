@@ -1,7 +1,7 @@
 settings:
   kubeconfig: test-fixtures/kubeconfig.yml
   output: target/test-output
-  sleep: 1s
+  sleep: 42s
   retry-sleep: 250ms
   retry-count: 3
   template-values:

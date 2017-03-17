@@ -30,7 +30,12 @@ func RenderTemplatesGoal(app *App) error {
 
 		manifests, err := FindFiles(manifestInputPath, "*.yml", "*.yaml")
 
+		log.Debug("Config file template values: %#v", app.Config.Settings.TemplateValues)
+		log.Debug("Project template values: %#v", service.TemplateValues)
+
 		mergo.Merge(&service.TemplateValues, app.Config.Settings.TemplateValues)
+
+		log.Debug("Merged template values: %#v", service.TemplateValues)
 
 		for _, manifestInputFile := range manifests {
 			err = app.renderTemplate(manifestInputFile, manifestPath, service.TemplateValues)

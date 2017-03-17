@@ -7,8 +7,11 @@ settings:
   template-values:
     clusterDomain: unit-test.example.org
 services:
-  - repo: repos/bish
-  - repo: repos/bash
+  - name: bish
+    repo: repos/bish
+  - name: bash
+    repo: repos/bash
     branch: special
-  - repo: repos/bosh
+  - name: bosh
+    repo: repos/bosh
     path: //deployment/foo
