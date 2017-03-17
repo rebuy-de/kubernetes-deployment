@@ -64,10 +64,10 @@ func createTestGitRepo(t *testing.T, repopath string, branch string, subpath str
 	}
 
 	util.AssertNoError(t, git.Exec("add", "."))
+	util.AssertNoError(t, git.Exec("commit", "-m", "initial master commit"))
 	if branch != "master" {
 		util.AssertNoError(t, git.Exec("checkout", "-b", branch))
 	}
-	util.AssertNoError(t, git.Exec("commit", "-m", "initial commit"))
 
 	return func() {
 		os.RemoveAll(repopath)
