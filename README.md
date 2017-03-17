@@ -12,7 +12,7 @@ kubernetes-deployment help
 ### Examples
 
 ```bash
-kubernetes-deployment deploy -g fetch -g render -n message-broker
+kubernetes-deployment deploy -g fetch -g render -n message-broker -s production
 ```
 
 ```bash

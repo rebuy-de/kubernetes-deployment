@@ -1,6 +1,8 @@
 package settings
 
 import (
+	"fmt"
+
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -17,6 +19,9 @@ func NewBuilder(fs *pflag.FlagSet) SettingsBuilder {
 	localConfigPath := fs.StringP(
 		"config", "c", "./config/services.yaml",
 		"project configuration file")
+	stage := fs.StringP(
+		"stage", "s", "testing",
+		"name of the stage; used for selecting the configuration (eg ~/.rebuy/kubernetes-deployment/<stage>.yaml)")
 
 	v := viper.New()
 
@@ -27,15 +32,15 @@ func NewBuilder(fs *pflag.FlagSet) SettingsBuilder {
 	v.BindPFlag(kubeconfig, fs.Lookup(kubeconfigFlag))
 	v.BindEnv(kubeconfig, "KUBECONFIG")
 
-	v.SetConfigName("config")
-	v.AddConfigPath("$HOME/.kubernetes-deployment")
-	v.ReadInConfig()
-
 	return func() ProjectConfig {
 		if localConfigPath != nil {
 			v.SetConfigFile(*localConfigPath)
-			v.MergeInConfig()
+			v.ReadInConfig()
 		}
+
+		v.SetConfigName("config")
+		v.AddConfigPath(fmt.Sprintf("$HOME/.rebuy/kubernetes-deployment/%s.yaml", *stage))
+		v.MergeInConfig()
 
 		s := ProjectConfig{}
 		v.Unmarshal(&s)
