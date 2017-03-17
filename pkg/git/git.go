@@ -40,7 +40,7 @@ func New(directory string) (*Git, error) {
 }
 
 func (g *Git) CommitID() (string, error) {
-	cmd := exec.Command(g.GitPath, "rev-parse", "--short", "HEAD")
+	cmd := exec.Command(g.GitPath, "rev-parse", "HEAD")
 	cmd.Dir = g.Directory
 
 	log.Infof("$ git %s", strings.Join(cmd.Args, " "))
@@ -52,7 +52,7 @@ func (g *Git) CommitID() (string, error) {
 
 	id := strings.ToLower(strings.TrimSpace(string(raw)))
 
-	matched, err := regexp.MatchString("[0-9a-f]{7}", id)
+	matched, err := regexp.MatchString("[0-9a-f]{40}", id)
 	if err != nil {
 		return "", err
 	}

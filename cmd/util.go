@@ -5,6 +5,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/pkg/errors"
 )
 
 // yes, golang doesn't have any built-in function to copy a file ...
@@ -42,4 +45,22 @@ func FindFiles(dir string, globs ...string) ([]string, error) {
 	}
 
 	return result, nil
+}
+
+type stackTracer interface {
+	StackTrace() errors.StackTrace
+}
+
+func Must(err error) {
+	if err == nil {
+		return
+	}
+
+	log.Error(err)
+
+	if err, ok := err.(stackTracer); ok {
+		log.Debugf("%+v", err.StackTrace())
+	}
+
+	os.Exit(1)
 }

@@ -3,19 +3,20 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
-	"reflect"
-	"sort"
 	"testing"
-	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/git"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/util"
 )
+
+func init() {
+	log.SetLevel(log.DebugLevel)
+}
 
 type testKubectl struct {
 	calls []string
@@ -58,7 +59,7 @@ func createTestGitRepo(t *testing.T, repopath string, branch string, subpath str
 		util.AssertNoError(t, os.MkdirAll(path.Dir(filepath), 0755))
 		util.AssertNoError(t,
 			ioutil.WriteFile(filepath,
-				[]byte(time.Now().String()), 0644))
+				[]byte("{{.clusterDomain}}"), 0644))
 
 	}
 
@@ -76,17 +77,17 @@ func createTestGitRepo(t *testing.T, repopath string, branch string, subpath str
 func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 	tempDir, cleanup := util.TestCreateTempDir(t)
 
-	cleanup = createTestGitRepo(t,
+	createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bish"),
 		"master", "/deployment/k8s",
 		"bish-a.yml", "bish-b.yml", "bish-c.yaml", "bish-d.txt", "foo/bish-e.yml")
 
-	cleanup = createTestGitRepo(t,
+	createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bash"),
 		"special", "/deployment/k8s",
 		"bash-a.yml", "bash-b.yml", "bash-c.yaml", "bash-d.txt", "foo/bash-e.yml")
 
-	cleanup = createTestGitRepo(t,
+	createTestGitRepo(t,
 		path.Join(tempDir, "repos", "bosh"),
 		"master", "/deployment/foo",
 		"bosh-a.yml", "bosh-b.yml", "bosh-c.yaml", "bosh-d.txt", "foo/bosh-e.yml")
@@ -98,40 +99,29 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 
 	var finalConfig settings.ProjectConfig
 	finalConfig.Settings = config.Settings
+	finalConfig.Settings.Output = path.Join(tempDir, "output")
+	finalConfig.Services = settings.Services{}
 
-	var finalServicesInstance settings.Services
-	for _, service := range *config.Services {
+	for _, service := range config.Services {
 		service.Repository = path.Join(tempDir, service.Repository)
 		var serviceInstance = *service
-		finalServicesInstance = append(finalServicesInstance, &serviceInstance)
+		finalConfig.Services = append(finalConfig.Services, &serviceInstance)
 	}
-
-	finalConfig.Services = &finalServicesInstance
 
 	finalConfig.WriteTo(path.Join(tempDir, "config.yml"))
 
 	kubectlMock := new(testKubectl)
 
-	commands, err := GetCommands("all")
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	return &App{
 		KubectlBuilder: func(*string) (kubernetes.API, error) {
 			return kubectlMock, nil
 		},
-		ProjectConfigPath: path.Join(tempDir, "config.yml"),
-		OutputPath:        path.Join(tempDir, "output"),
+		Config: finalConfig,
 
-		SleepInterval:        250 * time.Millisecond,
 		IgnoreDeployFailures: false,
 
-		RetrySleep: 250 * time.Millisecond,
-		RetryCount: 3,
-
 		SkipShuffle: false,
-		Commands:    commands,
+		Goals:       []string{"all"},
 	}, kubectlMock, cleanup
 }
 
@@ -143,7 +133,12 @@ func TestSkipAll(t *testing.T) {
 
 	app.SkipShuffle = true
 	app.IgnoreDeployFailures = false
-	app.Commands, err = GetCommands("all")
+	app.Goals = []string{"all"}
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = app.PrepareConfig()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -153,46 +148,94 @@ func TestSkipAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	config, err := settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
-	fmt.Println(config)
-	util.AssertNoError(t, err)
-
-	if len(*config.Services) != 3 {
-		t.Errorf("The generated config looks wrong. Expected 3 services, but got %d.", len(*config.Services))
+	if len(app.Config.Services) != 3 {
+		t.Errorf("The generated config looks wrong. Expected 3 services, but got %d.", len(app.Config.Services))
 	}
+}
+
+func testInArray(array []string, search string) bool {
+	for _, item := range array {
+		if item == search {
+			return true
+		}
+	}
+	return false
 }
 
 func TestWholeApplication(t *testing.T) {
 	app, kubectlMock, cleanup := prepareTestEnvironment(t)
 	defer cleanup()
 
-	err := app.Run()
+	err := app.PrepareConfig()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = settings.ReadProjectConfigFrom(path.Join(app.OutputPath, "config.yml"))
-	util.AssertNoError(t, err)
-
-	calls := []string{
-		"apply bish-a.yml",
-		"apply bish-b.yml",
-		"apply bish-c.yaml",
-		"apply bash-a.yml",
-		"apply bash-b.yml",
-		"apply bash-c.yaml",
-		"apply bosh-a.yml",
-		"apply bosh-b.yml",
-		"apply bosh-c.yaml",
+	err = app.Run()
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	sort.Strings(calls)
-	sort.Strings(kubectlMock.calls)
+	manifests := map[string][]string{
+		"bish": {
+			"bish-a.yml",
+			"bish-b.yml",
+			"bish-c.yaml",
+		},
+		"bash": {
+			"bash-a.yml",
+			"bash-b.yml",
+			"bash-c.yaml",
+		},
+		"bosh": {
+			"bosh-a.yml",
+			"bosh-b.yml",
+			"bosh-c.yaml",
+		},
+	}
 
-	if !reflect.DeepEqual(calls, kubectlMock.calls) {
-		t.Errorf("kubectl was called to often.")
-		t.Errorf("  Expected %#v", calls)
+	totalFiles := 0
+	templateContents := "{{.clusterDomain}}"
+	renderedContents := "unit-test.example.org"
+
+	for project, files := range manifests {
+		for _, file := range files {
+			totalFiles += 1
+
+			template, err := ioutil.ReadFile(path.Join(app.Config.Settings.Output,
+				"templates", project, file))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(template) != templateContents {
+				t.Errorf("Template %s/%s has wrong contents.", project, file)
+				t.Errorf("  Expected %#v", templateContents)
+				t.Errorf("  Obtained %#v", string(template))
+			}
+
+			rendered, err := ioutil.ReadFile(path.Join(app.Config.Settings.Output,
+				"rendered", project, file))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(rendered) != renderedContents {
+				t.Errorf("Template %s/%s has wrong contents.", project, file)
+				t.Errorf("  Expected %#v", renderedContents)
+				t.Errorf("  Obtained %#v", string(rendered))
+			}
+
+			search := fmt.Sprintf("apply %s", file)
+			if !testInArray(kubectlMock.calls, search) {
+				t.Errorf("Missing kubectl call.")
+				t.Errorf("  Expected %#v", search)
+				t.Errorf("  Obtained %#v", kubectlMock.calls)
+			}
+		}
+	}
+
+	if totalFiles != len(kubectlMock.calls) {
+		t.Errorf("kubectl has wrong call count.")
+		t.Errorf("  Expected %d calls", totalFiles)
 		t.Errorf("  Obtained %#v", kubectlMock.calls)
 	}
-
 }
