@@ -37,7 +37,7 @@ func NewRootCommand() *cobra.Command {
 		"skip shuffling of project order")
 	cmd.PersistentFlags().StringSliceVarP(
 		&app.Goals,
-		"gloal", "g", nil,
+		"goal", "g", nil,
 		"select the goals to execute [all fetch render deploy]")
 
 	cmd.AddCommand(NewBulkCommand(app))
