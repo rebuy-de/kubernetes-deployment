@@ -105,7 +105,13 @@ func (g *Git) Config(key, value string) error {
 }
 
 func (g *Git) PullShallow(branch string) error {
-	return g.Exec("pull", "--depth=1", "origin", branch)
+	err := g.Exec("pull", "--depth=1", "origin", "master")
+
+	if err != nil {
+		return err
+	}
+
+	return g.Exec("checkout", branch)
 }
 
 func (g *Git) SetCheckoutPath(dir string) error {
