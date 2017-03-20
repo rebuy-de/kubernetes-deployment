@@ -1,5 +1,5 @@
 # Source: https://github.com/rebuy-de/golang-template
-# Version: 1.1.0
+# Version: 1.2.0
 # Dependencies:
 # * Glide
 # * gocov (https://github.com/axw/gocov)
@@ -7,7 +7,7 @@
 
 NAME=$(notdir $(PACKAGE))
 
-BUILD_VERSION=$(shell git describe --always --dirty | tr '-' '.' )
+BUILD_VERSION=$(shell git describe --always --dirty --tags | tr '-' '.' )
 BUILD_DATE=$(shell date -Iseconds)
 BUILD_HASH=$(shell git rev-parse HEAD)
 BUILD_MACHINE=$(shell echo $$HOSTNAME)
@@ -48,9 +48,12 @@ cov:
 build: vendor
 	go build \
 		$(BUILD_FLAGS) \
-		-o $(NAME)-$(BUILD_VERSION)
-	ln -sf $(NAME)-$(BUILD_VERSION) $(NAME)
+		-o $(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH)
+	ln -sf $(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH) $(NAME)
 
+xc:
+	GOOS=linux GOARCH=amd64 make build
+	GOOS=darwin GOARCH=amd64 make build
 
 install: test
 	go install \
