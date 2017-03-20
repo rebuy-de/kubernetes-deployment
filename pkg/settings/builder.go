@@ -44,6 +44,7 @@ func NewBuilder(fs *pflag.FlagSet) SettingsBuilder {
 
 		s := ProjectConfig{}
 		v.Unmarshal(&s)
+
 		return s
 	}
 }

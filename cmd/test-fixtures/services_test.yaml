@@ -5,7 +5,8 @@ settings:
   retry-sleep: 250ms
   retry-count: 3
   template-values:
-    clusterDomain: unit-test.example.org
+  - name: clusterDomain
+    value: unit-test.example.org
 services:
   - name: bish
     repo: repos/bish

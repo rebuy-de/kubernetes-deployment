@@ -2,5 +2,5 @@
 /vendor
 /config/services-out.yaml
 /output
-/kubernetes-deployment
+/kubernetes-deployment*
 /cmd/target

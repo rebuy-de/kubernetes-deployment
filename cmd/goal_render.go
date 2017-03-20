@@ -33,12 +33,14 @@ func RenderTemplatesGoal(app *App) error {
 		log.Debug("Config file template values: %#v", app.Config.Settings.TemplateValues)
 		log.Debug("Project template values: %#v", service.TemplateValues)
 
-		mergo.Merge(&service.TemplateValues, app.Config.Settings.TemplateValues)
+		values := service.TemplateValues.ToMap()
 
-		log.Debug("Merged template values: %#v", service.TemplateValues)
+		mergo.Merge(&values, app.Config.Settings.TemplateValues.ToMap())
+
+		log.Debug("Merged template values: %#v", values)
 
 		for _, manifestInputFile := range manifests {
-			err = app.renderTemplate(manifestInputFile, manifestPath, service.TemplateValues)
+			err = app.renderTemplate(manifestInputFile, manifestPath, values)
 			if err != nil {
 				return err
 			}
