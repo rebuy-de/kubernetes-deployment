@@ -6,7 +6,6 @@ import (
 	"path"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/imdario/mergo"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/git"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
@@ -61,8 +60,8 @@ func (app *App) FetchService(service *settings.Service) error {
 	}
 
 	log.Infof("Checked out %s", commitID)
-	mergo.Merge(&service.TemplateValues, map[string]string{
-		"gitCommitID": commitID,
+	service.TemplateValues = append(service.TemplateValues, settings.TemplateValue{
+		"gitCommitID", commitID,
 	})
 
 	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
