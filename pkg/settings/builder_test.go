@@ -38,7 +38,7 @@ func TestBuilder(t *testing.T) {
 			RetryCount:           3,
 			IgnoreDeployFailures: false,
 			TemplateValues: map[string]string{
-				"clusterdomain": "unit-test.example.org",
+				"cluster-domain": "unit-test.example.org",
 			},
 		},
 	}
