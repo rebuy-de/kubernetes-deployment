@@ -62,8 +62,7 @@ func (app *App) FetchService(service *settings.Service) error {
 
 	log.Infof("Checked out %s", commitID)
 	mergo.Merge(&service.TemplateValues, map[string]string{
-		"gitCommitID":   commitID,
-		"git-commit-id": commitID,
+		"gitCommitID": commitID,
 	})
 
 	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
