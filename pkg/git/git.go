@@ -105,7 +105,7 @@ func (g *Git) Config(key, value string) error {
 }
 
 func (g *Git) PullShallow(branch string) error {
-	err := g.Exec("pull", "--depth=1", "origin", "master")
+	err := g.Exec("fetch", "origin")
 
 	if err != nil {
 		return err
