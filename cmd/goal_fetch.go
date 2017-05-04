@@ -61,12 +61,14 @@ func (app *App) FetchService(service *settings.Service) error {
 
 	log.Infof("Checked out %s", commitID)
 	service.TemplateValues = append(service.TemplateValues, settings.TemplateValue{
-		"gitCommitID", commitID,
+		Name:  "gitCommitID",
+		Value: commitID,
 	})
 
 	log.Infof("Checked out %s", service.Branch)
 	service.TemplateValues = append(service.TemplateValues, settings.TemplateValue{
-		"gitBranchName", service.Branch,
+		Name:  "gitBranchName",
+		Value: service.Branch,
 	})
 
 	manifests, err := FindFiles(path.Join(tempDir, service.Path), "*.yml", "*.yaml")
