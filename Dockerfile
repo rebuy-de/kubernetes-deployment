@@ -1,5 +1,5 @@
 # Source: https://github.com/rebuy-de/golang-template
-# Version: 1.2.0
+# Version: 1.3.1
 
 FROM golang:1.8-alpine
 
@@ -9,6 +9,9 @@ RUN apk add --no-cache git make
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+
+# Install Go Tools
+RUN go get -u github.com/golang/lint/golint
 
 # Install Glide
 RUN go get -u github.com/Masterminds/glide/...
