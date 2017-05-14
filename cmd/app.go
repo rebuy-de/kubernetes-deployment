@@ -8,7 +8,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/retry"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
@@ -31,10 +30,6 @@ type App struct {
 
 const templatesSubfolder = "templates"
 const renderedSubfolder = "rendered"
-
-func (app *App) Retry(task retry.Retryer) error {
-	return retry.Retry(app.Config.Settings.RetryCount, app.Config.Settings.RetrySleep, task)
-}
 
 func (app *App) Run() error {
 	var err error

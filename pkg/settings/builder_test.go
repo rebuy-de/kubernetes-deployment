@@ -34,8 +34,6 @@ func TestBuilder(t *testing.T) {
 			Output:               "target/test-output",
 			Sleep:                42000000000,
 			SkipShuffle:          false,
-			RetrySleep:           250000000,
-			RetryCount:           3,
 			IgnoreDeployFailures: false,
 			TemplateValues: TemplateValues{
 				TemplateValue{

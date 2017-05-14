@@ -46,10 +46,7 @@ func (app *App) DeployService(service *settings.Service) error {
 		}
 
 		log.Infof("Applying manifest '%s'", manifestInputFile)
-		err := app.Retry(func() error {
-			_, err := app.Kubectl.Apply(manifestInputFile)
-			return err
-		})
+		_, err := app.Kubectl.Apply(manifestInputFile)
 		if err != nil && app.IgnoreDeployFailures {
 			log.Errorf("Ignoring failed deployment of %s", service.Name)
 			app.Errors = append(app.Errors,
