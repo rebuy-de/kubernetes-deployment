@@ -1,7 +1,6 @@
 settings:
   kubeconfig: test-fixtures/kubeconfig.yml
   output: target/test-output
-  sleep: 1s
   template-values:
   - name: clusterDomain
     value: unit-test.example.org

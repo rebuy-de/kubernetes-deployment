@@ -1,11 +1,8 @@
 package settings
 
-import "time"
-
 type Settings struct {
 	Kubeconfig           string         `yaml:"kubeconfig"`
 	Output               string         `yaml:"output"`
-	Sleep                time.Duration  `yaml:"sleep"`
 	SkipShuffle          bool           `yaml:"skip-shuffle" mapstructure:"skip-shuffle"`
 	IgnoreDeployFailures bool           `yaml:"ignore-deploy-failures" mapstructure:"ignore-deploy-failures"`
 	TemplateValues       TemplateValues `yaml:"template-values" mapstructure:"template-values"`

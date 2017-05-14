@@ -3,19 +3,13 @@ package cmd
 import (
 	"fmt"
 	"path"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 func DeployServicesGoal(app *App) error {
-	for i, service := range app.Config.Services {
-		if i != 0 && app.Config.Settings.Sleep > 0 {
-			log.Infof("Sleeping %v ...", app.Config.Settings.Sleep)
-			time.Sleep(app.Config.Settings.Sleep)
-		}
-
+	for _, service := range app.Config.Services {
 		if app.SkipDeploy {
 			log.Warn("Skip deploying manifests to Kubernetes.")
 		} else {
