@@ -27,16 +27,11 @@ func NewRootCommand() *cobra.Command {
 
 	settingsBuilder = settings.NewBuilder(cmd.PersistentFlags())
 
-	cmd.PersistentFlags().BoolVar(
-		&app.IgnoreDeployFailures,
-		"ignore-deploy-failures", false,
-		"continue deploying services, if any service fails")
 	cmd.PersistentFlags().StringSliceVarP(
 		&app.Goals,
 		"goal", "g", nil,
 		"select the goals to execute [all fetch render deploy]")
 
-	cmd.AddCommand(NewBulkCommand(app))
 	cmd.AddCommand(NewDeployCommand(app))
 	cmd.AddCommand(NewVersionCommand())
 

@@ -18,13 +18,9 @@ type App struct {
 	Goals  []string
 	Config settings.ProjectConfig
 
-	IgnoreDeployFailures bool
-
 	SkipFetch  bool
 	SkipDeploy bool
 	Target     string
-
-	Errors []error
 }
 
 const templatesSubfolder = "templates"
@@ -45,8 +41,6 @@ func (app *App) Run() error {
 			return err
 		}
 	}
-
-	app.DisplayErrors()
 
 	return nil
 }
@@ -86,17 +80,6 @@ func (app *App) PrepareConfig() error {
 	projectOutputPath := path.Join(app.Config.Settings.Output, "config.yml")
 	log.Debugf("Writing applying configuration to %s", projectOutputPath)
 	return app.Config.WriteTo(projectOutputPath)
-}
-
-func (app *App) DisplayErrors() {
-	if len(app.Errors) == 0 {
-		return
-	}
-
-	fmt.Fprintf(os.Stderr, "\nError(s) occured:\n")
-	for i, err := range app.Errors {
-		fmt.Fprintf(os.Stderr, "    #%2d: %v\n", i, err)
-	}
 }
 
 func (app *App) wipeDirectory(dir string) error {

@@ -30,9 +30,8 @@ func TestBuilder(t *testing.T) {
 			},
 		},
 		Settings: Settings{
-			Kubeconfig:           "test-fixtures/kubeconfig.yml",
-			Output:               "target/test-output",
-			IgnoreDeployFailures: false,
+			Kubeconfig: "test-fixtures/kubeconfig.yml",
+			Output:     "target/test-output",
 			TemplateValues: TemplateValues{
 				TemplateValue{
 					Name:  "clusterDomain",

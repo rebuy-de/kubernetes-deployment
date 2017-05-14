@@ -1,10 +1,9 @@
 package settings
 
 type Settings struct {
-	Kubeconfig           string         `yaml:"kubeconfig"`
-	Output               string         `yaml:"output"`
-	IgnoreDeployFailures bool           `yaml:"ignore-deploy-failures" mapstructure:"ignore-deploy-failures"`
-	TemplateValues       TemplateValues `yaml:"template-values" mapstructure:"template-values"`
+	Kubeconfig     string         `yaml:"kubeconfig"`
+	Output         string         `yaml:"output"`
+	TemplateValues TemplateValues `yaml:"template-values" mapstructure:"template-values"`
 }
 
 type TemplateValues []TemplateValue
