@@ -32,7 +32,6 @@ func TestBuilder(t *testing.T) {
 		Settings: Settings{
 			Kubeconfig:           "test-fixtures/kubeconfig.yml",
 			Output:               "target/test-output",
-			SkipShuffle:          false,
 			IgnoreDeployFailures: false,
 			TemplateValues: TemplateValues{
 				TemplateValue{

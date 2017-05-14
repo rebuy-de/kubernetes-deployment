@@ -20,10 +20,9 @@ type App struct {
 
 	IgnoreDeployFailures bool
 
-	SkipShuffle bool
-	SkipFetch   bool
-	SkipDeploy  bool
-	Target      string
+	SkipFetch  bool
+	SkipDeploy bool
+	Target     string
 
 	Errors []error
 }
@@ -58,13 +57,6 @@ func (app *App) PrepareConfig() error {
 	log.Debugf("Read the following configuration:\n%+v", app.Config)
 
 	app.Config.Services.Clean()
-
-	if app.Config.Settings.SkipShuffle {
-		log.Infof("Skip shuffeling service order.")
-	} else {
-		log.Infof("Shuffling service list")
-		app.Config.Services.Shuffle()
-	}
 
 	if app.Target != "" {
 		services := app.Config.Services

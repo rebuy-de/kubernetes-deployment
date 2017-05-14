@@ -120,8 +120,7 @@ func prepareTestEnvironment(t *testing.T) (*App, *testKubectl, func()) {
 
 		IgnoreDeployFailures: false,
 
-		SkipShuffle: false,
-		Goals:       []string{"all"},
+		Goals: []string{"all"},
 	}, kubectlMock, cleanup
 }
 
@@ -131,7 +130,6 @@ func TestSkipAll(t *testing.T) {
 	app, _, cleanup := prepareTestEnvironment(t)
 	defer cleanup()
 
-	app.SkipShuffle = true
 	app.IgnoreDeployFailures = false
 	app.Goals = []string{"all"}
 	if err != nil {

@@ -31,10 +31,6 @@ func NewRootCommand() *cobra.Command {
 		&app.IgnoreDeployFailures,
 		"ignore-deploy-failures", false,
 		"continue deploying services, if any service fails")
-	cmd.PersistentFlags().BoolVar(
-		&app.SkipShuffle,
-		"skip-shuffle", false,
-		"skip shuffling of project order")
 	cmd.PersistentFlags().StringSliceVarP(
 		&app.Goals,
 		"goal", "g", nil,
