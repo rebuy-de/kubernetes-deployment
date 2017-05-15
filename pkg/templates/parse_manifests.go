@@ -2,12 +2,21 @@ package templates
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 	"text/template"
 )
 
 func ParseManifestFile(inputFile string, outputFile string, settings map[string]string) error {
+	funcMap := template.FuncMap{
+		"ToUpper": strings.ToUpper,
+		"ToLower": strings.ToLower,
+	}
 
-	t, err := template.ParseFiles(inputFile)
+	t, err := template.
+		New(filepath.Base(inputFile)).
+		Funcs(funcMap).
+		ParseFiles(inputFile)
 	if err != nil {
 		return err
 	}
