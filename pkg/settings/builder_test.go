@@ -30,13 +30,8 @@ func TestBuilder(t *testing.T) {
 			},
 		},
 		Settings: Settings{
-			Kubeconfig:           "test-fixtures/kubeconfig.yml",
-			Output:               "target/test-output",
-			Sleep:                42000000000,
-			SkipShuffle:          false,
-			RetrySleep:           250000000,
-			RetryCount:           3,
-			IgnoreDeployFailures: false,
+			Kubeconfig: "test-fixtures/kubeconfig.yml",
+			Output:     "target/test-output",
 			TemplateValues: TemplateValues{
 				TemplateValue{
 					Name:  "clusterDomain",

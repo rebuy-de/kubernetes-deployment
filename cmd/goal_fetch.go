@@ -29,9 +29,7 @@ func FetchServicesGoal(app *App) error {
 	}
 
 	for _, service := range app.Config.Services {
-		err := app.Retry(func() error {
-			return app.FetchService(service)
-		})
+		err := app.FetchService(service)
 		if err != nil {
 			return err
 		}

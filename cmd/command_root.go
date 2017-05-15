@@ -27,20 +27,11 @@ func NewRootCommand() *cobra.Command {
 
 	settingsBuilder = settings.NewBuilder(cmd.PersistentFlags())
 
-	cmd.PersistentFlags().BoolVar(
-		&app.IgnoreDeployFailures,
-		"ignore-deploy-failures", false,
-		"continue deploying services, if any service fails")
-	cmd.PersistentFlags().BoolVar(
-		&app.SkipShuffle,
-		"skip-shuffle", false,
-		"skip shuffling of project order")
 	cmd.PersistentFlags().StringSliceVarP(
 		&app.Goals,
 		"goal", "g", nil,
 		"select the goals to execute [all fetch render deploy]")
 
-	cmd.AddCommand(NewBulkCommand(app))
 	cmd.AddCommand(NewDeployCommand(app))
 	cmd.AddCommand(NewVersionCommand())
 

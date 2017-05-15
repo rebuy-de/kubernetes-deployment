@@ -8,7 +8,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubernetes"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/retry"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
@@ -19,22 +18,13 @@ type App struct {
 	Goals  []string
 	Config settings.ProjectConfig
 
-	IgnoreDeployFailures bool
-
-	SkipShuffle bool
-	SkipFetch   bool
-	SkipDeploy  bool
-	Target      string
-
-	Errors []error
+	SkipFetch  bool
+	SkipDeploy bool
+	Target     string
 }
 
 const templatesSubfolder = "templates"
 const renderedSubfolder = "rendered"
-
-func (app *App) Retry(task retry.Retryer) error {
-	return retry.Retry(app.Config.Settings.RetryCount, app.Config.Settings.RetrySleep, task)
-}
 
 func (app *App) Run() error {
 	var err error
@@ -52,8 +42,6 @@ func (app *App) Run() error {
 		}
 	}
 
-	app.DisplayErrors()
-
 	return nil
 }
 
@@ -63,13 +51,6 @@ func (app *App) PrepareConfig() error {
 	log.Debugf("Read the following configuration:\n%+v", app.Config)
 
 	app.Config.Services.Clean()
-
-	if app.Config.Settings.SkipShuffle {
-		log.Infof("Skip shuffeling service order.")
-	} else {
-		log.Infof("Shuffling service list")
-		app.Config.Services.Shuffle()
-	}
 
 	if app.Target != "" {
 		services := app.Config.Services
@@ -99,17 +80,6 @@ func (app *App) PrepareConfig() error {
 	projectOutputPath := path.Join(app.Config.Settings.Output, "config.yml")
 	log.Debugf("Writing applying configuration to %s", projectOutputPath)
 	return app.Config.WriteTo(projectOutputPath)
-}
-
-func (app *App) DisplayErrors() {
-	if len(app.Errors) == 0 {
-		return
-	}
-
-	fmt.Fprintf(os.Stderr, "\nError(s) occured:\n")
-	for i, err := range app.Errors {
-		fmt.Fprintf(os.Stderr, "    #%2d: %v\n", i, err)
-	}
 }
 
 func (app *App) wipeDirectory(dir string) error {

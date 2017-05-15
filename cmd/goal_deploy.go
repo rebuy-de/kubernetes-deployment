@@ -3,19 +3,13 @@ package cmd
 import (
 	"fmt"
 	"path"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 func DeployServicesGoal(app *App) error {
-	for i, service := range app.Config.Services {
-		if i != 0 && app.Config.Settings.Sleep > 0 {
-			log.Infof("Sleeping %v ...", app.Config.Settings.Sleep)
-			time.Sleep(app.Config.Settings.Sleep)
-		}
-
+	for _, service := range app.Config.Services {
 		if app.SkipDeploy {
 			log.Warn("Skip deploying manifests to Kubernetes.")
 		} else {
@@ -46,18 +40,8 @@ func (app *App) DeployService(service *settings.Service) error {
 		}
 
 		log.Infof("Applying manifest '%s'", manifestInputFile)
-		err := app.Retry(func() error {
-			_, err := app.Kubectl.Apply(manifestInputFile)
-			return err
-		})
-		if err != nil && app.IgnoreDeployFailures {
-			log.Errorf("Ignoring failed deployment of %s", service.Name)
-			app.Errors = append(app.Errors,
-				fmt.Errorf("Deployment of '%s' in service '%s' failed: %v",
-					manifestInputFile, service.Name, err),
-			)
-		}
-		if err != nil && !app.IgnoreDeployFailures {
+		_, err := app.Kubectl.Apply(manifestInputFile)
+		if err != nil {
 			return err
 		}
 	}
