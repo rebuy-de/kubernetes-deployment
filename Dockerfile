@@ -1,5 +1,5 @@
 # Source: https://github.com/rebuy-de/golang-template
-# Version: 1.3.2-snapshot
+# Version: 1.3.1
 
 FROM golang:1.8-alpine
 
@@ -21,8 +21,8 @@ WORKDIR /go/src/github.com/Masterminds/glide
 RUN git checkout v0.12.3
 RUN go install
 
-COPY . /go/src/github.com/rebuy-de/golang-template/example
-WORKDIR /go/src/github.com/rebuy-de/golang-template/example
+COPY . /go/src/github.com/rebuy-de/kubernetes-deployment
+WORKDIR /go/src/github.com/rebuy-de/kubernetes-deployment
 RUN CGO_ENABLED=0 make install
 
-ENTRYPOINT ["/go/bin/example"]
+ENTRYPOINT ["/go/bin/kubernetes-deployment"]

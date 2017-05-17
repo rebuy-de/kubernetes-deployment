@@ -1,3 +1,3 @@
-PACKAGE=github.com/rebuy-de/golang-template/example
+PACKAGE=github.com/rebuy-de/kubernetes-deployment
 
 include golang.mk

@@ -9,8 +9,8 @@ import (
 
 func NewRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "golang-template",
-		Short: "an example app for golang which can be used as template",
+		Use:   "kubernetes-deployment",
+		Short: "Manages deployments to our Kubernetes cluster",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			log.SetLevel(log.DebugLevel)
 			log.SetOutput(os.Stdout)

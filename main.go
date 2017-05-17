@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rebuy-de/golang-template/example/cmd"
+	"github.com/rebuy-de/kubernetes-deployment/cmd"
 )
 
 func main() {
