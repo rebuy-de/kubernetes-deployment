@@ -17,7 +17,11 @@ func NewRootCommand() *cobra.Command {
 		},
 	}
 
+	params := new(Parameters)
+	params.Bind(cmd)
+
 	cmd.AddCommand(NewVersionCommand())
+	cmd.AddCommand(NewDeployCommand(params))
 
 	return cmd
 }
