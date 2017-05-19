@@ -3,6 +3,7 @@ import:
 - package: github.com/Sirupsen/logrus
   version: ^0.11.2
 - package: github.com/spf13/cobra
-  ref: master
+  version: master
 - package: github.com/spf13/viper
-  ref: master
+  version: master
+- package: github.com/mitchellh/go-homedir

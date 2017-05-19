@@ -1,5 +1,5 @@
-hash: 09dd97de62b7ae23fedc7b08af30601357ddea23409de6f9c4bcf2b8974d2c69
-updated: 2017-05-19T11:37:47.812580909+02:00
+hash: 251de26ef1d3479e7693e74a8cc4bbe0da0a6c9c222fc8f70fc9ea0da67487e3
+updated: 2017-05-19T11:54:48.958021988+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -18,6 +18,8 @@ imports:
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/magiconair/properties
   version: 51463bfca2576e06c62a8504b5c0f06d61312647
+- name: github.com/mitchellh/go-homedir
+  version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
   version: cc8532a8e9a55ea36402aa21efdf403a60d34096
 - name: github.com/pelletier/go-buffruneio

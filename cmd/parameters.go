@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -11,15 +12,18 @@ const (
 	FlagFilename    = "filename"
 )
 
+const (
+	ConfigDir = "~/.rebuy/kubernetes-deployment"
+)
+
 type Parameters struct {
 	Kubeconfig  string
-	GitHubToken string
+	GitHubToken string `mapstructure:"github-token"`
 	Filename    string
 }
 
 func (p *Parameters) Bind(cmd *cobra.Command) {
 	// kubeconfig
-	viper.SetDefault(FlagKubeconfig, "$HOME/.kube/config")
 	cmd.PersistentFlags().String(
 		FlagKubeconfig, "",
 		"path to the kubeconfig file to use for deployments ($KUBECONFIG)")
@@ -41,5 +45,18 @@ func (p *Parameters) Bind(cmd *cobra.Command) {
 }
 
 func (p *Parameters) ReadIn() error {
+	path, err := homedir.Expand(ConfigDir)
+	if err != nil {
+		return err
+	}
+
+	viper.SetConfigName("default")
+	viper.AddConfigPath(path)
+	viper.ReadInConfig()
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.MergeInConfig()
+
 	return viper.Unmarshal(p)
 }
