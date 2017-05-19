@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+)
+
+const (
+	DefaultBranch = "master"
 )
 
 func NewDeployCommand(params *Parameters) *cobra.Command {
@@ -15,20 +18,20 @@ func NewDeployCommand(params *Parameters) *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		err := params.ReadIn()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if strings.TrimSpace(params.Filename) == "" {
-			return fmt.Errorf("You have to specify a filename.")
-		}
-
 		if len(args) < 1 || len(args) > 2 {
 			return fmt.Errorf("Wrong number of arguments.")
 		}
 
-		fmt.Printf("%#v", params)
+		var (
+			project = args[0]
+			branch  = DefaultBranch
+		)
+
+		if len(args) > 1 {
+			branch = args[1]
+		}
+
+		log.Infof("deploying %s/%s", project, branch)
 
 		return nil
 	}
