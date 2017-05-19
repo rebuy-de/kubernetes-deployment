@@ -1,10 +1,10 @@
-hash: 7245db46829e2344d28bc09fa99df9ce615a9e375de805a4efcebe3ab80727ac
-updated: 2017-05-17T23:58:43.075534984+02:00
+hash: 09dd97de62b7ae23fedc7b08af30601357ddea23409de6f9c4bcf2b8974d2c69
+updated: 2017-05-19T11:37:47.812580909+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
-  version: a904159b9206978bb6d53fcc7a769e5cd726c737
+  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
-  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -17,13 +17,13 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/magiconair/properties
-  version: b3b15ef068fd0b17ddf408a23669f20811d194d2
+  version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mitchellh/mapstructure
-  version: db1efb556f84b25a0a13a04aad883943538ad2e0
+  version: cc8532a8e9a55ea36402aa21efdf403a60d34096
 - name: github.com/pelletier/go-buffruneio
-  version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
+  version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
-  version: 22139eb5469018e7374b3e7ef653de37ffb44f72
+  version: 5c26a6ff6fd178719e15decac1c8196da0d7d6d1
 - name: github.com/Sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/spf13/afero
@@ -31,24 +31,24 @@ imports:
   subpackages:
   - mem
 - name: github.com/spf13/cast
-  version: d1139bab1c07d5ad390a65e7305876b3c1a8370b
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: 35136c09d8da66b901337c6e86fd8e88a1a255bd
+  version: fb1f39915d092e6ecbdb38c0861170bdf4416800
 - name: github.com/spf13/jwalterweatherman
-  version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
+  version: 8f07c835e5cc1450c082fe3a439cf87b0cbb2d99
 - name: github.com/spf13/pflag
-  version: 5ccb023bc27df288a957c5e994cd44fd19619465
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
-  version: 7538d73b4eb9511d85a9f1dfef202eeb8ac260f4
+  version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
 - name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  version: a2e06a18b0d52d8cb2010e04b372a1965d8e3439
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 2910a502d2bf9e43193af9d68ca516529614eed3
+  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports: []
