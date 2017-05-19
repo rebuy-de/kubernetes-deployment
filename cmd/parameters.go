@@ -64,10 +64,12 @@ func (p *Parameters) ReadIn() error {
 	return viper.Unmarshal(p)
 }
 
-func (p *Parameters) LoadSettings() *settings.Settings {
-	ghClient := gh.New(p.GitHubToken)
+func (p *Parameters) GitHubClient() gh.Client {
+	return gh.New(p.GitHubToken)
+}
 
-	sett, err := settings.Read(p.Filename, ghClient)
+func (p *Parameters) LoadSettings() *settings.Settings {
+	sett, err := settings.Read(p.Filename, p.GitHubClient())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,6 +78,8 @@ func (p *Parameters) LoadSettings() *settings.Settings {
 		"ServiceCount": len(sett.Services),
 		"Filename":     p.Filename,
 	}).Debug("loaded service file")
+
+	sett.Clean()
 
 	return sett
 }

@@ -1,5 +1,5 @@
-hash: dc6e08614e988604d979a3b32c661c100c6888f2241a0f4beb28ebdeff18951f
-updated: 2017-05-19T16:37:53.127824357+02:00
+hash: cb68c275ad428956be625a61f7061baa64fe711696acb353dee9c34ec80876cc
+updated: 2017-05-21T23:08:05.225185298+02:00
 imports:
 - name: github.com/fatih/structs
   version: a720dfa8df582c51dee1b36feabb906bde1588bd
@@ -28,6 +28,8 @@ imports:
   - json/parser
   - json/scanner
   - json/token
+- name: github.com/imdario/mergo
+  version: 3e95a51e0639b4cf372f2ccf74c86749d747fbdc
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/magiconair/properties
@@ -64,6 +66,8 @@ imports:
   - context
 - name: golang.org/x/oauth2
   version: f047394b6d14284165300fd82dad67edb3a4d7f6
+  subpackages:
+  - internal
 - name: golang.org/x/sys
   version: a2e06a18b0d52d8cb2010e04b372a1965d8e3439
   subpackages:
@@ -83,6 +87,8 @@ imports:
   - internal/log
   - internal/modules
   - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 - name: gopkg.in/yaml.v2
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports: []

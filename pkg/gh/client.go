@@ -2,11 +2,13 @@ package gh
 
 import (
 	"context"
+	"path"
 	"regexp"
 
 	"golang.org/x/oauth2"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/fatih/structs"
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 )
@@ -16,7 +18,8 @@ var (
 )
 
 type Client interface {
-	GetContents(location string) (string, error)
+	GetFile(location *Location) (string, error)
+	GetFiles(location Location) (map[string]string, error)
 }
 
 type API struct {
@@ -38,43 +41,85 @@ func New(token string) Client {
 	}
 }
 
-func (gh *API) GetContents(location string) (string, error) {
-	matches := ContentLocationRE.FindStringSubmatch(location)
-	if matches == nil {
-		return "", errors.Errorf(
-			"GitHub location must have the form `github.com/:owner:/:repo:/:path:`")
-	}
+func (gh *API) GetFile(location *Location) (string, error) {
+	log.WithFields(
+		log.Fields(structs.Map(location)),
+	).Debug("downloading file from GitHub")
 
-	var (
-		owner = matches[1]
-		repo  = matches[2]
-		path  = matches[3]
-	)
-
-	log.WithFields(log.Fields{
-		"Owner": owner,
-		"Repo":  repo,
-		"Path":  path,
-	}).Debug("downloading file from GitHub")
-
-	file, _, _, err := gh.client.Repositories.GetContents(
+	file, _, resp, err := gh.client.Repositories.GetContents(
 		context.Background(),
-		owner, repo, path,
+		location.Owner, location.Repo, location.Path,
 		&github.RepositoryContentGetOptions{
-			Ref: "master",
+			Ref: location.Branch,
 		},
 	)
 
 	if err != nil {
 		return "", errors.Wrapf(err,
-			"unable to fetch file '%s' from GitHub", location)
+			"unable to fetch file '%v' from GitHub", location)
 	}
 
 	if file == nil {
 		return "", errors.Errorf(
-			"unable to fetch file '%s' from GitHub; probably it's a directoy",
+			"unable to fetch file '%v' from GitHub; probably it's a directoy",
 			location)
 	}
 
+	log.WithFields(log.Fields{
+		"Size":          *file.Size,
+		"URL":           *file.HTMLURL,
+		"RateLimit":     resp.Rate.Limit,
+		"RateRemaining": resp.Rate.Remaining,
+		"RateReset":     resp.Rate.Reset,
+	}).Debug("found file")
+
 	return file.GetContent()
+}
+
+func (gh *API) GetFiles(location Location) (map[string]string, error) {
+	log.WithFields(
+		log.Fields(structs.Map(location)),
+	).Debug("downloading directory from GitHub")
+
+	_, dir, resp, err := gh.client.Repositories.GetContents(
+		context.Background(),
+		location.Owner, location.Repo, location.Path,
+		&github.RepositoryContentGetOptions{
+			Ref: location.Branch,
+		},
+	)
+
+	if err != nil {
+		return nil, errors.Wrapf(err,
+			"unable to fetch directory '%v' from GitHub", location)
+	}
+
+	if dir == nil {
+		return nil, errors.Errorf(
+			"unable to fetch directory '%v' from GitHub; probably it's a file",
+			location)
+	}
+
+	log.WithFields(log.Fields{
+		"Files":         len(dir),
+		"RateLimit":     resp.Rate.Limit,
+		"RateRemaining": resp.Rate.Remaining,
+		"RateReset":     resp.Rate.Reset,
+	}).Debug("found files in directory")
+
+	result := make(map[string]string)
+	for _, file := range dir {
+		result[*file.Name], err = gh.GetFile(&Location{
+			Owner:  location.Owner,
+			Repo:   location.Repo,
+			Path:   path.Join(location.Path, *file.Name),
+			Branch: location.Branch,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err,
+				"unable to decode file '%v'",
+				location)
+		}
+	}
+	return result, nil
 }

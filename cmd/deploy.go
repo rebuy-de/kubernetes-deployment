@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/fatih/structs"
 	"github.com/spf13/cobra"
 )
 
@@ -31,9 +32,27 @@ func NewDeployCommand(params *Parameters) *cobra.Command {
 			branch = args[1]
 		}
 
-		params.LoadSettings()
+		settings := params.LoadSettings()
 
 		log.Infof("deploying %s/%s", project, branch)
+
+		service := settings.Service(project)
+		if service == nil {
+			log.WithFields(log.Fields{
+				"Project": project,
+			}).Fatal("project not found")
+		}
+		log.WithFields(
+			log.Fields(structs.Map(service)),
+		).Debug("service found")
+
+		templates, err := params.GitHubClient().GetFiles(service.Location)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
+
+		fmt.Printf("%#v\n", templates)
 
 		return nil
 	}

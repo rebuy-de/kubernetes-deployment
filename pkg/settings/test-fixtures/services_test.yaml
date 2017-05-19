@@ -1,9 +1,20 @@
-template-values:
-  - name: clusterDomain
-    value: unit-test.example.org
+default:
+  owner: rebuy-de
+  path: deployment/k8s/
+  template-values:
+    clusterDomain: unit-test.example.org
+    secret: foo
+
 services:
-  - repo: repos/bish
-  - repo: repos/bash
-    branch: special
-  - repo: repos/bosh
-    path: //deployment/foo
+- repo: bish
+- repo: bash
+  template-values:
+    clusterDomain: test.example.com
+- repo: bosh
+  path: //deployment/foo
+- name: foo
+  repo: bar
+- owner: kubernetes
+  repo: blub
+- repo: meh
+  path: deployment/k8s

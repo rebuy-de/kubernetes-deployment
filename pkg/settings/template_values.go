@@ -1,18 +1,9 @@
 package settings
 
-type TemplateValues []TemplateValue
+import "github.com/imdario/mergo"
 
-func (tv TemplateValues) ToMap() map[string]string {
-	result := make(map[string]string)
+type TemplateValues map[string]string
 
-	for _, kv := range tv {
-		result[kv.Name] = kv.Value
-	}
-
-	return result
-}
-
-type TemplateValue struct {
-	Name  string `yaml:"name" mapstructure:"name"`
-	Value string `yaml:"value" mapstructure:"value"`
+func (v *TemplateValues) Defaults(defaults TemplateValues) {
+	mergo.Merge(v, defaults)
 }

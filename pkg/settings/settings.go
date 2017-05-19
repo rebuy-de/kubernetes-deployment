@@ -2,6 +2,7 @@ package settings
 
 import (
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -10,9 +11,20 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type Settings struct {
+var (
+	DefaultLocation = gh.Location{
+		Branch: "master",
+	}
+)
+
+type Defaults struct {
+	Location       gh.Location    `yaml:",inline"`
 	TemplateValues TemplateValues `yaml:"template-values"`
-	Services       Services       `yaml:"services"`
+}
+
+type Settings struct {
+	Default  Defaults `yaml:"default"`
+	Services Services `yaml:"services"`
 }
 
 func FromBytes(data []byte) (*Settings, error) {
@@ -43,10 +55,58 @@ func ReadFromFile(filename string) (*Settings, error) {
 
 }
 
-func ReadFromGitHub(location string, client gh.Client) (*Settings, error) {
-	data, err := client.GetContents(location)
+func ReadFromGitHub(filename string, client gh.Client) (*Settings, error) {
+	location, err := gh.NewLocation(filename)
+	if err != nil {
+		return nil, errors.Wrapf(err, "parse GitHub location '%s'; use './' prefix to use a directory named 'github.com'", filename)
+	}
+
+	data, err := client.GetFile(location)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not download file '%s'", location)
 	}
 	return FromBytes([]byte(data))
+}
+
+func (s *Settings) Service(name string) *Service {
+	for _, service := range s.Services {
+		if service.Name == name {
+			return &service
+		}
+	}
+
+	return nil
+}
+
+func (s *Settings) Clean() {
+	for i := range s.Services {
+		service := &s.Services[i]
+
+		service.Location.Defaults(s.Default.Location)
+		service.Location.Defaults(DefaultLocation)
+
+		service.TemplateValues.Defaults(s.Default.TemplateValues)
+
+		service.Location.Path = filepath.Clean(strings.Trim(service.Location.Path, "/")) + "/"
+
+		if strings.TrimSpace(service.Name) == "" {
+			nameParts := []string{}
+			if service.Location.Owner != s.Default.Location.Owner {
+				nameParts = append(nameParts, service.Location.Owner)
+			}
+
+			if service.Location.Repo != s.Default.Location.Repo {
+				nameParts = append(nameParts, service.Location.Repo)
+			}
+
+			if service.Location.Path != s.Default.Location.Path {
+				path := service.Location.Path
+				path = strings.Trim(path, "/")
+				path = strings.Replace(path, "/", "-", -1)
+				nameParts = append(nameParts, path)
+			}
+
+			service.Name = strings.Join(nameParts, "-")
+		}
+	}
 }
