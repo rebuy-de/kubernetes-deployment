@@ -1,0 +1,9 @@
+template-values:
+  - name: clusterDomain
+    value: unit-test.example.org
+services:
+  - repo: repos/bish
+  - repo: repos/bash
+    branch: special
+  - repo: repos/bosh
+    path: //deployment/foo

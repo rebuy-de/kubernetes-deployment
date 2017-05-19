@@ -28,9 +28,9 @@ func NewRootCommand() *cobra.Command {
 		}
 
 		log.WithFields(log.Fields{
-			"version": BuildVersion,
-			"date":    BuildDate,
-			"commit":  BuildHash,
+			"Version": BuildVersion,
+			"Date":    BuildDate,
+			"Commit":  BuildHash,
 		}).Infof("kubernetes-deployment started")
 
 		err := params.ReadIn()

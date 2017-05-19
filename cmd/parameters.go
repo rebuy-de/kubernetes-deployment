@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	log "github.com/Sirupsen/logrus"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -59,4 +62,20 @@ func (p *Parameters) ReadIn() error {
 	viper.MergeInConfig()
 
 	return viper.Unmarshal(p)
+}
+
+func (p *Parameters) LoadSettings() *settings.Settings {
+	ghClient := gh.New(p.GitHubToken)
+
+	sett, err := settings.Read(p.Filename, ghClient)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.WithFields(log.Fields{
+		"ServiceCount": len(sett.Services),
+		"Filename":     p.Filename,
+	}).Debug("loaded service file")
+
+	return sett
 }

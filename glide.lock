@@ -1,10 +1,22 @@
-hash: 0e94a108546e1a7a877d5d8a78fb495a31517621516634c502f0dd5a74f4b8ce
-updated: 2017-05-19T15:16:13.130238421+02:00
+hash: dc6e08614e988604d979a3b32c661c100c6888f2241a0f4beb28ebdeff18951f
+updated: 2017-05-19T16:37:53.127824357+02:00
 imports:
 - name: github.com/fatih/structs
   version: a720dfa8df582c51dee1b36feabb906bde1588bd
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/golang/protobuf
+  version: fec3b39b059c0f88fa6b20f5ed012b1aa203a8b4
+  subpackages:
+  - proto
+- name: github.com/google/go-github
+  version: ebfec748347a9af6793c723f8859afcd906860fb
+  subpackages:
+  - github
+- name: github.com/google/go-querystring
+  version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
+  subpackages:
+  - query
 - name: github.com/hashicorp/hcl
   version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
@@ -28,6 +40,8 @@ imports:
   version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
   version: 5c26a6ff6fd178719e15decac1c8196da0d7d6d1
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/Sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/spf13/afero
@@ -44,6 +58,12 @@ imports:
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
   version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
+- name: golang.org/x/net
+  version: 513929065c19401a1c7b76ecd942f9f86a0c061b
+  subpackages:
+  - context
+- name: golang.org/x/oauth2
+  version: f047394b6d14284165300fd82dad67edb3a4d7f6
 - name: golang.org/x/sys
   version: a2e06a18b0d52d8cb2010e04b372a1965d8e3439
   subpackages:
@@ -53,6 +73,16 @@ imports:
   subpackages:
   - transform
   - unicode/norm
+- name: google.golang.org/appengine
+  version: 170382fa85b10b94728989dfcf6cc818b335c952
+  subpackages:
+  - internal
+  - internal/app_identity
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/modules
+  - internal/remote_api
 - name: gopkg.in/yaml.v2
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports: []

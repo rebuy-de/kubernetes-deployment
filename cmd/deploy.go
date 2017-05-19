@@ -31,6 +31,8 @@ func NewDeployCommand(params *Parameters) *cobra.Command {
 			branch = args[1]
 		}
 
+		params.LoadSettings()
+
 		log.Infof("deploying %s/%s", project, branch)
 
 		return nil
