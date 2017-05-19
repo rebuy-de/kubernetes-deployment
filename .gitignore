@@ -1,6 +1,0 @@
-/target
-/vendor
-/config/services-out.yaml
-/output
-/kubernetes-deployment*
-/cmd/target
