@@ -4,6 +4,7 @@ import (
 	"context"
 	"path"
 	"regexp"
+	"time"
 
 	"golang.org/x/oauth2"
 
@@ -18,8 +19,9 @@ var (
 )
 
 type Client interface {
-	GetFile(location Location) (string, error)
-	GetFiles(location Location) (map[string]string, error)
+	GetBranch(location *Location) (*Branch, error)
+	GetFile(location *Location) (string, error)
+	GetFiles(location *Location) (map[string]string, error)
 }
 
 type API struct {
@@ -41,7 +43,53 @@ func New(token string) Client {
 	}
 }
 
-func (gh *API) GetFile(location Location) (string, error) {
+type Branch struct {
+	Location
+	github.Rate
+	Name, SHA string
+	Author    string
+	Date      time.Time
+	Message   string
+}
+
+func (gh *API) GetBranch(location *Location) (*Branch, error) {
+	ghBranch, resp, err := gh.client.Repositories.GetBranch(
+		context.Background(),
+		location.Owner, location.Repo, location.Ref,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	branch := &Branch{
+		Location: *location,
+		Rate:     resp.Rate,
+		Name:     *ghBranch.Name,
+		Author:   *ghBranch.Commit.Author.Login,
+		SHA:      *ghBranch.Commit.SHA,
+		Message:  *ghBranch.Commit.Commit.Message,
+		Date:     *ghBranch.Commit.Commit.Author.Date,
+	}
+
+	log.WithFields(log.Fields{
+		"Owner":         location.Owner,
+		"Repo":          location.Repo,
+		"Ref":           location.Ref,
+		"RateLimit":     resp.Rate.Limit,
+		"RateRemaining": resp.Rate.Remaining,
+		"RateReset":     resp.Rate.Reset,
+		"Branch":        *ghBranch.Name,
+		"Author":        *ghBranch.Commit.Author.Login,
+		"SHA":           *ghBranch.Commit.SHA,
+		"Message":       *ghBranch.Commit.Commit.Message,
+		"Date":          ghBranch.Commit.Commit.Author.Date,
+	}).Debug("fetched branch information")
+
+	return branch, err
+}
+
+func (gh *API) GetFile(location *Location) (string, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
 	).Debug("downloading file from GitHub")
@@ -50,7 +98,7 @@ func (gh *API) GetFile(location Location) (string, error) {
 		context.Background(),
 		location.Owner, location.Repo, location.Path,
 		&github.RepositoryContentGetOptions{
-			Ref: location.Branch,
+			Ref: location.Ref,
 		},
 	)
 
@@ -76,7 +124,7 @@ func (gh *API) GetFile(location Location) (string, error) {
 	return file.GetContent()
 }
 
-func (gh *API) GetFiles(location Location) (map[string]string, error) {
+func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
 	).Debug("downloading directory from GitHub")
@@ -85,7 +133,7 @@ func (gh *API) GetFiles(location Location) (map[string]string, error) {
 		context.Background(),
 		location.Owner, location.Repo, location.Path,
 		&github.RepositoryContentGetOptions{
-			Ref: location.Branch,
+			Ref: location.Ref,
 		},
 	)
 
@@ -109,11 +157,11 @@ func (gh *API) GetFiles(location Location) (map[string]string, error) {
 
 	result := make(map[string]string)
 	for _, file := range dir {
-		result[*file.Name], err = gh.GetFile(Location{
-			Owner:  location.Owner,
-			Repo:   location.Repo,
-			Path:   path.Join(location.Path, *file.Name),
-			Branch: location.Branch,
+		result[*file.Name], err = gh.GetFile(&Location{
+			Owner: location.Owner,
+			Repo:  location.Repo,
+			Path:  path.Join(location.Path, *file.Name),
+			Ref:   location.Ref,
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err,

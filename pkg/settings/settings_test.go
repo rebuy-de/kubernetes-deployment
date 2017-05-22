@@ -87,10 +87,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "bish",
 			Location: gh.Location{
-				Owner:  "rebuy-de",
-				Repo:   "bish",
-				Path:   "deployment/k8s/",
-				Branch: "master",
+				Owner: "rebuy-de",
+				Repo:  "bish",
+				Path:  "deployment/k8s/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "unit-test.example.org",
@@ -100,10 +100,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "bash",
 			Location: gh.Location{
-				Owner:  "rebuy-de",
-				Repo:   "bash",
-				Path:   "deployment/k8s/",
-				Branch: "master",
+				Owner: "rebuy-de",
+				Repo:  "bash",
+				Path:  "deployment/k8s/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "test.example.com",
@@ -113,10 +113,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "bosh-deployment-foo",
 			Location: gh.Location{
-				Owner:  "rebuy-de",
-				Repo:   "bosh",
-				Path:   "deployment/foo/",
-				Branch: "master",
+				Owner: "rebuy-de",
+				Repo:  "bosh",
+				Path:  "deployment/foo/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "unit-test.example.org",
@@ -126,10 +126,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "foo",
 			Location: gh.Location{
-				Owner:  "rebuy-de",
-				Repo:   "bar",
-				Path:   "deployment/k8s/",
-				Branch: "master",
+				Owner: "rebuy-de",
+				Repo:  "bar",
+				Path:  "deployment/k8s/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "unit-test.example.org",
@@ -139,10 +139,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "kubernetes-blub",
 			Location: gh.Location{
-				Owner:  "kubernetes",
-				Repo:   "blub",
-				Path:   "deployment/k8s/",
-				Branch: "master",
+				Owner: "kubernetes",
+				Repo:  "blub",
+				Path:  "deployment/k8s/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "unit-test.example.org",
@@ -152,10 +152,10 @@ func TestClean(t *testing.T) {
 		Service{
 			Name: "meh",
 			Location: gh.Location{
-				Owner:  "rebuy-de",
-				Repo:   "meh",
-				Path:   "deployment/k8s/",
-				Branch: "master",
+				Owner: "rebuy-de",
+				Repo:  "meh",
+				Path:  "deployment/k8s/",
+				Ref:   "master",
 			},
 			TemplateValues: TemplateValues{
 				"clusterDomain": "unit-test.example.org",

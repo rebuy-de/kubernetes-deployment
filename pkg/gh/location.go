@@ -8,7 +8,7 @@ import (
 )
 
 type Location struct {
-	Owner, Repo, Branch, Path string
+	Owner, Repo, Path, Ref string
 }
 
 func NewLocation(location string) (*Location, error) {
@@ -19,15 +19,15 @@ func NewLocation(location string) (*Location, error) {
 	}
 
 	return &Location{
-		Owner:  matches[1],
-		Repo:   matches[2],
-		Path:   matches[3],
-		Branch: "master",
+		Owner: matches[1],
+		Repo:  matches[2],
+		Path:  matches[3],
+		Ref:   "master",
 	}, nil
 }
 
 func (l Location) String() string {
-	return fmt.Sprintf("github.com/%s/%s/%s", l.Owner, l.Repo, l.Path)
+	return fmt.Sprintf("github.com/%s/%s/%s@%s", l.Owner, l.Repo, l.Path, l.Ref)
 }
 
 func (l *Location) Defaults(defaults Location) {

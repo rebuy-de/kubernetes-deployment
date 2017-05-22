@@ -7,10 +7,10 @@ import (
 	"github.com/fatih/structs"
 )
 
-func Deploy(params *Parameters, project, branch string) {
+func Deploy(params *Parameters, project, branchName string) {
 	settings := params.LoadSettings()
 
-	log.Infof("deploying %s/%s", project, branch)
+	log.Infof("deploying %s/%s", project, branchName)
 
 	service := settings.Service(project)
 	if service == nil {
@@ -23,11 +23,19 @@ func Deploy(params *Parameters, project, branch string) {
 		log.Fields(structs.Map(service)),
 	).Debug("service found")
 
-	templates, err := params.GitHubClient().GetFiles(service.Location)
+	branch, err := params.GitHubClient().GetBranch(&service.Location)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	service.Location.Ref = branch.SHA
+
+	templates, err := params.GitHubClient().GetFiles(&service.Location)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
+	fmt.Printf("%#v\n", branch)
 	fmt.Printf("%#v\n", templates)
 }
