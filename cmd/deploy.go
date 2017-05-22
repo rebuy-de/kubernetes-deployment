@@ -3,8 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/fatih/structs"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +11,7 @@ const (
 	DefaultBranch = "master"
 )
 
-func NewDeployCommand(params *Parameters) *cobra.Command {
+func NewDeployCommand(params *api.Parameters) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "deploy PROJECT [BRANCH]",
 		Short: "Deploys a project to Kubernetes",
@@ -32,28 +31,7 @@ func NewDeployCommand(params *Parameters) *cobra.Command {
 			branch = args[1]
 		}
 
-		settings := params.LoadSettings()
-
-		log.Infof("deploying %s/%s", project, branch)
-
-		service := settings.Service(project)
-		if service == nil {
-			log.WithFields(log.Fields{
-				"Project": project,
-			}).Fatal("project not found")
-		}
-		log.WithFields(
-			log.Fields(structs.Map(service)),
-		).Debug("service found")
-
-		templates, err := params.GitHubClient().GetFiles(service.Location)
-		if err != nil {
-			log.Error(err)
-			return nil
-		}
-
-		fmt.Printf("%#v\n", templates)
-
+		api.Deploy(params, project, branch)
 		return nil
 	}
 

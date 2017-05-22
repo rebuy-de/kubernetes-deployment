@@ -18,7 +18,7 @@ var (
 )
 
 type Client interface {
-	GetFile(location *Location) (string, error)
+	GetFile(location Location) (string, error)
 	GetFiles(location Location) (map[string]string, error)
 }
 
@@ -41,7 +41,7 @@ func New(token string) Client {
 	}
 }
 
-func (gh *API) GetFile(location *Location) (string, error) {
+func (gh *API) GetFile(location Location) (string, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
 	).Debug("downloading file from GitHub")
@@ -109,7 +109,7 @@ func (gh *API) GetFiles(location Location) (map[string]string, error) {
 
 	result := make(map[string]string)
 	for _, file := range dir {
-		result[*file.Name], err = gh.GetFile(&Location{
+		result[*file.Name], err = gh.GetFile(Location{
 			Owner:  location.Owner,
 			Repo:   location.Repo,
 			Path:   path.Join(location.Path, *file.Name),

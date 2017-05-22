@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -19,13 +17,7 @@ const (
 	ConfigDir = "~/.rebuy/kubernetes-deployment"
 )
 
-type Parameters struct {
-	Kubeconfig  string
-	GitHubToken string `mapstructure:"github-token"`
-	Filename    string
-}
-
-func (p *Parameters) Bind(cmd *cobra.Command) {
+func BindParameters(cmd *cobra.Command) {
 	// kubeconfig
 	cmd.PersistentFlags().String(
 		FlagKubeconfig, "",
@@ -47,7 +39,7 @@ func (p *Parameters) Bind(cmd *cobra.Command) {
 	viper.BindPFlag(FlagFilename, cmd.PersistentFlags().Lookup(FlagFilename))
 }
 
-func (p *Parameters) ReadIn() error {
+func ReadInParameters(p *api.Parameters) error {
 	path, err := homedir.Expand(ConfigDir)
 	if err != nil {
 		return err
@@ -62,24 +54,4 @@ func (p *Parameters) ReadIn() error {
 	viper.MergeInConfig()
 
 	return viper.Unmarshal(p)
-}
-
-func (p *Parameters) GitHubClient() gh.Client {
-	return gh.New(p.GitHubToken)
-}
-
-func (p *Parameters) LoadSettings() *settings.Settings {
-	sett, err := settings.Read(p.Filename, p.GitHubClient())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.WithFields(log.Fields{
-		"ServiceCount": len(sett.Services),
-		"Filename":     p.Filename,
-	}).Debug("loaded service file")
-
-	sett.Clean()
-
-	return sett
 }
