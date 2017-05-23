@@ -7,6 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -18,8 +19,8 @@ var (
 )
 
 type Defaults struct {
-	Location       gh.Location    `yaml:",inline"`
-	TemplateValues TemplateValues `yaml:"template-values"`
+	Location       gh.Location      `yaml:",inline"`
+	TemplateValues templates.Values `yaml:"template-values"`
 }
 
 type Settings struct {

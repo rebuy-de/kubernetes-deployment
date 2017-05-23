@@ -82,7 +82,6 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		"Branch":        *ghBranch.Name,
 		"Author":        *ghBranch.Commit.Author.Login,
 		"SHA":           *ghBranch.Commit.SHA,
-		"Message":       *ghBranch.Commit.Commit.Message,
 		"Date":          ghBranch.Commit.Commit.Author.Date,
 	}).Debug("fetched branch information")
 
@@ -113,15 +112,21 @@ func (gh *API) GetFile(location *Location) (string, error) {
 			location)
 	}
 
+	content, err := file.GetContent()
+	if err != nil {
+		return "", errors.Wrapf(err,
+			"unable to decode file '%v'", location)
+	}
+
 	log.WithFields(log.Fields{
 		"Size":          *file.Size,
 		"URL":           *file.HTMLURL,
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
-	}).Debug("found file")
+	}).Debugf("found file")
 
-	return file.GetContent()
+	return content, nil
 }
 
 func (gh *API) GetFiles(location *Location) (map[string]string, error) {

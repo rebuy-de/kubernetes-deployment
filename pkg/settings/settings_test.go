@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 )
 
 func TestReadFile(t *testing.T) {
@@ -19,7 +20,7 @@ func TestReadFile(t *testing.T) {
 				Owner: "rebuy-de",
 				Path:  "deployment/k8s/",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -36,7 +37,7 @@ func TestReadFile(t *testing.T) {
 				Location: gh.Location{
 					Repo: "bash",
 				},
-				TemplateValues: TemplateValues{
+				TemplateValues: templates.Values{
 					"clusterDomain": "test.example.com",
 				},
 			},
@@ -92,7 +93,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -105,7 +106,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "test.example.com",
 				"secret":        "foo",
 			},
@@ -118,7 +119,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/foo/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -131,7 +132,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -144,7 +145,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -157,7 +158,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: TemplateValues{
+			TemplateValues: templates.Values{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
