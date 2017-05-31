@@ -88,6 +88,41 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 	return branch, err
 }
 
+type FileFuture struct {
+	file chan string
+	err  chan error
+}
+
+func (ff *FileFuture) Get() (string, error) {
+	select {
+	case file := <-ff.file:
+		close(ff.file)
+		close(ff.err)
+		return file, nil
+	case err := <-ff.err:
+		close(ff.file)
+		close(ff.err)
+		return "", err
+	}
+}
+
+func (gh *API) GetFileAsync(location *Location) *FileFuture {
+	ff := &FileFuture{
+		file: make(chan string, 1),
+		err:  make(chan error, 1),
+	}
+
+	go func() {
+		file, err := gh.GetFile(location)
+		if err != nil {
+			ff.err <- err
+		}
+		ff.file <- file
+	}()
+
+	return ff
+}
+
 func (gh *API) GetFile(location *Location) (string, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
@@ -160,19 +195,25 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 		"RateReset":     resp.Rate.Reset,
 	}).Debug("found files in directory")
 
-	result := make(map[string]string)
+	futures := make(map[string]*FileFuture)
 	for _, file := range dir {
-		result[*file.Name], err = gh.GetFile(&Location{
+		futures[*file.Name] = gh.GetFileAsync(&Location{
 			Owner: location.Owner,
 			Repo:  location.Repo,
 			Path:  path.Join(location.Path, *file.Name),
 			Ref:   location.Ref,
 		})
+	}
+
+	result := make(map[string]string)
+	for name, future := range futures {
+		result[name], err = future.Get()
 		if err != nil {
 			return nil, errors.Wrapf(err,
 				"unable to decode file '%v'",
 				location)
 		}
 	}
+
 	return result, nil
 }
