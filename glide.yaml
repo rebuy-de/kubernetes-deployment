@@ -17,3 +17,5 @@ import:
 - package: golang.org/x/oauth2
 - package: github.com/imdario/mergo
   version: ^0.2.2
+- package: k8s.io/client-go
+  version: ^3.0.0-beta.0
