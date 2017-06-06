@@ -1,15 +1,19 @@
-hash: fa52ebbc27c42deeb342e668d1dd203093076ff2cc9b13a1ee17bb031d869a44
-updated: 2017-05-31T23:31:24.708117991+02:00
+hash: c64a4ba5914b94906dcd9e21adf132389db6bf05e89aa52fecf306c59ed3856a
+updated: 2017-06-06T18:03:01.489757776+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
   subpackages:
   - spew
+- name: github.com/docker/distribution
+  version: cd27f179f2c10c5d300e6d09025b538c475b0d51
+  subpackages:
+  - digest
+  - reference
 - name: github.com/emicklei/go-restful
   version: 09691a3b6378b740595c1002f40c34dd5f218a22
   subpackages:
   - log
-  - swagger
 - name: github.com/fatih/structs
   version: a720dfa8df582c51dee1b36feabb906bde1588bd
 - name: github.com/fsnotify/fsnotify
@@ -35,6 +39,8 @@ imports:
   version: 8616e8ee5e20a1704615e6c8d7afcdac06087a67
   subpackages:
   - proto
+- name: github.com/google/btree
+  version: 316fb6d3f031ae8f4d457c6c5186b9e3ded70435
 - name: github.com/google/go-github
   version: ebfec748347a9af6793c723f8859afcd906860fb
   subpackages:
@@ -45,6 +51,10 @@ imports:
   - query
 - name: github.com/google/gofuzz
   version: 44d81051d367757e1c7c6a5a86423ece9afcf63c
+- name: github.com/gregjones/httpcache
+  version: 0d2297f241a3503b4d464cd434e6d1490ec76e9a
+  subpackages:
+  - diskcache
 - name: github.com/hashicorp/hcl
   version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
@@ -76,6 +86,8 @@ imports:
   version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
   version: 5c26a6ff6fd178719e15decac1c8196da0d7d6d1
+- name: github.com/peterbourgon/diskv
+  version: 937c5a91d7fb1477fa6d2bb71410b2ae7a0f2143
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/purell
@@ -91,7 +103,7 @@ imports:
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: 8d4ce3549a0bf0e3569df3aae7423b7743cd05a9
+  version: 84f471618b363c4e298af84c2b53aa4f687c5f70
 - name: github.com/spf13/jwalterweatherman
   version: 8f07c835e5cc1450c082fe3a439cf87b0cbb2d99
 - name: github.com/spf13/pflag
@@ -106,7 +118,6 @@ imports:
   version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
   subpackages:
   - context
-  - context/ctxhttp
   - http2
   - http2/hpack
   - idna
@@ -151,8 +162,6 @@ imports:
 - name: k8s.io/apimachinery
   version: 75b8dd260ef0469d96d578705a87cffd0e09dab8
   subpackages:
-  - pkg/api/equality
-  - pkg/api/errors
   - pkg/api/meta
   - pkg/api/resource
   - pkg/apimachinery
@@ -171,32 +180,32 @@ imports:
   - pkg/runtime/serializer/json
   - pkg/runtime/serializer/protobuf
   - pkg/runtime/serializer/recognizer
-  - pkg/runtime/serializer/streaming
   - pkg/runtime/serializer/versioning
   - pkg/selection
   - pkg/types
-  - pkg/util/diff
   - pkg/util/errors
   - pkg/util/framer
-  - pkg/util/httpstream
   - pkg/util/intstr
   - pkg/util/json
-  - pkg/util/mergepatch
   - pkg/util/net
   - pkg/util/rand
   - pkg/util/runtime
   - pkg/util/sets
-  - pkg/util/strategicpatch
   - pkg/util/validation
   - pkg/util/validation/field
   - pkg/util/wait
   - pkg/util/yaml
-  - pkg/version
   - pkg/watch
-  - third_party/forked/golang/json
   - third_party/forked/golang/reflect
 - name: k8s.io/client-go
   version: 3627aeb7d4f6ade38f995d2c923e459146493c7e
   subpackages:
   - pkg/api
+  - pkg/api/install
+  - pkg/api/v1
+  - pkg/apis/extensions
+  - pkg/apis/extensions/install
+  - pkg/apis/extensions/v1beta1
+  - pkg/util
+  - pkg/util/parsers
 testImports: []

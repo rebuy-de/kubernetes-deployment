@@ -7,13 +7,20 @@ import (
 )
 
 type Parameters struct {
-	Kubeconfig  string
-	GitHubToken string `mapstructure:"github-token"`
-	Filename    string
+	Kubeconfig   string
+	GitHubToken  string `mapstructure:"github-token"`
+	HTTPCacheDir string `mapstructure:"http-cache-dir"`
+	Filename     string
+
+	ghClient gh.Client
 }
 
 func (p *Parameters) GitHubClient() gh.Client {
-	return gh.New(p.GitHubToken)
+	if p.ghClient == nil {
+		p.ghClient = gh.New(p.GitHubToken, p.HTTPCacheDir)
+	}
+
+	return p.ghClient
 }
 
 func (p *Parameters) LoadSettings() *settings.Settings {

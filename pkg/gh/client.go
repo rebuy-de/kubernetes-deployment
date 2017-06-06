@@ -2,6 +2,7 @@ package gh
 
 import (
 	"context"
+	"net/http"
 	"path"
 	"regexp"
 	"time"
@@ -11,6 +12,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
 	"github.com/google/go-github/github"
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
 	"github.com/pkg/errors"
 )
 
@@ -28,15 +31,26 @@ type API struct {
 	client *github.Client
 }
 
-func New(token string) Client {
+func New(token string, cacheDir string) Client {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
 
-	tc := oauth2.NewClient(ctx, ts)
+	oauthTransport := oauth2.NewClient(ctx, ts).Transport
 
-	client := github.NewClient(tc)
+	cache := diskcache.New(cacheDir)
+
+	cacheTransport := &httpcache.Transport{
+		Transport: oauthTransport,
+		Cache:     cache,
+
+		MarkCachedResponses: true,
+	}
+
+	client := github.NewClient(&http.Client{
+		Transport: cacheTransport,
+	})
 
 	return &API{
 		client: client,
@@ -79,6 +93,7 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
+		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 		"Branch":        *ghBranch.Name,
 		"Author":        *ghBranch.Commit.Author.Login,
 		"SHA":           *ghBranch.Commit.SHA,
@@ -159,6 +174,7 @@ func (gh *API) GetFile(location *Location) (string, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
+		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debugf("found file")
 
 	return content, nil
@@ -193,6 +209,7 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
+		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debug("found files in directory")
 
 	futures := make(map[string]*FileFuture)
