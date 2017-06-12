@@ -3,14 +3,18 @@ package api
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 )
 
 type Parameters struct {
-	Kubeconfig   string
+	Kubeconfig  string
+	KubectlPath string `mapstructure:"kubectl-path"`
+
 	GitHubToken  string `mapstructure:"github-token"`
 	HTTPCacheDir string `mapstructure:"http-cache-dir"`
-	Filename     string
+
+	Filename string
 
 	ghClient gh.Client
 }
@@ -21,6 +25,10 @@ func (p *Parameters) GitHubClient() gh.Client {
 	}
 
 	return p.ghClient
+}
+
+func (p *Parameters) Kubectl() kubectl.Interface {
+	return kubectl.New(p.KubectlPath, p.Kubeconfig)
 }
 
 func (p *Parameters) LoadSettings() *settings.Settings {

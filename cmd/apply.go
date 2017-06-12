@@ -5,9 +5,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewDeployCommand(params *api.Parameters) *cobra.Command {
+func NewApplyCommand(params *api.Parameters) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deploy PROJECT [BRANCH]",
+		Use:   "apply PROJECT [BRANCH]",
 		Short: "Deploys a project to Kubernetes",
 	}
 
@@ -17,7 +17,7 @@ func NewDeployCommand(params *api.Parameters) *cobra.Command {
 			return err
 		}
 
-		api.Deploy(params, project, branch)
+		api.Apply(params, project, branch)
 		return nil
 	}
 

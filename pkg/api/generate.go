@@ -10,9 +10,6 @@ import (
 	"github.com/fatih/structs"
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
-
-	_ "k8s.io/client-go/pkg/api/install"
-	_ "k8s.io/client-go/pkg/apis/extensions/install"
 )
 
 func Generate(params *Parameters, project, branchName string) ([]runtime.Object, error) {

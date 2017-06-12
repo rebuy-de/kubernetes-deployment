@@ -9,6 +9,7 @@ import (
 
 const (
 	FlagKubeconfig   = "kubeconfig"
+	FlagKubectlPath  = "kubectl-path"
 	FlagGitHubToken  = "github-token"
 	FlagFilename     = "filename"
 	FlagHTTPCacheDir = "http-cache-dir"
@@ -25,6 +26,12 @@ func BindParameters(cmd *cobra.Command) {
 		"path to the kubeconfig file to use for deployments ($KUBECONFIG)")
 	viper.BindPFlag(FlagKubeconfig, cmd.PersistentFlags().Lookup(FlagKubeconfig))
 	viper.BindEnv(FlagKubeconfig, "KUBECONFIG")
+
+	// kubectl-path
+	cmd.PersistentFlags().String(
+		FlagKubectlPath, "kubectl",
+		"full path or basename of kubectl executable")
+	viper.BindPFlag(FlagKubectlPath, cmd.PersistentFlags().Lookup(FlagKubectlPath))
 
 	// github-token
 	cmd.PersistentFlags().String(
