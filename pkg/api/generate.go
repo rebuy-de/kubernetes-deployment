@@ -70,6 +70,13 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 	objects := []runtime.Object{}
 
 	for name, data := range rendered {
+		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {
+			log.WithFields(log.Fields{
+				"Name": name,
+			}).Debug("Ignoring file with wrong extension.")
+			continue
+		}
+
 		obj, _, err := decode([]byte(data), nil, nil)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
