@@ -83,7 +83,6 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 		}
 
 		objects = append(objects, obj)
-
 	}
 
 	return objects, nil
