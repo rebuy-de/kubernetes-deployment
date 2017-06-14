@@ -1,24 +1,21 @@
 # kubernetes-deployment
-Deploys our Kubernetes manifests to a fresh cluster
+
+Deploys our manifests from GitHub to Kubernetes.
 
 ## Usage
 
-You can discover all flags with the tool itself:
+There is a complete built-in help, which is probably more up to date, than this README:
 
-```bash
+```
 kubernetes-deployment help
 ```
 
-### Examples
+### Configuration
 
-```bash
-kubernetes-deployment deploy -g fetch -g render -n message-broker -s production
-```
+There are different sources of retrieving parameter. They are loaded in the following order. Each item overwrites the previous one:
 
-```bash
-kubernetes-deployment deploy -g fetch -g render -n message-broker -b cloud-42
-```
-
-```bash
-kubernetes-deployment bulk -g all
-```
+1. default values
+2. values in `~/.rebuy/kubernetes-deployment/default.[yaml|toml|json|hcl]` (eg `kubeconfig`)
+3. values in `./config.[yaml|toml|json|hcl]` (eg `kubeconfig`)
+4. environment variables (eg `KUBECONFIG`)
+5. command line flags (eg `--kubeconfig`)

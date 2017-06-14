@@ -1,66 +1,25 @@
 package cmd
 
-import (
-	"io"
-	"os"
-	"path"
-	"path/filepath"
+import "fmt"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/pkg/errors"
+const (
+	DefaultBranch = "master"
 )
 
-// yes, golang doesn't have any built-in function to copy a file ...
-func CopyFile(src, dst string) error {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer srcFile.Close()
-
-	dstFile, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer dstFile.Close()
-
-	_, err = io.Copy(dstFile, srcFile)
-	if err != nil {
-		return err
+func getProject(args []string) (string, string, error) {
+	if len(args) < 1 || len(args) > 2 {
+		return "", "", fmt.Errorf("Wrong number of arguments.")
 	}
 
-	return nil
-}
+	var (
+		project = args[0]
+		branch  = DefaultBranch
+	)
 
-func FindFiles(dir string, globs ...string) ([]string, error) {
-	dir = path.Clean(dir) + "/"
-	result := []string{}
-
-	for _, ext := range globs {
-		matches, err := filepath.Glob(path.Join(dir, ext))
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, matches...)
+	if len(args) > 1 {
+		branch = args[1]
 	}
 
-	return result, nil
-}
+	return project, branch, nil
 
-type stackTracer interface {
-	StackTrace() errors.StackTrace
-}
-
-func Must(err error) {
-	if err == nil {
-		return
-	}
-
-	log.Error(err)
-
-	if err, ok := err.(stackTracer); ok {
-		log.Debugf("%+v", err.StackTrace())
-	}
-
-	os.Exit(1)
 }
