@@ -29,6 +29,8 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 		log.Fields(structs.Map(service)),
 	).Debug("project found")
 
+	service.Location.Ref = branchName
+
 	branch, err := params.GitHubClient().GetBranch(&service.Location)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get branch information")
