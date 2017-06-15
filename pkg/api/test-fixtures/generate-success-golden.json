@@ -1,61 +1,64 @@
-{
-    "kind": "Pod",
-    "apiVersion": "v1",
-    "metadata": {
-        "name": "example-app",
-        "creationTimestamp": null,
-        "labels": {
-            "app": "example-app",
-            "branch": "master",
-            "role": "backend",
-            "version": "v1"
-        }
-    },
-    "spec": {
-        "containers": [
-            {
-                "name": "java",
-                "image": "companyname/java",
-                "ports": [
-                    {
-                        "containerPort": 443
-                    }
-                ],
-                "resources": {},
-                "volumeMounts": [
-                    {
-                        "name": "logs",
-                        "mountPath": "/volumes/logs"
-                    }
-                ]
-            },
-            {
-                "name": "logger",
-                "image": "companyname/logger:1234567",
-                "ports": [
-                    {
-                        "containerPort": 9999
-                    }
-                ],
-                "resources": {},
-                "volumeMounts": [
-                    {
-                        "name": "logs",
-                        "mountPath": "/logs"
-                    }
-                ]
-            },
-            {
-                "name": "monitoring",
-                "image": "companyname/monitoring:v4.5.6",
-                "ports": [
-                    {
-                        "containerPort": 1234
-                    }
-                ],
-                "resources": {}
+[
+    {
+        "kind": "Pod",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "example-app",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "example-app",
+                "branch": "master",
+                "role": "backend",
+                "stage": "production",
+                "version": "v1"
             }
-        ]
-    },
-    "status": {}
-}
+        },
+        "spec": {
+            "containers": [
+                {
+                    "name": "java",
+                    "image": "companyname/java",
+                    "ports": [
+                        {
+                            "containerPort": 443
+                        }
+                    ],
+                    "resources": {},
+                    "volumeMounts": [
+                        {
+                            "name": "logs",
+                            "mountPath": "/volumes/logs"
+                        }
+                    ]
+                },
+                {
+                    "name": "logger",
+                    "image": "companyname/logger:1234567",
+                    "ports": [
+                        {
+                            "containerPort": 9999
+                        }
+                    ],
+                    "resources": {},
+                    "volumeMounts": [
+                        {
+                            "name": "logs",
+                            "mountPath": "/logs"
+                        }
+                    ]
+                },
+                {
+                    "name": "monitoring",
+                    "image": "companyname/monitoring:v4.5.6",
+                    "ports": [
+                        {
+                            "containerPort": 1234
+                        }
+                    ],
+                    "resources": {}
+                }
+            ]
+        },
+        "status": {}
+    }
+]

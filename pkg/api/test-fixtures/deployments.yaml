@@ -1,6 +1,17 @@
 default:
   owner: rebuy-de
   path: k8s
+  context: prod
+  variables:
+    stage: unknown
+
+contexts:
+  prod:
+    variables:
+      stage: production
+  test:
+    variables:
+      stage: testing
 
 services:
 - repo: foobar

@@ -21,7 +21,18 @@ func TestClean(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	settings.Clean()
+	settings.Clean("")
 
 	testutil.AssertGoldenFile(t, "test-fixtures/services-clean-golden.json", settings)
+}
+
+func TestCleanWithContext(t *testing.T) {
+	settings, err := Read("./test-fixtures/services.yaml", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	settings.Clean("def")
+
+	testutil.AssertGoldenFile(t, "test-fixtures/services-context-golden.json", settings)
 }

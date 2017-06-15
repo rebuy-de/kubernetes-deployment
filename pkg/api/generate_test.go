@@ -6,12 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"k8s.io/client-go/pkg/api/v1"
-
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	fakeGH "github.com/rebuy-de/kubernetes-deployment/pkg/gh/fake"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -53,13 +52,18 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestProjectNoExist(t *testing.T) {
-	app := &api.App{
+func generateApp() *api.App {
+	return &api.App{
 		Clients: &api.Clients{
 			GitHub: ExampleGitHub,
 		},
-		Settings: ExampleSettings,
+		Settings:   ExampleSettings,
+		Parameters: new(api.Parameters),
 	}
+}
+
+func TestProjectNoExist(t *testing.T) {
+	app := generateApp()
 
 	_, err := app.Generate("project-no-exist", "master")
 	if err == nil {
@@ -75,12 +79,7 @@ func TestProjectNoExist(t *testing.T) {
 }
 
 func TestMissingRepo(t *testing.T) {
-	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-		},
-		Settings: ExampleSettings,
-	}
+	app := generateApp()
 
 	_, err := app.Generate("repo-no-exist", "master")
 	if err == nil {
@@ -96,12 +95,7 @@ func TestMissingRepo(t *testing.T) {
 }
 
 func TestMissingBranch(t *testing.T) {
-	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-		},
-		Settings: ExampleSettings,
-	}
+	app := generateApp()
 
 	_, err := app.Generate("foobar", "missing-branch")
 	if err == nil {
@@ -117,12 +111,7 @@ func TestMissingBranch(t *testing.T) {
 }
 
 func TestMissingFiles(t *testing.T) {
-	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-		},
-		Settings: ExampleSettings,
-	}
+	app := generateApp()
 
 	_, err := app.Generate("no-files", "master")
 	if err == nil {
@@ -138,12 +127,7 @@ func TestMissingFiles(t *testing.T) {
 }
 
 func TestInvalidFile(t *testing.T) {
-	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-		},
-		Settings: ExampleSettings,
-	}
+	app := generateApp()
 
 	_, err := app.Generate("invalid-file", "master")
 	if err == nil {
@@ -159,23 +143,12 @@ func TestInvalidFile(t *testing.T) {
 }
 
 func TestGenerateSuccess(t *testing.T) {
-	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-		},
-		Settings: ExampleSettings,
-	}
+	app := generateApp()
 
 	objects, err := app.Generate("foobar", "master")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if len(objects) != 1 {
-		t.Fatalf("Expected 1 object. Got %d.", len(objects))
-	}
-
-	pod := objects[0].(*v1.Pod)
-
-	AssertGoldenFile(t, "test-fixtures/generate-success-golden.json", pod)
+	testutil.AssertGoldenFile(t, "test-fixtures/generate-success-golden.json", objects)
 }

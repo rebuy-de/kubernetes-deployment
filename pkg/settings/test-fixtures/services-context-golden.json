@@ -22,7 +22,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
             }
@@ -36,7 +36,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "test.example.com",
                 "secret": "foo"
             }
@@ -50,7 +50,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
             }
@@ -64,7 +64,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
             }
@@ -78,7 +78,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
             }
@@ -92,7 +92,7 @@
                 "Ref": "master"
             },
             "Variables": {
-                "bish": "bash",
+                "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
             }

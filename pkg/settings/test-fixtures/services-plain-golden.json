@@ -9,7 +9,8 @@
         "Variables": {
             "clusterDomain": "unit-test.example.org",
             "secret": "foo"
-        }
+        },
+        "Context": "abc"
     },
     "Services": [
         {
@@ -74,5 +75,17 @@
             },
             "Variables": null
         }
-    ]
+    ],
+    "Contexts": {
+        "abc": {
+            "Variables": {
+                "bish": "bash"
+            }
+        },
+        "def": {
+            "Variables": {
+                "bish": "bosh"
+            }
+        }
+    }
 }

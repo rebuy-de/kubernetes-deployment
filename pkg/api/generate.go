@@ -13,7 +13,7 @@ import (
 )
 
 func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
-	app.Settings.Clean()
+	app.Settings.Clean(app.Parameters.Context)
 
 	log.WithFields(log.Fields{
 		"Project": project,

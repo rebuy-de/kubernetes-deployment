@@ -23,7 +23,7 @@ func NewDumpSettingsCommand(params *api.Parameters) *cobra.Command {
 			return
 		}
 
-		app.Settings.Clean()
+		app.Settings.Clean(app.Parameters.Context)
 
 		raw, err := yaml.Marshal(app.Settings)
 		if err != nil {

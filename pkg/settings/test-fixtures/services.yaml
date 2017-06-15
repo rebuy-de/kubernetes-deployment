@@ -1,9 +1,18 @@
 default:
   owner: rebuy-de
   path: deployment/k8s/
+  context: abc
   variables:
     clusterDomain: unit-test.example.org
     secret: foo
+
+contexts:
+  abc:
+    variables:
+      bish: bash
+  def:
+    variables:
+      bish: bosh
 
 services:
 - repo: bish
