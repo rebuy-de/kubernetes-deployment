@@ -1,14 +1,14 @@
 default:
   owner: rebuy-de
   path: deployment/k8s/
-  template-values:
+  variables:
     clusterDomain: unit-test.example.org
     secret: foo
 
 services:
 - repo: bish
 - repo: bash
-  template-values:
+  variables:
     clusterDomain: test.example.com
 - repo: bosh
   path: //deployment/foo

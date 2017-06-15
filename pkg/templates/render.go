@@ -8,10 +8,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func RenderAll(templates map[string]string, values Values) (map[string]string, error) {
+func RenderAll(templates map[string]string, variables Variables) (map[string]string, error) {
 	result := map[string]string{}
 	for name, templateString := range templates {
-		rendered, err := Render(templateString, values)
+		rendered, err := Render(templateString, variables)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to render '%s'", name)
 		}
@@ -20,7 +20,7 @@ func RenderAll(templates map[string]string, values Values) (map[string]string, e
 	return result, nil
 }
 
-func Render(templateString string, values Values) (string, error) {
+func Render(templateString string, variables Variables) (string, error) {
 	funcMap := template.FuncMap{
 		"ToUpper": strings.ToUpper,
 		"ToLower": strings.ToLower,
@@ -36,7 +36,7 @@ func Render(templateString string, values Values) (string, error) {
 
 	var buf bytes.Buffer
 
-	err = t.Execute(&buf, values)
+	err = t.Execute(&buf, variables)
 	if err != nil {
 		return "", errors.Wrapf(err, "Unable to render template")
 	}

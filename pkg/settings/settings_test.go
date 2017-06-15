@@ -20,7 +20,7 @@ func TestReadFile(t *testing.T) {
 				Owner: "rebuy-de",
 				Path:  "deployment/k8s/",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -37,7 +37,7 @@ func TestReadFile(t *testing.T) {
 				Location: gh.Location{
 					Repo: "bash",
 				},
-				TemplateValues: templates.Values{
+				Variables: templates.Variables{
 					"clusterDomain": "test.example.com",
 				},
 			},
@@ -93,7 +93,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -106,7 +106,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "test.example.com",
 				"secret":        "foo",
 			},
@@ -119,7 +119,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/foo/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -132,7 +132,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -145,7 +145,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},
@@ -158,7 +158,7 @@ func TestClean(t *testing.T) {
 				Path:  "deployment/k8s/",
 				Ref:   "master",
 			},
-			TemplateValues: templates.Values{
+			Variables: templates.Variables{
 				"clusterDomain": "unit-test.example.org",
 				"secret":        "foo",
 			},

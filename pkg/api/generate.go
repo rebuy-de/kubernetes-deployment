@@ -51,18 +51,18 @@ func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	defaultValues := templates.Values{
+	defaultVariables := templates.Variables{
 		"gitBranchName": branch.Name,
 		"gitCommitID":   branch.SHA,
 	}
 
-	service.TemplateValues.Defaults(defaultValues)
+	service.Variables.Defaults(defaultVariables)
 
 	log.WithFields(log.Fields{
-		"Values": service.TemplateValues,
+		"Values": service.Variables,
 	}).Debug("collected template values")
 
-	rendered, err := templates.RenderAll(templateStrings, service.TemplateValues)
+	rendered, err := templates.RenderAll(templateStrings, service.Variables)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

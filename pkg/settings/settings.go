@@ -19,8 +19,8 @@ var (
 )
 
 type Defaults struct {
-	Location       gh.Location      `yaml:",inline"`
-	TemplateValues templates.Values `yaml:"template-values"`
+	Location  gh.Location         `yaml:",inline"`
+	Variables templates.Variables `yaml:"variables"`
 }
 
 type Settings struct {
@@ -88,7 +88,7 @@ func (s *Settings) Clean() {
 		service.Location.Defaults(s.Default.Location)
 		service.Location.Defaults(DefaultLocation)
 
-		service.TemplateValues.Defaults(s.Default.TemplateValues)
+		service.Variables.Defaults(s.Default.Variables)
 
 		service.Location.Path = filepath.Clean(strings.Trim(service.Location.Path, "/")) + "/"
 

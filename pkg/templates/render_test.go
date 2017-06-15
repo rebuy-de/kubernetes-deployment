@@ -8,7 +8,7 @@ func TestRender(t *testing.T) {
 			branch: {{.branch}}
 			commit: {{.sha}}
 		`
-		values = Values{
+		values = Variables{
 			"branch": "foobar",
 			"sha":    "123abc",
 		}
