@@ -2,8 +2,8 @@ package templates
 
 import (
 	"bytes"
-	"html/template"
 	"strings"
+	"text/template"
 
 	"github.com/pkg/errors"
 )
