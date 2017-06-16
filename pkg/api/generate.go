@@ -87,5 +87,9 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 		objects = append(objects, obj)
 	}
 
+	if len(rendered) <= 0 {
+		return nil, errors.Errorf("directory doesn't contain any template files")
+	}
+
 	return objects, nil
 }
