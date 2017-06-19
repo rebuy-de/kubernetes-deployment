@@ -1,0 +1,13 @@
+default:
+  owner: rebuy-de
+  path: k8s
+
+services:
+- repo: foobar
+- repo: repo-no-exist
+- name: no-files
+  repo: foobar
+  path: does-not-exist
+- name: invalid-file
+  repo: foobar
+  path: invalid

@@ -1,9 +1,13 @@
 package kubectl
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"os/exec"
 	"strings"
+
+	"k8s.io/apimachinery/pkg/runtime"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
@@ -51,6 +55,11 @@ func (k *Kubectl) run(stdin io.Reader, args ...string) error {
 	return cmd.Run()
 }
 
-func (k *Kubectl) Apply(stdin io.Reader) error {
-	return k.run(stdin, "apply", "-f", "-")
+func (k *Kubectl) Apply(obj runtime.Object) error {
+	raw, err := json.MarshalIndent(obj, "", "    ")
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return k.run(bytes.NewBuffer(raw), "apply", "-f", "-")
 }

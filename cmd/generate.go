@@ -21,7 +21,13 @@ func NewGenerateCommand(params *api.Parameters) *cobra.Command {
 			return err
 		}
 
-		objects, err := api.Generate(params, project, branch)
+		app, err := api.New(params)
+		if err != nil {
+			log.Fatal(err)
+			return nil
+		}
+
+		objects, err := app.Generate(project, branch)
 		if err != nil {
 			log.Fatal(err)
 			return nil
