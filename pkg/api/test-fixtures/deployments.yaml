@@ -1,4 +1,4 @@
-default:
+defaults:
   owner: rebuy-de
   path: k8s
   context: prod

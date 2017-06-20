@@ -33,7 +33,7 @@ type Context struct {
 }
 
 type Settings struct {
-	Default  Defaults `yaml:"default"`
+	Defaults Defaults `yaml:"defaults"`
 	Services Services `yaml:"services"`
 	Contexts Contexts `yaml:"contexts"`
 }
@@ -102,7 +102,7 @@ func (s *Settings) Clean(contextName string) {
 
 	for name := range s.Contexts {
 		context := s.Contexts[name]
-		context.Variables.Defaults(s.Default.Variables)
+		context.Variables.Defaults(s.Defaults.Variables)
 	}
 
 	context := s.Contexts[contextName]
@@ -110,7 +110,7 @@ func (s *Settings) Clean(contextName string) {
 	for i := range s.Services {
 		service := &s.Services[i]
 
-		service.Location.Defaults(s.Default.Location)
+		service.Location.Defaults(s.Defaults.Location)
 		service.Location.Defaults(DefaultLocation)
 
 		service.Variables.Defaults(context.Variables)
@@ -119,15 +119,15 @@ func (s *Settings) Clean(contextName string) {
 
 		if strings.TrimSpace(service.Name) == "" {
 			nameParts := []string{}
-			if service.Location.Owner != s.Default.Location.Owner {
+			if service.Location.Owner != s.Defaults.Location.Owner {
 				nameParts = append(nameParts, service.Location.Owner)
 			}
 
-			if service.Location.Repo != s.Default.Location.Repo {
+			if service.Location.Repo != s.Defaults.Location.Repo {
 				nameParts = append(nameParts, service.Location.Repo)
 			}
 
-			if service.Location.Path != s.Default.Location.Path {
+			if service.Location.Path != s.Defaults.Location.Path {
 				path := service.Location.Path
 				path = strings.Trim(path, "/")
 				path = strings.Replace(path, "/", "-", -1)
