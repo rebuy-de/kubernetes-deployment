@@ -14,6 +14,7 @@ import (
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/pkg/errors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -29,9 +30,10 @@ type Client interface {
 
 type API struct {
 	client *github.Client
+	statsd statsdw.Interface
 }
 
-func New(token string, cacheDir string) Client {
+func New(token string, cacheDir string, statsd statsdw.Interface) Client {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -54,6 +56,7 @@ func New(token string, cacheDir string) Client {
 
 	return &API{
 		client: client,
+		statsd: statsd,
 	}
 }
 
@@ -99,6 +102,8 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		"SHA":           *ghBranch.Commit.SHA,
 		"Date":          ghBranch.Commit.Commit.Author.Date,
 	}).Debug("fetched branch information")
+
+	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 
 	return branch, err
 }
@@ -177,6 +182,8 @@ func (gh *API) GetFile(location *Location) (string, error) {
 		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debugf("found file")
 
+	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
+
 	return content, nil
 }
 
@@ -211,6 +218,8 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 		"RateReset":     resp.Rate.Reset,
 		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debug("found files in directory")
+
+	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 
 	futures := make(map[string]*FileFuture)
 	for _, file := range dir {

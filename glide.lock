@@ -1,5 +1,5 @@
-hash: 01d7538c86dc9b6699ac11a2d35fcc6de9932fb1b4aca4ea56f63bd5237c62e9
-updated: 2017-06-20T17:18:54.789832426+02:00
+hash: 45f8efc874ebe73b3120852bfc16dba1f29840e43a9f33c483db82b008e4d230
+updated: 2017-06-20T17:46:41.134534265+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
@@ -155,6 +155,8 @@ imports:
   - internal/remote_api
   - internal/urlfetch
   - urlfetch
+- name: gopkg.in/alexcesaro/statsd.v2
+  version: 7fea3f0d2fab1ad973e641e51dba45443a311a90
 - name: gopkg.in/gemnasium/logrus-graylog-hook.v2
   version: daf02e0efe6f4dee3f7085184f5d527cf5cf0f6b
 - name: gopkg.in/inf.v0

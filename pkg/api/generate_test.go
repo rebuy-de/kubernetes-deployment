@@ -10,6 +10,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	fakeGH "github.com/rebuy-de/kubernetes-deployment/pkg/gh/fake"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
 
 	log "github.com/sirupsen/logrus"
@@ -56,6 +57,7 @@ func generateApp() *api.App {
 	return &api.App{
 		Clients: &api.Clients{
 			GitHub: ExampleGitHub,
+			Statsd: statsdw.NullClient{},
 		},
 		Settings:   ExampleSettings,
 		Parameters: new(api.Parameters),

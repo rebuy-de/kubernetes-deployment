@@ -8,11 +8,16 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/pkg/errors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 	log "github.com/sirupsen/logrus"
 )
 
 func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
+	app.Clients.Statsd.Increment("generate",
+		statsdw.Tag{"project", project},
+		statsdw.Tag{"branch", branchName})
+
 	app.Settings.Clean(app.Parameters.Context)
 
 	log.WithFields(log.Fields{
