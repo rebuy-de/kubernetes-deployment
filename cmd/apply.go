@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +19,18 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 			return err
 		}
 
-		api.Apply(params, project, branch)
+		app, err := api.New(params)
+		if err != nil {
+			log.Fatal(err)
+			return nil
+		}
+
+		err = app.Apply(project, branch)
+		if err != nil {
+			log.Fatal(err)
+			return nil
+		}
+
 		return nil
 	}
 

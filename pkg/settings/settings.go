@@ -80,6 +80,8 @@ func (s *Settings) Service(name string) *Service {
 }
 
 func (s *Settings) Clean() {
+	s.Default.Location.Path = filepath.Clean(strings.Trim(s.Default.Location.Path, "/")) + "/"
+
 	for i := range s.Services {
 		service := &s.Services[i]
 

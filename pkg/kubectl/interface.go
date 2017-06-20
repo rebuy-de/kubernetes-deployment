@@ -1,7 +1,7 @@
 package kubectl
 
-import "io"
+import "k8s.io/apimachinery/pkg/runtime"
 
 type Interface interface {
-	Apply(stdin io.Reader) error
+	Apply(obj runtime.Object) error
 }

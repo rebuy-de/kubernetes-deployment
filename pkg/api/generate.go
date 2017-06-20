@@ -12,15 +12,15 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 )
 
-func Generate(params *Parameters, project, branchName string) ([]runtime.Object, error) {
-	settings := params.LoadSettings()
+func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
+	app.Settings.Clean()
 
 	log.WithFields(log.Fields{
 		"Project": project,
 		"Branch":  branchName,
 	}).Infof("deploying project")
 
-	service := settings.Service(project)
+	service := app.Settings.Service(project)
 	if service == nil {
 		return nil, errors.Errorf("project '%s' not found", project)
 	}
@@ -31,7 +31,7 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 
 	service.Location.Ref = branchName
 
-	branch, err := params.GitHubClient().GetBranch(&service.Location)
+	branch, err := app.Clients.GitHub.GetBranch(&service.Location)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get branch information")
 	}
@@ -46,7 +46,7 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 
 	service.Location.Ref = branch.SHA
 
-	templateStrings, err := params.GitHubClient().GetFiles(&service.Location)
+	templateStrings, err := app.Clients.GitHub.GetFiles(&service.Location)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -85,6 +85,10 @@ func Generate(params *Parameters, project, branchName string) ([]runtime.Object,
 		}
 
 		objects = append(objects, obj)
+	}
+
+	if len(rendered) <= 0 {
+		return nil, errors.Errorf("directory doesn't contain any template files")
 	}
 
 	return objects, nil
