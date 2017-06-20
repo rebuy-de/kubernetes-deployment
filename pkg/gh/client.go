@@ -9,12 +9,12 @@ import (
 
 	"golang.org/x/oauth2"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 var (

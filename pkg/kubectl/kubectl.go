@@ -9,8 +9,8 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 type Kubectl struct {
