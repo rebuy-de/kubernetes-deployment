@@ -20,6 +20,8 @@ func AssertGoldenFile(t *testing.T, filename string, data interface{}) {
 		return
 	}
 
+	generated = append(generated, '\n')
+
 	if *UpdateGolden {
 		err := ioutil.WriteFile(filename, generated, os.FileMode(0644))
 		if err != nil {
