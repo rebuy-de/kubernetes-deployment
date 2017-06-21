@@ -35,7 +35,8 @@ func NewRootCommand() *cobra.Command {
 		if params.GELFAddress != "" {
 			hook := graylog.NewGraylogHook(params.GELFAddress,
 				map[string]interface{}{
-					"run": randomID(),
+					"run":      randomID(),
+					"facility": "kubernetes-deployment",
 				})
 			hook.Level = log.DebugLevel
 			log.AddHook(hook)
