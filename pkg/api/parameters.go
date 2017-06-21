@@ -1,6 +1,8 @@
 package api
 
 type Parameters struct {
+	Context string
+
 	Kubeconfig  string
 	KubectlPath string `mapstructure:"kubectl-path"`
 

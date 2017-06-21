@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +17,7 @@ func NewRootCommand() *cobra.Command {
 	debug := false
 	cmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "more logs")
 
-	BindParameters(cmd)
-	params := new(api.Parameters)
+	params := BindParameters(cmd)
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		log.SetLevel(log.InfoLevel)
@@ -31,7 +29,7 @@ func NewRootCommand() *cobra.Command {
 			"Version": BuildVersion,
 			"Date":    BuildDate,
 			"Commit":  BuildHash,
-		}).Infof("kubernetes-deployment started")
+		}).Debugf("kubernetes-deployment started")
 
 		err := ReadInParameters(params)
 		if err != nil {
@@ -52,6 +50,8 @@ func NewRootCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(NewVersionCommand())
+	cmd.AddCommand(NewDumpConfigCommand())
+	cmd.AddCommand(NewDumpSettingsCommand(params))
 	cmd.AddCommand(NewApplyCommand(params))
 	cmd.AddCommand(NewGenerateCommand(params))
 

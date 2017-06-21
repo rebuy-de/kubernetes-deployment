@@ -6,17 +6,17 @@ import (
 )
 
 func TestValueDefaults(t *testing.T) {
-	def := Values{
+	def := Variables{
 		"A": "1",
 		"B": "2",
 	}
 
-	values := Values{
+	values := Variables{
 		"B": "3",
 		"C": "4",
 	}
 
-	expect := Values{
+	expect := Variables{
 		"A": "1",
 		"B": "3",
 		"C": "4",

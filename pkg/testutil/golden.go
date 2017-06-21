@@ -1,4 +1,4 @@
-package api_test
+package testutil
 
 import (
 	"encoding/json"
@@ -19,6 +19,8 @@ func AssertGoldenFile(t *testing.T, filename string, data interface{}) {
 		t.Error(err)
 		return
 	}
+
+	generated = append(generated, '\n')
 
 	if *UpdateGolden {
 		err := ioutil.WriteFile(filename, generated, os.FileMode(0644))

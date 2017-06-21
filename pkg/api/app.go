@@ -32,7 +32,6 @@ func New(p *Parameters) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app.Settings.Clean()
 
 	return app, nil
 }

@@ -19,7 +19,14 @@ const (
 	ConfigDir = "~/.rebuy/kubernetes-deployment"
 )
 
-func BindParameters(cmd *cobra.Command) {
+func BindParameters(cmd *cobra.Command) *api.Parameters {
+	params := new(api.Parameters)
+
+	// context (not part of viper)
+	cmd.PersistentFlags().StringVarP(&params.Context,
+		"context", "c", "",
+		"name of the context to use")
+
 	// kubeconfig
 	cmd.PersistentFlags().String(
 		FlagKubeconfig, "",
@@ -52,6 +59,8 @@ func BindParameters(cmd *cobra.Command) {
 		FlagFilename, "f", "",
 		"path to service definitions; might start with './' for local file or 'github.com' for files on GitHub")
 	viper.BindPFlag(FlagFilename, cmd.PersistentFlags().Lookup(FlagFilename))
+
+	return params
 }
 
 func ReadInParameters(p *api.Parameters) error {
@@ -63,6 +72,12 @@ func ReadInParameters(p *api.Parameters) error {
 	viper.SetConfigName("default")
 	viper.AddConfigPath(path)
 	viper.ReadInConfig()
+
+	if p.Context != "" {
+		viper.SetConfigName(p.Context)
+		viper.AddConfigPath(path)
+		viper.MergeInConfig()
+	}
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
