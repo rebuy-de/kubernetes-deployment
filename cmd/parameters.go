@@ -13,6 +13,7 @@ const (
 	FlagGitHubToken  = "github-token"
 	FlagFilename     = "filename"
 	FlagHTTPCacheDir = "http-cache-dir"
+	FlagGELFAddress  = "gelf-address"
 )
 
 const (
@@ -59,6 +60,12 @@ func BindParameters(cmd *cobra.Command) *api.Parameters {
 		FlagFilename, "f", "",
 		"path to service definitions; might start with './' for local file or 'github.com' for files on GitHub")
 	viper.BindPFlag(FlagFilename, cmd.PersistentFlags().Lookup(FlagFilename))
+
+	// gelf address
+	cmd.PersistentFlags().String(
+		FlagGELFAddress, "",
+		"a Graylog GELF UDP address (a ip:port string) for sending logs")
+	viper.BindPFlag(FlagGELFAddress, cmd.PersistentFlags().Lookup(FlagGELFAddress))
 
 	return params
 }

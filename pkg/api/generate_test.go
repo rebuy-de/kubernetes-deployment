@@ -12,7 +12,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 var (

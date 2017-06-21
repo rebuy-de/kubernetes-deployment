@@ -5,8 +5,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 

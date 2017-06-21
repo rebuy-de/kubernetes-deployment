@@ -1,6 +1,6 @@
 package: github.com/rebuy-de/kubernetes-deployment
 import:
-- package: github.com/Sirupsen/logrus
+- package: github.com/sirupsen/logrus
   version: ^0.11.2
 - package: github.com/spf13/cobra
   version: master
@@ -22,3 +22,5 @@ import:
 - package: github.com/gregjones/httpcache
 - package: github.com/peterbourgon/diskv
   version: ^2.0.0
+- package: gopkg.in/gemnasium/logrus-graylog-hook.v2
+  version: ^2.0.6

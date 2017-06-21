@@ -1,6 +1,9 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 const (
 	DefaultBranch = "master"
@@ -22,4 +25,13 @@ func getProject(args []string) (string, string, error) {
 
 	return project, branch, nil
 
+}
+
+func randomID() string {
+	letters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
+	b := make([]rune, 7)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

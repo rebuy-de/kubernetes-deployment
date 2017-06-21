@@ -6,10 +6,10 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/pkg/api"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
+	log "github.com/sirupsen/logrus"
 )
 
 func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {

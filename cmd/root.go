@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	graylog "gopkg.in/gemnasium/logrus-graylog-hook.v2"
+
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -25,16 +27,25 @@ func NewRootCommand() *cobra.Command {
 			log.SetLevel(log.DebugLevel)
 		}
 
+		err := ReadInParameters(params)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if params.GELFAddress != "" {
+			hook := graylog.NewGraylogHook(params.GELFAddress,
+				map[string]interface{}{
+					"run": randomID(),
+				})
+			hook.Level = log.DebugLevel
+			log.AddHook(hook)
+		}
+
 		log.WithFields(log.Fields{
 			"Version": BuildVersion,
 			"Date":    BuildDate,
 			"Commit":  BuildHash,
 		}).Debugf("kubernetes-deployment started")
-
-		err := ReadInParameters(params)
-		if err != nil {
-			log.Fatal(err)
-		}
 
 		if strings.TrimSpace(params.Filename) == "" {
 			return fmt.Errorf("You have to specify a filename.")
