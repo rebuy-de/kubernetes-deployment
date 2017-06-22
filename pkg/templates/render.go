@@ -22,8 +22,9 @@ func RenderAll(templates map[string]string, variables Variables) (map[string]str
 
 func Render(templateString string, variables Variables) (string, error) {
 	funcMap := template.FuncMap{
-		"ToUpper": strings.ToUpper,
-		"ToLower": strings.ToLower,
+		"ToUpper":    strings.ToUpper,
+		"ToLower":    strings.ToLower,
+		"Identifier": IdentifierFunc,
 	}
 
 	t, err := template.
