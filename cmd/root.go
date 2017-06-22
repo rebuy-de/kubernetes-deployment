@@ -17,7 +17,10 @@ func NewRootCommand() *cobra.Command {
 	}
 
 	debug := false
-	cmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "more logs")
+	cmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "show debug log messages")
+
+	jsonLogs := false
+	cmd.PersistentFlags().BoolVar(&jsonLogs, "json-logs", false, "prints the logs as JSON")
 
 	params := BindParameters(cmd)
 
@@ -25,6 +28,16 @@ func NewRootCommand() *cobra.Command {
 		log.SetLevel(log.InfoLevel)
 		if debug {
 			log.SetLevel(log.DebugLevel)
+		}
+
+		if jsonLogs {
+			log.SetFormatter(&log.JSONFormatter{
+				FieldMap: log.FieldMap{
+					log.FieldKeyTime:  "Time",
+					log.FieldKeyLevel: "Level",
+					log.FieldKeyMsg:   "Message",
+				},
+			})
 		}
 
 		err := ReadInParameters(params)

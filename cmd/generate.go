@@ -27,6 +27,11 @@ func NewGenerateCommand(params *api.Parameters) *cobra.Command {
 			return nil
 		}
 
+		log.WithFields(log.Fields{
+			"Project": project,
+			"Branch":  branch,
+		}).Info("generating manifests")
+
 		objects, err := app.Generate(project, branch)
 		if err != nil {
 			log.Fatal(err)

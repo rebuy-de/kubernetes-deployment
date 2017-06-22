@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -25,11 +24,21 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 			return nil
 		}
 
+		log.WithFields(log.Fields{
+			"Project": project,
+			"Branch":  branch,
+		}).Info("deploying project")
+
 		err = app.Apply(project, branch)
 		if err != nil {
 			log.Fatal(err)
 			return nil
 		}
+
+		log.WithFields(log.Fields{
+			"Project": project,
+			"Branch":  branch,
+		}).Info("updated Kubernetes")
 
 		return nil
 	}

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -14,16 +15,16 @@ import (
 )
 
 func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
+	log.WithFields(log.Fields{
+		"Project": project,
+		"Branch":  branchName,
+	}).Debugf("generating manifests")
+
 	app.Clients.Statsd.Increment("generate",
 		statsdw.Tag{"project", project},
 		statsdw.Tag{"branch", branchName})
 
 	app.Settings.Clean(app.Parameters.Context)
-
-	log.WithFields(log.Fields{
-		"Project": project,
-		"Branch":  branchName,
-	}).Infof("deploying project")
 
 	service := app.Settings.Service(project)
 	if service == nil {
@@ -41,13 +42,15 @@ func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
 		return nil, errors.Wrap(err, "Unable to get branch information")
 	}
 
-	log.Infof("latest commit:\n\n"+
-		"commit: %s\n"+
-		"Author: %s\n"+
-		"Date:   %s\n"+
-		"\n%s\n",
-		branch.SHA, branch.Author, branch.Date,
-		strings.Replace(branch.Message, "\n", "\n    ", -1))
+	log.WithFields(log.Fields{
+		"Commit": fmt.Sprintf(
+			"commit: %s\n"+
+				"Author: %s\n"+
+				"Date:   %s\n"+
+				"\n%s\n",
+			branch.SHA, branch.Author, branch.Date,
+			strings.Replace(branch.Message, "\n", "\n    ", -1)),
+	}).Debug("fetched latest commit data")
 
 	service.Location.Ref = branch.SHA
 

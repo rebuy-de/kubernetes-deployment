@@ -3,9 +3,15 @@ package api
 import (
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
+	log "github.com/sirupsen/logrus"
 )
 
 func (app *App) Apply(project, branchName string) error {
+	log.WithFields(log.Fields{
+		"Project": project,
+		"Branch":  branchName,
+	}).Debug("applying manifests")
+
 	app.Clients.Statsd.Increment("apply",
 		statsdw.Tag{"project", project},
 		statsdw.Tag{"branch", branchName})
