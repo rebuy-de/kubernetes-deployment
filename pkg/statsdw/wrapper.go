@@ -1,10 +1,6 @@
 package statsdw
 
-import (
-	"fmt"
-
-	statsd "gopkg.in/alexcesaro/statsd.v2"
-)
+import statsd "gopkg.in/alexcesaro/statsd.v2"
 
 var Prefix = "kubernetes-deployment"
 
@@ -42,7 +38,6 @@ func (w *Wrapper) Increment(bucket string, tags ...Tag) {
 	for _, tag := range tags {
 		tkv = append(tkv, tag.Name, tag.Value)
 	}
-	fmt.Println(tkv)
 
 	client := w.c.Clone(
 		statsd.Tags(tkv...),
