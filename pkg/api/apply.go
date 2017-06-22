@@ -1,8 +1,15 @@
 package api
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
+)
 
 func (app *App) Apply(project, branchName string) error {
+	app.Clients.Statsd.Increment("apply",
+		statsdw.Tag{"project", project},
+		statsdw.Tag{"branch", branchName})
+
 	objects, err := app.Generate(project, branchName)
 	if err != nil {
 		return errors.WithStack(err)

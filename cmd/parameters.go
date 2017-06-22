@@ -8,12 +8,13 @@ import (
 )
 
 const (
-	FlagKubeconfig   = "kubeconfig"
-	FlagKubectlPath  = "kubectl-path"
-	FlagGitHubToken  = "github-token"
-	FlagFilename     = "filename"
-	FlagHTTPCacheDir = "http-cache-dir"
-	FlagGELFAddress  = "gelf-address"
+	FlagKubeconfig    = "kubeconfig"
+	FlagKubectlPath   = "kubectl-path"
+	FlagGitHubToken   = "github-token"
+	FlagFilename      = "filename"
+	FlagHTTPCacheDir  = "http-cache-dir"
+	FlagGELFAddress   = "gelf-address"
+	FlagStatsdAddress = "statsd-address"
 )
 
 const (
@@ -66,6 +67,12 @@ func BindParameters(cmd *cobra.Command) *api.Parameters {
 		FlagGELFAddress, "",
 		"a Graylog GELF UDP address (a ip:port string) for sending logs")
 	viper.BindPFlag(FlagGELFAddress, cmd.PersistentFlags().Lookup(FlagGELFAddress))
+
+	// statsd address
+	cmd.PersistentFlags().String(
+		FlagStatsdAddress, "",
+		"a statsd UDP address (a ip:port string) for sending metrics")
+	viper.BindPFlag(FlagStatsdAddress, cmd.PersistentFlags().Lookup(FlagStatsdAddress))
 
 	return params
 }
