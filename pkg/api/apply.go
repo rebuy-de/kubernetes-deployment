@@ -13,8 +13,8 @@ func (app *App) Apply(project, branchName string) error {
 	}).Debug("applying manifests")
 
 	app.Clients.Statsd.Increment("apply",
-		statsdw.Tag{"project", project},
-		statsdw.Tag{"branch", branchName})
+		statsdw.Tag{Name: "project", Value: project},
+		statsdw.Tag{Name: "branch", Value: branchName})
 
 	objects, err := app.Generate(project, branchName)
 	if err != nil {

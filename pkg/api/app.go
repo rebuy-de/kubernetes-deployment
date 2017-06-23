@@ -1,16 +1,20 @@
 package api
 
 import (
+	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type Clients struct {
-	GitHub  gh.Interface
-	Kubectl kubectl.Interface
-	Statsd  statsdw.Interface
+	GitHub     gh.Interface
+	Kubectl    kubectl.Interface
+	Kubernetes kubernetes.Interface
+	Statsd     statsdw.Interface
 }
 
 type App struct {
@@ -29,10 +33,16 @@ func New(p *Parameters) (*App, error) {
 	app.Clients = &Clients{}
 	app.Clients.Statsd, err = statsdw.New(p.StatsdAddress)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to initialize statsd client")
 	}
+
 	app.Clients.GitHub = gh.New(p.GitHubToken, p.HTTPCacheDir, app.Clients.Statsd)
 	app.Clients.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
+
+	app.Clients.Kubernetes, err = newKubernetesClient(p.Kubeconfig)
+	if err != nil {
+		return nil, err
+	}
 
 	app.Settings, err = settings.Read(p.Filename, app.Clients.GitHub)
 	if err != nil {
@@ -40,4 +50,18 @@ func New(p *Parameters) (*App, error) {
 	}
 
 	return app, nil
+}
+
+func newKubernetesClient(kubeconfig string) (kubernetes.Interface, error) {
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load kubernetes config")
+	}
+
+	client, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to initialize kubernetes client")
+	}
+
+	return client, nil
 }
