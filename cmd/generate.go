@@ -22,10 +22,7 @@ func NewGenerateCommand(params *api.Parameters) *cobra.Command {
 		}
 
 		app, err := api.New(params)
-		if err != nil {
-			log.Fatal(err)
-			return nil
-		}
+		checkError(err)
 
 		log.WithFields(log.Fields{
 			"Project": project,
@@ -33,17 +30,11 @@ func NewGenerateCommand(params *api.Parameters) *cobra.Command {
 		}).Info("generating manifests")
 
 		objects, err := app.Generate(project, branch)
-		if err != nil {
-			log.Fatal(err)
-			return nil
-		}
+		checkError(err)
 
 		for _, obj := range objects {
 			raw, err := json.MarshalIndent(obj, "", "    ")
-			if err != nil {
-				log.Fatal(err)
-				return nil
-			}
+			checkError(err)
 			fmt.Println(string(raw))
 		}
 

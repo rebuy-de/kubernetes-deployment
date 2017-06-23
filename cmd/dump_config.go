@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -19,10 +18,7 @@ func NewDumpConfigCommand() *cobra.Command {
 		all := viper.AllSettings()
 
 		raw, err := json.MarshalIndent(all, "", "    ")
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		checkError(err)
 		fmt.Println(string(raw))
 	}
 

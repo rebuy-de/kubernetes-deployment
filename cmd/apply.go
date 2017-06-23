@@ -19,10 +19,7 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 		}
 
 		app, err := api.New(params)
-		if err != nil {
-			log.Fatal(err)
-			return nil
-		}
+		checkError(err)
 
 		log.WithFields(log.Fields{
 			"Project": project,
@@ -30,10 +27,7 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 		}).Info("deploying project")
 
 		err = app.Apply(project, branch)
-		if err != nil {
-			log.Fatal(err)
-			return nil
-		}
+		checkError(err)
 
 		log.WithFields(log.Fields{
 			"Project": project,

@@ -22,7 +22,7 @@ var (
 	ContentLocationRE = regexp.MustCompile(`^github.com/([^/]+)/([^/]+)/(.*)$`)
 )
 
-type Client interface {
+type Interface interface {
 	GetBranch(location *Location) (*Branch, error)
 	GetFile(location *Location) (string, error)
 	GetFiles(location *Location) (map[string]string, error)
@@ -33,7 +33,7 @@ type API struct {
 	statsd statsdw.Interface
 }
 
-func New(token string, cacheDir string, statsd statsdw.Interface) Client {
+func New(token string, cacheDir string, statsd statsdw.Interface) Interface {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},

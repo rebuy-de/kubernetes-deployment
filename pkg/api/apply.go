@@ -22,7 +22,7 @@ func (app *App) Apply(project, branchName string) error {
 	}
 
 	for _, obj := range objects {
-		err = app.Clients.Kubernetes.Apply(obj)
+		err = app.Clients.Kubectl.Apply(obj)
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}

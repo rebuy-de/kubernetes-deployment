@@ -16,7 +16,7 @@ var (
 		Message: "dis is a test",
 	}
 
-	Example gh.Client = &GitHub{
+	Example gh.Interface = &GitHub{
 		"rebuy-de": Repos{
 			"info": Branches{
 				"master": Branch{

@@ -72,7 +72,7 @@ func TestProjectNoExist(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "project 'project-no-exist' not found"
+	expect := "failed to fetch project: project 'project-no-exist' not found"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)
@@ -88,7 +88,7 @@ func TestMissingRepo(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "Unable to get branch information: fake repo 'rebuy-de/repo-no-exist' doesn't exist"
+	expect := "failed to fetch project: unable to get branch information: fake repo 'rebuy-de/repo-no-exist' doesn't exist"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)
@@ -104,7 +104,7 @@ func TestMissingBranch(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "Unable to get branch information: fake branch 'rebuy-de/foobar#missing-branch' doesn't exist"
+	expect := "failed to fetch project: unable to get branch information: fake branch 'rebuy-de/foobar#missing-branch' doesn't exist"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)
@@ -120,7 +120,7 @@ func TestMissingFiles(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "directory doesn't contain any template files"
+	expect := "didn't find any template files"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)
@@ -136,7 +136,7 @@ func TestInvalidFile(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "unable to decode file 'invalid.yaml': "
+	expect := `failed to render project: unable to decode file 'invalid.yaml': couldn't get version/kind; json parse error: json: cannot unmarshal array into Go value of type struct { APIVersion string "json:\"apiVersion,omitempty\""; Kind string "json:\"kind,omitempty\"" }`
 	if !strings.HasPrefix(err.Error(), expect) {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected prefix:  %s", expect)

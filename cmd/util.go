@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"math/rand"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -34,4 +36,19 @@ func randomID() string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+type Exit struct{ Code int }
+
+func checkError(err error) {
+	if err == nil {
+		return
+	}
+
+	log.WithFields(log.Fields{
+		"StackTrace": fmt.Sprintf("%+v", err),
+	}).Debug("a fatal error occured")
+	log.Error(err)
+
+	panic(Exit{1})
 }

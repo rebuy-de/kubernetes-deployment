@@ -8,9 +8,9 @@ import (
 )
 
 type Clients struct {
-	GitHub     gh.Client
-	Kubernetes kubectl.Interface
-	Statsd     statsdw.Interface
+	GitHub  gh.Interface
+	Kubectl kubectl.Interface
+	Statsd  statsdw.Interface
 }
 
 type App struct {
@@ -32,7 +32,7 @@ func New(p *Parameters) (*App, error) {
 		return nil, err
 	}
 	app.Clients.GitHub = gh.New(p.GitHubToken, p.HTTPCacheDir, app.Clients.Statsd)
-	app.Clients.Kubernetes = kubectl.New(p.KubectlPath, p.Kubeconfig)
+	app.Clients.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
 
 	app.Settings, err = settings.Read(p.Filename, app.Clients.GitHub)
 	if err != nil {
