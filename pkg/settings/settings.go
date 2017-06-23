@@ -48,7 +48,7 @@ func FromBytes(data []byte) (*Settings, error) {
 	return config, nil
 }
 
-func Read(location string, client gh.Client) (*Settings, error) {
+func Read(location string, client gh.Interface) (*Settings, error) {
 	if strings.HasPrefix(location, "github.com") {
 		return ReadFromGitHub(location, client)
 	} else {
@@ -66,7 +66,7 @@ func ReadFromFile(filename string) (*Settings, error) {
 
 }
 
-func ReadFromGitHub(filename string, client gh.Client) (*Settings, error) {
+func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
 	location, err := gh.NewLocation(filename)
 	if err != nil {
 		return nil, errors.Wrapf(err, "parse GitHub location '%s'; use './' prefix to use a directory named 'github.com'", filename)
