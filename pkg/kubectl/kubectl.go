@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/pkg/api"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -25,7 +26,7 @@ func New(path string, kubeconfig string) Interface {
 	}
 }
 
-func (k *Kubectl) run(stdin io.Reader, args ...string) error {
+func (k *Kubectl) run(stdin io.Reader, stdout io.Writer, args ...string) error {
 	path, err := exec.LookPath(k.Path)
 	if err != nil {
 		return errors.Wrapf(err, "Unable to find kubectl executable '%s'", k.Path)
@@ -43,23 +44,31 @@ func (k *Kubectl) run(stdin io.Reader, args ...string) error {
 		cmd.Stdin = stdin
 	}
 
+	if stdout != nil {
+		cmd.Stdout = stdout
+	}
+
 	cmd.Stderr = log.WithFields(log.Fields{
 		"executable": k.Path,
 		"stream":     "stderr",
 	}).WriterLevel(log.WarnLevel)
-	cmd.Stdout = log.WithFields(log.Fields{
-		"executable": k.Path,
-		"stream":     "stdout",
-	}).WriterLevel(log.DebugLevel)
 
 	return cmd.Run()
 }
 
-func (k *Kubectl) Apply(obj runtime.Object) error {
+func (k *Kubectl) Apply(obj runtime.Object) (runtime.Object, error) {
 	raw, err := json.MarshalIndent(obj, "", "    ")
 	if err != nil {
-		return errors.WithStack(err)
+		return nil, errors.WithStack(err)
 	}
 
-	return k.run(bytes.NewBuffer(raw), "apply", "-f", "-")
+	stdout := new(bytes.Buffer)
+
+	err = k.run(bytes.NewBuffer(raw), stdout, "apply", "-o", "json", "-f", "-")
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	newObj, _, err := api.Codecs.UniversalDeserializer().Decode(stdout.Bytes(), nil, nil)
+	return newObj, errors.Wrapf(err, "failed to decode result json")
 }

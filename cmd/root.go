@@ -79,7 +79,6 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(NewDumpSettingsCommand(params))
 	cmd.AddCommand(NewApplyCommand(params))
 	cmd.AddCommand(NewGenerateCommand(params))
-	cmd.AddCommand(NewWatchCommand(params))
 
 	return cmd
 }

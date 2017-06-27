@@ -3,6 +3,8 @@ package api
 import (
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/waiter"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
@@ -18,9 +20,10 @@ type Clients struct {
 }
 
 type App struct {
-	Parameters *Parameters
-	Clients    *Clients
-	Settings   *settings.Settings
+	Parameters   *Parameters
+	Clients      *Clients
+	Settings     *settings.Settings
+	Interceptors *interceptors.Multi
 }
 
 func New(p *Parameters) (*App, error) {
@@ -49,7 +52,15 @@ func New(p *Parameters) (*App, error) {
 		return nil, err
 	}
 
+	app.Interceptors = interceptors.New(
+		waiter.NewDeploymentWaitInterceptor(app.Clients.Kubernetes),
+	)
+
 	return app, nil
+}
+
+func (app *App) Close() error {
+	return app.Interceptors.Close()
 }
 
 func newKubernetesClient(kubeconfig string) (kubernetes.Interface, error) {

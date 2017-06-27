@@ -22,11 +22,14 @@ func (app *App) Apply(project, branchName string) error {
 	}
 
 	for _, obj := range objects {
-		err = app.Clients.Kubectl.Apply(obj)
+		upstreamObj, err := app.Clients.Kubectl.Apply(obj)
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}
+		app.Interceptors.ManifestApplied(upstreamObj)
 	}
+
+	app.Interceptors.AllManifestsApplied(objects)
 
 	return nil
 }
