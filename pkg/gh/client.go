@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path"
 	"regexp"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -192,9 +193,13 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 		log.Fields(structs.Map(location)),
 	).Debug("downloading directory from GitHub")
 
+	// Need to remove the trailing slash, because otherwise GitHub answers with
+	// a redirect which doesn't contain the ref param anymore.
+	cleanPath := strings.TrimRight(location.Path, "/")
+
 	_, dir, resp, err := gh.client.Repositories.GetContents(
 		context.Background(),
-		location.Owner, location.Repo, location.Path,
+		location.Owner, location.Repo, cleanPath,
 		&github.RepositoryContentGetOptions{
 			Ref: location.Ref,
 		},

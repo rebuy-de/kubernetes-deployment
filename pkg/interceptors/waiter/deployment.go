@@ -36,12 +36,12 @@ func NewDeploymentWaitInterceptor(client kubernetes.Interface) *DeploymentWaitIn
 
 func (dwi *DeploymentWaitInterceptor) AllManifestsApplied([]runtime.Object) error {
 	dwi.waitgroup.Wait()
+	dwi.cancel()
 	return nil
 }
 
 func (dwi *DeploymentWaitInterceptor) Close() error {
 	dwi.cancel()
-	dwi.waitgroup.Wait()
 	return nil
 }
 
@@ -62,6 +62,9 @@ func (dwi *DeploymentWaitInterceptor) ManifestApplied(obj runtime.Object) error 
 
 func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 	defer dwi.waitgroup.Done()
+
+	ctx, done := context.WithCancel(dwi.ctx)
+	defer done()
 
 	// We need to sleep a short time to let the controller update the revision
 	// number and then update the deployment to see the current revision.
@@ -86,28 +89,25 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 	}).Debugf("found replica set for deployment")
 
 	dwi.waitgroup.Add(1)
-	go dwi.podNotifier(rs)
+	go dwi.podNotifier(ctx, rs)
 
 	selector := fields.OneTermEqualSelector("metadata.name", deployment.ObjectMeta.Name)
-	for deployment := range kubeutil.WatchDeployments(dwi.ctx, dwi.client, selector) {
+	for deployment := range kubeutil.WatchDeployments(ctx, dwi.client, selector) {
 		if kubeutil.DeploymentRolloutComplete(deployment) {
-			dwi.cancel()
+			break
 		}
 	}
-
-	dwi.cancel()
 
 	log.WithFields(log.Fields{
 		"Name":      deployment.ObjectMeta.Name,
 		"Namespace": deployment.ObjectMeta.Namespace,
 	}).Debugf("deployment succeeded")
-
 }
 
-func (dwi *DeploymentWaitInterceptor) podNotifier(rs *v1beta1.ReplicaSet) {
+func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1beta1.ReplicaSet) {
 	defer dwi.waitgroup.Done()
 
-	for pod := range kubeutil.WatchPods(dwi.ctx, dwi.client, fields.Everything()) {
+	for pod := range kubeutil.WatchPods(ctx, dwi.client, fields.Everything()) {
 		if !kubeutil.IsOwner(rs.ObjectMeta, pod.ObjectMeta) {
 			continue
 		}
