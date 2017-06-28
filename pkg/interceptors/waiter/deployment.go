@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 	log "github.com/sirupsen/logrus"
+	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
@@ -50,8 +52,7 @@ func (dwi *DeploymentWaitInterceptor) ManifestApplied(obj runtime.Object) error 
 	}
 
 	log.WithFields(log.Fields{
-		"Name":      deployment.ObjectMeta.Name,
-		"Namespace": deployment.ObjectMeta.Namespace,
+		"Manifest": deployment,
 	}).Debugf("registering waiter for deployment")
 
 	dwi.waitgroup.Add(1)
@@ -60,6 +61,16 @@ func (dwi *DeploymentWaitInterceptor) ManifestApplied(obj runtime.Object) error 
 }
 
 func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
+	defer dwi.waitgroup.Done()
+
+	// We need to sleep a short time to let the controller update the revision
+	// number and then update the deployment to see the current revision.
+	time.Sleep(1 * time.Second)
+	deployment, err := dwi.client.
+		Extensions().
+		Deployments(deployment.ObjectMeta.Namespace).
+		Get(deployment.ObjectMeta.Name, v1meta.GetOptions{})
+
 	rs, err := kubeutil.GetReplicaSetForDeployment(dwi.client, deployment)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -68,6 +79,11 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 		}).Warn("Failed to get replica set for deployment")
 		return
 	}
+
+	log.WithFields(log.Fields{
+		"Name":      rs.ObjectMeta.Name,
+		"Namespace": rs.ObjectMeta.Namespace,
+	}).Debugf("found replica set for deployment")
 
 	dwi.waitgroup.Add(1)
 	go dwi.podNotifier(rs)
@@ -82,21 +98,22 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 	dwi.cancel()
 
 	log.WithFields(log.Fields{
-		"Name": deployment.ObjectMeta.Name,
+		"Name":      deployment.ObjectMeta.Name,
+		"Namespace": deployment.ObjectMeta.Namespace,
 	}).Debugf("deployment succeeded")
 
-	dwi.waitgroup.Done()
 }
 
 func (dwi *DeploymentWaitInterceptor) podNotifier(rs *v1beta1.ReplicaSet) {
+	defer dwi.waitgroup.Done()
+
 	for pod := range kubeutil.WatchPods(dwi.ctx, dwi.client, fields.Everything()) {
 		if !kubeutil.IsOwner(rs.ObjectMeta, pod.ObjectMeta) {
 			continue
 		}
 
 		log.WithFields(log.Fields{
-			"Name":      pod.ObjectMeta.Name,
-			"Namespace": pod.ObjectMeta.Namespace,
+			"Manifest": pod,
 		}).Debugf("pod changed")
 
 		err := kubeutil.PodWarnings(pod)
@@ -104,9 +121,7 @@ func (dwi *DeploymentWaitInterceptor) podNotifier(rs *v1beta1.ReplicaSet) {
 			log.WithFields(log.Fields{
 				"Name":      pod.ObjectMeta.Name,
 				"Namespace": pod.ObjectMeta.Namespace,
-				"Status":    pod.Status,
 			}).Warn(err)
 		}
 	}
-	dwi.waitgroup.Done()
 }

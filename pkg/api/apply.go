@@ -27,6 +27,10 @@ func (app *App) Apply(project, branchName string) error {
 			return errors.Wrap(err, "unable to apply manifest")
 		}
 		app.Interceptors.ManifestApplied(upstreamObj)
+
+		log.WithFields(log.Fields{
+			"Manifest": upstreamObj,
+		}).Debug("applied manifest")
 	}
 
 	app.Interceptors.AllManifestsApplied(objects)
