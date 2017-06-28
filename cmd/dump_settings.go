@@ -18,6 +18,7 @@ func NewDumpSettingsCommand(params *api.Parameters) *cobra.Command {
 	cmd.Run = func(cmd *cobra.Command, args []string) {
 		app, err := api.New(params)
 		checkError(err)
+		defer must(app.Close)
 
 		app.Settings.Clean(app.Parameters.Context)
 

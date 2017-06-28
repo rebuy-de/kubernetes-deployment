@@ -52,3 +52,7 @@ func checkError(err error) {
 
 	panic(Exit{1})
 }
+
+func must(fn func() error) {
+	checkError(fn())
+}

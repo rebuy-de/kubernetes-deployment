@@ -13,8 +13,8 @@ func (app *App) Apply(project, branchName string) error {
 	}).Debug("applying manifests")
 
 	app.Clients.Statsd.Increment("apply",
-		statsdw.Tag{"project", project},
-		statsdw.Tag{"branch", branchName})
+		statsdw.Tag{Name: "project", Value: project},
+		statsdw.Tag{Name: "branch", Value: branchName})
 
 	objects, err := app.Generate(project, branchName)
 	if err != nil {
@@ -22,11 +22,14 @@ func (app *App) Apply(project, branchName string) error {
 	}
 
 	for _, obj := range objects {
-		err = app.Clients.Kubectl.Apply(obj)
+		upstreamObj, err := app.Clients.Kubectl.Apply(obj)
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}
+		app.Interceptors.ManifestApplied(upstreamObj)
 	}
+
+	app.Interceptors.AllManifestsApplied(objects)
 
 	return nil
 }

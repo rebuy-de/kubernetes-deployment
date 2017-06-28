@@ -20,6 +20,7 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 
 		app, err := api.New(params)
 		checkError(err)
+		defer must(app.Close)
 
 		log.WithFields(log.Fields{
 			"Project": project,
@@ -32,7 +33,7 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 		log.WithFields(log.Fields{
 			"Project": project,
 			"Branch":  branch,
-		}).Info("updated Kubernetes")
+		}).Info("deployment finished")
 
 		return nil
 	}
