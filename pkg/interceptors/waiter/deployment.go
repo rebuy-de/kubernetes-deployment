@@ -15,6 +15,10 @@ import (
 	"k8s.io/client-go/pkg/apis/extensions/v1beta1"
 )
 
+var (
+	ErrImagePullMuteDuration = 30 * time.Second
+)
+
 type DeploymentWaitInterceptor struct {
 	client kubernetes.Interface
 
@@ -107,6 +111,8 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1beta1.ReplicaSet) {
 	defer dwi.waitgroup.Done()
 
+	errImagePullMute := time.Now()
+
 	for pod := range kubeutil.WatchPods(ctx, dwi.client, fields.Everything()) {
 		if !kubeutil.IsOwner(rs.ObjectMeta, pod.ObjectMeta) {
 			continue
@@ -117,6 +123,15 @@ func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1bet
 		}).Debugf("pod changed")
 
 		err := kubeutil.PodWarnings(pod)
+
+		_, ok := err.(kubeutil.ErrCrash)
+		if ok {
+			if time.Now().Before(errImagePullMute) {
+				continue
+			}
+			errImagePullMute = time.Now().Add(ErrImagePullMuteDuration)
+		}
+
 		if err != nil {
 			log.WithFields(log.Fields{
 				"Name":      pod.ObjectMeta.Name,

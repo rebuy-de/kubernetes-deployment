@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	ErrImagePull = "ErrImagePull"
-	Error        = "Error"
+	ErrImagePullReason = "ErrImagePull"
+	ErrorReason        = "Error"
 )
 
 func PodWarnings(pod *v1.Pod) error {
@@ -29,15 +29,35 @@ func PodWarnings(pod *v1.Pod) error {
 	return nil
 }
 
+type ErrImagePull struct{}
+
+func (err ErrImagePull) Error() string {
+	return "failed to pull docker image"
+}
+
+type ErrCrash struct {
+	Name         string
+	ExitCode     int32
+	RestartCount int32
+}
+
+func (err ErrCrash) Error() string {
+	return fmt.Sprintf(
+		"failed to start container (Container: %v, ExitCode: %v, Restarts: %v)",
+		err.Name, err.ExitCode, err.RestartCount)
+}
+
 func containerWarnings(status v1.ContainerStatus) error {
-	if status.State.Waiting != nil && status.State.Waiting.Reason == ErrImagePull {
-		return fmt.Errorf("failed to pull docker image")
+	if status.State.Waiting != nil && status.State.Waiting.Reason == ErrImagePullReason {
+		return ErrImagePull{}
 	}
 
-	if status.State.Terminated != nil && status.State.Terminated.Reason == Error {
-		return fmt.Errorf(
-			"failed to start container (Container: %v, ExitCode: %v, Restarts: %v)",
-			status.Name, status.State.Terminated.ExitCode, status.RestartCount)
+	if status.State.Terminated != nil && status.State.Terminated.Reason == ErrorReason {
+		return ErrCrash{
+			Name:         status.Name,
+			ExitCode:     status.State.Terminated.ExitCode,
+			RestartCount: status.RestartCount,
+		}
 	}
 
 	return nil
