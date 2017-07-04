@@ -39,6 +39,13 @@ func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
 			continue
 		}
 
+		if strings.TrimSpace(data) == "" {
+			log.WithFields(log.Fields{
+				"Name": name,
+			}).Debug("Ignoring empty file.")
+			continue
+		}
+
 		obj, _, err := decode([]byte(data), nil, nil)
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
