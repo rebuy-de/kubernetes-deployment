@@ -124,7 +124,7 @@ func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1bet
 
 		err := kubeutil.PodWarnings(pod)
 
-		_, ok := err.(kubeutil.ErrCrash)
+		_, ok := err.(kubeutil.ErrImagePull)
 		if ok {
 			if time.Now().Before(errImagePullMute) {
 				continue
