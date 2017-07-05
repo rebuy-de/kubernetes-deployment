@@ -1,6 +1,12 @@
 package statsdw
 
-import statsd "gopkg.in/alexcesaro/statsd.v2"
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+	statsd "gopkg.in/alexcesaro/statsd.v2"
+)
 
 var Prefix = "kubernetes-deployment"
 
@@ -8,9 +14,9 @@ type Wrapper struct {
 	c *statsd.Client
 }
 
-func New(addr string) (Interface, error) {
+func New(addr string) Interface {
 	if addr == "" {
-		return NullClient{}, nil
+		return NullClient{}
 	}
 
 	c, err := statsd.New(
@@ -19,10 +25,13 @@ func New(addr string) (Interface, error) {
 		statsd.TagsFormat(statsd.Datadog),
 	)
 	if err != nil {
-		return nil, err
+		log.WithFields(log.Fields{
+			"StackTrace": fmt.Sprintf("%+v", errors.WithStack(err)),
+		}).Warn("failed to initialize statsd client")
+		return NullClient{}
 	}
 
-	return &Wrapper{c}, nil
+	return &Wrapper{c}
 }
 
 func (w *Wrapper) Gauge(bucket string, value interface{}) {
