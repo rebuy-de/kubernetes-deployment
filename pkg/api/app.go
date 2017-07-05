@@ -34,11 +34,7 @@ func New(p *Parameters) (*App, error) {
 	app.Parameters = p
 
 	app.Clients = &Clients{}
-	app.Clients.Statsd, err = statsdw.New(p.StatsdAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to initialize statsd client")
-	}
-
+	app.Clients.Statsd = statsdw.New(p.StatsdAddress)
 	app.Clients.GitHub = gh.New(p.GitHubToken, p.HTTPCacheDir, app.Clients.Statsd)
 	app.Clients.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
 
