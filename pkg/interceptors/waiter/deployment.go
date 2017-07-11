@@ -22,19 +22,21 @@ var (
 type DeploymentWaitInterceptor struct {
 	client kubernetes.Interface
 
-	ctx       context.Context
-	cancel    context.CancelFunc
-	waitgroup *sync.WaitGroup
+	ctx              context.Context
+	cancel           context.CancelFunc
+	waitgroup        *sync.WaitGroup
+	errImagePullMute time.Time
 }
 
 func NewDeploymentWaitInterceptor(client kubernetes.Interface) *DeploymentWaitInterceptor {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	return &DeploymentWaitInterceptor{
-		client:    client,
-		ctx:       ctx,
-		cancel:    cancel,
-		waitgroup: new(sync.WaitGroup),
+		client:           client,
+		ctx:              ctx,
+		cancel:           cancel,
+		waitgroup:        new(sync.WaitGroup),
+		errImagePullMute: time.Now(),
 	}
 }
 
@@ -111,8 +113,6 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1beta1.ReplicaSet) {
 	defer dwi.waitgroup.Done()
 
-	errImagePullMute := time.Now()
-
 	for pod := range kubeutil.WatchPods(ctx, dwi.client, fields.Everything()) {
 		if !kubeutil.IsOwner(rs.ObjectMeta, pod.ObjectMeta) {
 			continue
@@ -126,10 +126,10 @@ func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1bet
 
 		_, ok := err.(kubeutil.ErrImagePull)
 		if ok {
-			if time.Now().Before(errImagePullMute) {
+			if time.Now().Before(dwi.errImagePullMute) {
 				continue
 			}
-			errImagePullMute = time.Now().Add(ErrImagePullMuteDuration)
+			dwi.errImagePullMute = time.Now().Add(ErrImagePullMuteDuration)
 		}
 
 		if err != nil {
