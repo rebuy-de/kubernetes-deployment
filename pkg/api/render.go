@@ -51,6 +51,11 @@ func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
 			return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
 		}
 
+		obj, err = app.Interceptors.ManifestRendered(obj)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+
 		objects = append(objects, obj)
 	}
 

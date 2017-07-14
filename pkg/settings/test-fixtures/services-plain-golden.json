@@ -80,12 +80,14 @@
         "abc": {
             "Variables": {
                 "bish": "bash"
-            }
+            },
+            "RemoveResourceSpecs": false
         },
         "def": {
             "Variables": {
                 "bish": "bosh"
-            }
+            },
+            "RemoveResourceSpecs": true
         }
     }
 }

@@ -26,14 +26,20 @@ func (app *App) Apply(project, branchName string) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}
-		app.Interceptors.ManifestApplied(upstreamObj)
+		err = app.Interceptors.ManifestApplied(upstreamObj)
+		if err != nil {
+			return errors.WithStack(err)
+		}
 
 		log.WithFields(log.Fields{
 			"Manifest": upstreamObj,
 		}).Debug("applied manifest")
 	}
 
-	app.Interceptors.AllManifestsApplied(objects)
+	err = app.Interceptors.AllManifestsApplied(objects)
+	if err != nil {
+		return errors.WithStack(err)
+	}
 
 	return nil
 }

@@ -11,6 +11,7 @@ contexts:
     variables:
       bish: bash
   def:
+    removeResourceSpecs: on
     variables:
       bish: bosh
 

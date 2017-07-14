@@ -16,6 +16,10 @@ func New(interceptors ...interface{}) *Multi {
 	}
 }
 
+func (m *Multi) Add(interceptors ...interface{}) {
+	m.Interceptors = append(m.Interceptors, interceptors...)
+}
+
 func (m *Multi) ManifestApplied(obj runtime.Object) error {
 	for _, i := range m.Interceptors {
 		c, ok := i.(ManifestApplied)
@@ -46,6 +50,24 @@ func (m *Multi) AllManifestsApplied(objs []runtime.Object) error {
 	}
 
 	return nil
+}
+
+func (m *Multi) ManifestRendered(obj runtime.Object) (runtime.Object, error) {
+	var err error
+
+	for _, i := range m.Interceptors {
+		c, ok := i.(ManifestRendered)
+		if !ok {
+			continue
+		}
+
+		obj, err = c.ManifestRendered(obj)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+	}
+
+	return obj, nil
 }
 
 func (m *Multi) Close() error {
