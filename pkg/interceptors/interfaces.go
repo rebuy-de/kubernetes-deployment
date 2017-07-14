@@ -16,6 +16,10 @@ type AllManifestsApplied interface {
 	AllManifestsApplied([]runtime.Object) error
 }
 
+type ManifestRendered interface {
+	ManifestRendered(runtime.Object) (runtime.Object, error)
+}
+
 type Closer interface {
 	Close() error
 }

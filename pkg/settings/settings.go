@@ -29,7 +29,8 @@ type Defaults struct {
 type Contexts map[string]Context
 
 type Context struct {
-	Variables templates.Variables `yaml:"variables"`
+	Variables           templates.Variables `yaml:"variables"`
+	RemoveResourceSpecs bool                `yaml:"removeResourceSpecs,omitempty"`
 }
 
 type Settings struct {

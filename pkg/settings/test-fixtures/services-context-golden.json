@@ -104,14 +104,16 @@
                 "bish": "bash",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
-            }
+            },
+            "RemoveResourceSpecs": false
         },
         "def": {
             "Variables": {
                 "bish": "bosh",
                 "clusterDomain": "unit-test.example.org",
                 "secret": "foo"
-            }
+            },
+            "RemoveResourceSpecs": true
         }
     }
 }

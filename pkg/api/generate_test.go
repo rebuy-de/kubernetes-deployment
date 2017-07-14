@@ -9,6 +9,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	fakeGH "github.com/rebuy-de/kubernetes-deployment/pkg/gh/fake"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
@@ -59,8 +60,9 @@ func generateApp() *api.App {
 			GitHub: ExampleGitHub,
 			Statsd: statsdw.NullClient{},
 		},
-		Settings:   ExampleSettings,
-		Parameters: new(api.Parameters),
+		Settings:     ExampleSettings,
+		Parameters:   new(api.Parameters),
+		Interceptors: interceptors.New(),
 	}
 }
 
