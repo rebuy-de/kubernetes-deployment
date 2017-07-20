@@ -1,0 +1,52 @@
+{
+    "metadata": {
+        "creationTimestamp": null
+    },
+    "spec": {
+        "template": {
+            "metadata": {
+                "creationTimestamp": null
+            },
+            "spec": {
+                "initContainers": [
+                    {
+                        "name": "",
+                        "resources": {}
+                    }
+                ],
+                "containers": [
+                    {
+                        "name": "",
+                        "resources": {},
+                        "lifecycle": {
+                            "preStop": {
+                                "exec": {
+                                    "command": [
+                                        "sleep",
+                                        "5"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "",
+                        "resources": {},
+                        "lifecycle": {
+                            "preStop": {
+                                "exec": {
+                                    "command": [
+                                        "sleep",
+                                        "5"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "strategy": {}
+    },
+    "status": {}
+}
