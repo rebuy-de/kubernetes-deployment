@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmresspec"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/waiter"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
@@ -51,6 +52,7 @@ func New(p *Parameters) (*App, error) {
 
 	app.Interceptors = interceptors.New(
 		waiter.NewDeploymentWaitInterceptor(app.Clients.Kubernetes),
+		prestopsleep.New(),
 	)
 
 	if app.CurrentContext().RemoveResourceSpecs {
