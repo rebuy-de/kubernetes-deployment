@@ -10,6 +10,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
+	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -50,12 +51,31 @@ func New(p *Parameters) (*App, error) {
 		return nil, err
 	}
 
-	app.Interceptors = interceptors.New(
-		waiter.NewDeploymentWaitInterceptor(app.Clients.Kubernetes),
-		prestopsleep.New(),
-	)
+	app.Settings.Clean(p.Context)
 
-	if app.CurrentContext().RemoveResourceSpecs {
+	app.Interceptors = interceptors.New()
+
+	interceptors := app.CurrentContext().Interceptors
+
+	if interceptors.Waiter.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "waiter",
+		}).Debug("enabling waiter interceptor")
+		app.Interceptors.Add(waiter.NewDeploymentWaitInterceptor(app.Clients.Kubernetes))
+	}
+
+	if interceptors.PreStopSleep.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor":  "preStopSleep",
+			"SleepSeconds": interceptors.PreStopSleep.Options.Seconds,
+		}).Debug("enabling preStopSleep interceptor")
+		app.Interceptors.Add(prestopsleep.New(interceptors.PreStopSleep.Options.Seconds))
+	}
+
+	if interceptors.RemoveResourceSpecs.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "removeResourceSpecs",
+		}).Debug("enabling removeResourceSpecs interceptor")
 		app.Interceptors.Add(rmresspec.New())
 	}
 
@@ -66,8 +86,20 @@ func (app *App) CurrentContext() settings.Service {
 	contextName := app.Parameters.Context
 	if contextName == "" {
 		contextName = app.Settings.Defaults.Context
+		log.WithFields(log.Fields{
+			"Context": contextName,
+		}).Debug("no context set; using default")
 	}
-	return app.Settings.Contexts[contextName]
+
+	context, ok := app.Settings.Contexts[contextName]
+	if !ok {
+		context = app.Settings.Defaults
+		log.WithFields(log.Fields{
+			"Context": contextName,
+		}).Debug("context not found; falling back to defaults")
+	}
+
+	return context
 }
 
 func (app *App) Close() error {

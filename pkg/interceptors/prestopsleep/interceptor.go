@@ -11,23 +11,24 @@ import (
 	v1beta1extensions "k8s.io/client-go/pkg/apis/extensions/v1beta1"
 )
 
-const SleepSeconds = 5
-
 type Interceptor struct {
+	SleepSeconds int
 }
 
-func New() *Interceptor {
-	return &Interceptor{}
+func New(sleepSeconds int) *Interceptor {
+	return &Interceptor{
+		SleepSeconds: sleepSeconds,
+	}
 }
 
 func (i *Interceptor) ManifestRendered(obj runtime.Object) (runtime.Object, error) {
 	switch typed := obj.(type) {
 	case *v1beta1extensions.Deployment:
-		AddToDeployment(typed)
+		i.AddToDeployment(typed)
 		return typed, nil
 
 	case *v1beta1apps.StatefulSet:
-		AddToStatefulSet(typed)
+		i.AddToStatefulSet(typed)
 		return typed, nil
 
 	default:
@@ -38,7 +39,7 @@ func (i *Interceptor) ManifestRendered(obj runtime.Object) (runtime.Object, erro
 	return obj, nil
 }
 
-func AddToContainer(container *v1.Container) {
+func (i *Interceptor) AddToContainer(container *v1.Container) {
 	if container.Lifecycle == nil {
 		container.Lifecycle = &v1.Lifecycle{}
 	}
@@ -49,21 +50,21 @@ func AddToContainer(container *v1.Container) {
 
 	container.Lifecycle.PreStop = &v1.Handler{
 		Exec: &v1.ExecAction{
-			Command: []string{"sleep", fmt.Sprintf("%d", SleepSeconds)},
+			Command: []string{"sleep", fmt.Sprintf("%d", i.SleepSeconds)},
 		},
 	}
 }
 
-func AddToPodTemplace(tpl *v1.PodTemplateSpec) {
-	for i := range tpl.Spec.Containers {
-		AddToContainer(&tpl.Spec.Containers[i])
+func (i *Interceptor) AddToPodTemplace(tpl *v1.PodTemplateSpec) {
+	for j := range tpl.Spec.Containers {
+		i.AddToContainer(&tpl.Spec.Containers[j])
 	}
 }
 
-func AddToDeployment(deployment *v1beta1extensions.Deployment) {
-	AddToPodTemplace(&deployment.Spec.Template)
+func (i *Interceptor) AddToDeployment(deployment *v1beta1extensions.Deployment) {
+	i.AddToPodTemplace(&deployment.Spec.Template)
 }
 
-func AddToStatefulSet(set *v1beta1apps.StatefulSet) {
-	AddToPodTemplace(&set.Spec.Template)
+func (i *Interceptor) AddToStatefulSet(set *v1beta1apps.StatefulSet) {
+	i.AddToPodTemplace(&set.Spec.Template)
 }

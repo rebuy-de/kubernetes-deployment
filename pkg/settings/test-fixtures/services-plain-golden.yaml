@@ -5,6 +5,15 @@ defaults:
   variables:
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 services:
 - repo: bish
 - repo: bash
@@ -25,5 +34,13 @@ contexts:
   def:
     variables:
       bish: bosh
-    removeResourceSpecs: true
+    interceptors:
+      preStopSleep:
+        enabled: false
+        options:
+          seconds: 0
+      removeResourceSpecs:
+        enabled: true
+      waiter:
+        enabled: null
 

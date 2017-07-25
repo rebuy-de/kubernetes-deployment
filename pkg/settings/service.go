@@ -7,11 +7,11 @@ import (
 )
 
 type Service struct {
-	Name                string              `yaml:"name,omitempty"`
-	Context             string              `yaml:"context,omitempty"`
-	Location            gh.Location         `yaml:",inline,omitempty"`
-	Variables           templates.Variables `yaml:"variables,omitempty"`
-	RemoveResourceSpecs bool                `yaml:"removeResourceSpecs,omitempty"` // deprecated
+	Name         string              `yaml:"name,omitempty"`
+	Context      string              `yaml:"context,omitempty"`
+	Location     gh.Location         `yaml:",inline,omitempty"`
+	Variables    templates.Variables `yaml:"variables,omitempty"`
+	Interceptors Interceptors        `yaml:"interceptors,omitempty"`
 }
 
 func (s *Service) Defaults(defaults Service) {

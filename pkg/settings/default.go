@@ -8,5 +8,12 @@ var (
 		Location: gh.Location{
 			Ref: "master",
 		},
+		Interceptors: Interceptors{
+			PreStopSleep: PreStopSleepInterceptor{
+				Options: PreStopSleepOptions{
+					Seconds: 3,
+				},
+			},
+		},
 	}
 )
