@@ -7,7 +7,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
@@ -20,21 +19,10 @@ var (
 	DefaultContext = "default"
 )
 
-type Defaults struct {
-	Location  gh.Location         `yaml:",inline"`
-	Variables templates.Variables `yaml:"variables"`
-	Context   string              `yaml:"context"`
-}
-
-type Contexts map[string]Context
-
-type Context struct {
-	Variables           templates.Variables `yaml:"variables"`
-	RemoveResourceSpecs bool                `yaml:"removeResourceSpecs,omitempty"`
-}
+type Contexts map[string]Service
 
 type Settings struct {
-	Defaults Defaults `yaml:"defaults"`
+	Defaults Service  `yaml:"defaults"`
 	Services Services `yaml:"services"`
 	Contexts Contexts `yaml:"contexts"`
 }

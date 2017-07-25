@@ -1,10 +1,10 @@
 defaults:
+  context: abc
   owner: rebuy-de
   path: deployment/k8s/
   variables:
     clusterDomain: unit-test.example.org
     secret: foo
-  context: abc
 services:
 - name: bish
   owner: rebuy-de
