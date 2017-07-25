@@ -154,5 +154,5 @@ func TestGenerateSuccess(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testutil.AssertGoldenFile(t, "test-fixtures/generate-success-golden.json", objects)
+	testutil.AssertGoldenJSON(t, "test-fixtures/generate-success-golden.json", objects)
 }

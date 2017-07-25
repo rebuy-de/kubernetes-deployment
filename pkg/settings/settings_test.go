@@ -12,7 +12,7 @@ func TestReadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testutil.AssertGoldenFile(t, "test-fixtures/services-plain-golden.json", settings)
+	testutil.AssertGoldenYAML(t, "test-fixtures/services-plain-golden.yaml", settings)
 }
 
 func TestClean(t *testing.T) {
@@ -23,7 +23,7 @@ func TestClean(t *testing.T) {
 
 	settings.Clean("")
 
-	testutil.AssertGoldenFile(t, "test-fixtures/services-clean-golden.json", settings)
+	testutil.AssertGoldenYAML(t, "test-fixtures/services-clean-golden.yaml", settings)
 }
 
 func TestCleanWithContext(t *testing.T) {
@@ -34,5 +34,5 @@ func TestCleanWithContext(t *testing.T) {
 
 	settings.Clean("def")
 
-	testutil.AssertGoldenFile(t, "test-fixtures/services-context-golden.json", settings)
+	testutil.AssertGoldenYAML(t, "test-fixtures/services-context-golden.yaml", settings)
 }

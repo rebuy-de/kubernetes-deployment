@@ -1,0 +1,77 @@
+defaults:
+  owner: rebuy-de
+  repo: ""
+  path: deployment/k8s/
+  ref: ""
+  variables:
+    clusterDomain: unit-test.example.org
+    secret: foo
+  context: abc
+services:
+- name: bish
+  owner: rebuy-de
+  repo: bish
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: unit-test.example.org
+    secret: foo
+- name: bash
+  owner: rebuy-de
+  repo: bash
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: test.example.com
+    secret: foo
+- name: bosh-deployment-foo
+  owner: rebuy-de
+  repo: bosh
+  path: deployment/foo/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: unit-test.example.org
+    secret: foo
+- name: foo
+  owner: rebuy-de
+  repo: bar
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: unit-test.example.org
+    secret: foo
+- name: kubernetes-blub
+  owner: kubernetes
+  repo: blub
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: unit-test.example.org
+    secret: foo
+- name: meh
+  owner: rebuy-de
+  repo: meh
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bosh
+    clusterDomain: unit-test.example.org
+    secret: foo
+contexts:
+  abc:
+    variables:
+      bish: bash
+      clusterDomain: unit-test.example.org
+      secret: foo
+  def:
+    variables:
+      bish: bosh
+      clusterDomain: unit-test.example.org
+      secret: foo
+    removeResourceSpecs: true
+

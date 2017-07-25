@@ -33,5 +33,5 @@ func TestModify(t *testing.T) {
 	}
 	AddToDeployment(deployment)
 
-	testutil.AssertGoldenFile(t, "test-fixtures/deployment-golden.json", deployment)
+	testutil.AssertGoldenJSON(t, "test-fixtures/deployment-golden.json", deployment)
 }
