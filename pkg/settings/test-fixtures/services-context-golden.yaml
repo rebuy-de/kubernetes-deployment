@@ -8,7 +8,7 @@ defaults:
     secret: foo
 services:
 - name: bish
-  context: abc
+  context: def
   owner: rebuy-de
   repo: bish
   path: deployment/k8s/
@@ -19,7 +19,7 @@ services:
     secret: foo
   removeResourceSpecs: true
 - name: bash
-  context: abc
+  context: def
   owner: rebuy-de
   repo: bash
   path: deployment/k8s/
@@ -30,7 +30,7 @@ services:
     secret: foo
   removeResourceSpecs: true
 - name: bosh-deployment-foo
-  context: abc
+  context: def
   owner: rebuy-de
   repo: bosh
   path: deployment/foo/
@@ -41,7 +41,7 @@ services:
     secret: foo
   removeResourceSpecs: true
 - name: foo
-  context: abc
+  context: def
   owner: rebuy-de
   repo: bar
   path: deployment/k8s/
@@ -52,7 +52,7 @@ services:
     secret: foo
   removeResourceSpecs: true
 - name: kubernetes-blub
-  context: abc
+  context: def
   owner: kubernetes
   repo: blub
   path: deployment/k8s/
@@ -63,7 +63,7 @@ services:
     secret: foo
   removeResourceSpecs: true
 - name: meh
-  context: abc
+  context: def
   owner: rebuy-de
   repo: meh
   path: deployment/k8s/
@@ -84,7 +84,7 @@ contexts:
       clusterDomain: unit-test.example.org
       secret: foo
   def:
-    context: abc
+    context: def
     owner: rebuy-de
     path: deployment/k8s/
     ref: master

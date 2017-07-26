@@ -78,7 +78,7 @@ contexts:
       clusterDomain: unit-test.example.org
       secret: foo
   def:
-    context: abc
+    context: def
     owner: rebuy-de
     path: deployment/k8s/
     ref: master

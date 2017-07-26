@@ -84,6 +84,7 @@ func (s *Settings) Clean(contextName string) {
 	for name := range s.Contexts {
 		context := s.Contexts[name]
 		context.Defaults(s.Defaults)
+		context.Context = name
 		s.Contexts[name] = context
 	}
 
