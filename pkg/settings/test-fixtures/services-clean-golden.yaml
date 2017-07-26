@@ -2,11 +2,13 @@ defaults:
   context: abc
   owner: rebuy-de
   path: deployment/k8s/
+  ref: master
   variables:
     clusterDomain: unit-test.example.org
     secret: foo
 services:
 - name: bish
+  context: abc
   owner: rebuy-de
   repo: bish
   path: deployment/k8s/
@@ -16,6 +18,7 @@ services:
     clusterDomain: unit-test.example.org
     secret: foo
 - name: bash
+  context: abc
   owner: rebuy-de
   repo: bash
   path: deployment/k8s/
@@ -25,6 +28,7 @@ services:
     clusterDomain: test.example.com
     secret: foo
 - name: bosh-deployment-foo
+  context: abc
   owner: rebuy-de
   repo: bosh
   path: deployment/foo/
@@ -34,6 +38,7 @@ services:
     clusterDomain: unit-test.example.org
     secret: foo
 - name: foo
+  context: abc
   owner: rebuy-de
   repo: bar
   path: deployment/k8s/
@@ -43,6 +48,7 @@ services:
     clusterDomain: unit-test.example.org
     secret: foo
 - name: kubernetes-blub
+  context: abc
   owner: kubernetes
   repo: blub
   path: deployment/k8s/
@@ -52,6 +58,7 @@ services:
     clusterDomain: unit-test.example.org
     secret: foo
 - name: meh
+  context: abc
   owner: rebuy-de
   repo: meh
   path: deployment/k8s/
@@ -62,11 +69,19 @@ services:
     secret: foo
 contexts:
   abc:
+    context: abc
+    owner: rebuy-de
+    path: deployment/k8s/
+    ref: master
     variables:
       bish: bash
       clusterDomain: unit-test.example.org
       secret: foo
   def:
+    context: abc
+    owner: rebuy-de
+    path: deployment/k8s/
+    ref: master
     variables:
       bish: bosh
       clusterDomain: unit-test.example.org

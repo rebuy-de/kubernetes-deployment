@@ -16,4 +16,9 @@ type Service struct {
 
 func (s *Service) Defaults(defaults Service) {
 	mergo.Merge(s, defaults)
+	s.Clean()
+}
+
+func (s *Service) Clean() {
+	s.Location.Clean()
 }
