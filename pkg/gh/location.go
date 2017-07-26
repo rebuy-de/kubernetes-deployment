@@ -8,7 +8,7 @@ import (
 )
 
 type Location struct {
-	Owner, Repo, Path, Ref string
+	Owner, Repo, Path, Ref string `yaml:",omitempty"`
 }
 
 func NewLocation(location string) (*Location, error) {

@@ -1,8 +1,6 @@
 defaults:
   owner: rebuy-de
-  repo: ""
   path: deployment/k8s/
-  ref: ""
   variables:
     clusterDomain: unit-test.example.org
     secret: foo

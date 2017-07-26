@@ -7,6 +7,6 @@ import (
 
 type Service struct {
 	Name      string              `yaml:"name,omitempty"`
-	Location  gh.Location         `yaml:",inline"`
-	Variables templates.Variables `yaml:"variables"`
+	Location  gh.Location         `yaml:",inline,omitempty"`
+	Variables templates.Variables `yaml:"variables,omitempty"`
 }
