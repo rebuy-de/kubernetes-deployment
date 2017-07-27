@@ -2,6 +2,8 @@ package gh
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"github.com/imdario/mergo"
 	"github.com/pkg/errors"
@@ -32,4 +34,8 @@ func (l Location) String() string {
 
 func (l *Location) Defaults(defaults Location) {
 	mergo.Merge(l, defaults)
+}
+
+func (l *Location) Clean() {
+	l.Path = filepath.Clean(strings.Trim(l.Path, "/")) + "/"
 }

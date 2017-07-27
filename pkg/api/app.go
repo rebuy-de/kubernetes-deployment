@@ -62,7 +62,7 @@ func New(p *Parameters) (*App, error) {
 	return app, nil
 }
 
-func (app *App) CurrentContext() settings.Context {
+func (app *App) CurrentContext() settings.Service {
 	contextName := app.Parameters.Context
 	if contextName == "" {
 		contextName = app.Settings.Defaults.Context

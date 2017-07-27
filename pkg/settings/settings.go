@@ -2,39 +2,19 @@ package settings
 
 import (
 	"io/ioutil"
-	"path/filepath"
 	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
 
-var (
-	DefaultLocation = gh.Location{
-		Ref: "master",
-	}
-	DefaultContext = "default"
-)
-
-type Defaults struct {
-	Location  gh.Location         `yaml:",inline"`
-	Variables templates.Variables `yaml:"variables"`
-	Context   string              `yaml:"context"`
-}
-
-type Contexts map[string]Context
-
-type Context struct {
-	Variables           templates.Variables `yaml:"variables"`
-	RemoveResourceSpecs bool                `yaml:"removeResourceSpecs,omitempty"`
-}
+type Contexts map[string]Service
 
 type Settings struct {
-	Defaults Defaults `yaml:"defaults"`
+	Defaults Service  `yaml:"defaults"`
 	Services Services `yaml:"services"`
 	Contexts Contexts `yaml:"contexts"`
 }
@@ -99,24 +79,20 @@ func (s *Settings) Clean(contextName string) {
 		"Context": contextName,
 	}).Debug("cleaning settings file")
 
-	s.Defaults.Location.Path = filepath.Clean(strings.Trim(s.Defaults.Location.Path, "/")) + "/"
+	s.Defaults.Defaults(Defaults)
 
 	for name := range s.Contexts {
 		context := s.Contexts[name]
-		context.Variables.Defaults(s.Defaults.Variables)
+		context.Defaults(s.Defaults)
+		context.Context = name
+		s.Contexts[name] = context
 	}
 
 	context := s.Contexts[contextName]
 
 	for i := range s.Services {
 		service := &s.Services[i]
-
-		service.Location.Defaults(s.Defaults.Location)
-		service.Location.Defaults(DefaultLocation)
-
-		service.Variables.Defaults(context.Variables)
-
-		service.Location.Path = filepath.Clean(strings.Trim(service.Location.Path, "/")) + "/"
+		service.Defaults(context)
 
 		if strings.TrimSpace(service.Name) == "" {
 			nameParts := []string{}
