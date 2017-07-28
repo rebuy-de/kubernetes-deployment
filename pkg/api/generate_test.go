@@ -55,7 +55,7 @@ func TestMain(m *testing.M) {
 }
 
 func generateApp() *api.App {
-	return &api.App{
+	app := &api.App{
 		Clients: &api.Clients{
 			GitHub: ExampleGitHub,
 			Statsd: statsdw.NullClient{},
@@ -64,6 +64,8 @@ func generateApp() *api.App {
 		Parameters:   new(api.Parameters),
 		Interceptors: interceptors.New(),
 	}
+	app.Settings.Clean(app.Parameters.Context)
+	return app
 }
 
 func TestProjectNoExist(t *testing.T) {

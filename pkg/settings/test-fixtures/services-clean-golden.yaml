@@ -6,6 +6,15 @@ defaults:
   variables:
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 services:
 - name: bish
   context: abc
@@ -17,6 +26,15 @@ services:
     bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 - name: bash
   context: abc
   owner: rebuy-de
@@ -27,6 +45,15 @@ services:
     bish: bash
     clusterDomain: test.example.com
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 - name: bosh-deployment-foo
   context: abc
   owner: rebuy-de
@@ -37,6 +64,15 @@ services:
     bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 - name: foo
   context: abc
   owner: rebuy-de
@@ -47,6 +83,15 @@ services:
     bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 - name: kubernetes-blub
   context: abc
   owner: kubernetes
@@ -57,6 +102,15 @@ services:
     bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 - name: meh
   context: abc
   owner: rebuy-de
@@ -67,6 +121,15 @@ services:
     bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: true
 contexts:
   abc:
     context: abc
@@ -77,6 +140,15 @@ contexts:
       bish: bash
       clusterDomain: unit-test.example.org
       secret: foo
+    interceptors:
+      preStopSleep:
+        enabled: true
+        options:
+          seconds: 3
+      removeResourceSpecs:
+        enabled: null
+      waiter:
+        enabled: true
   def:
     context: def
     owner: rebuy-de
@@ -86,5 +158,13 @@ contexts:
       bish: bosh
       clusterDomain: unit-test.example.org
       secret: foo
-    removeResourceSpecs: true
+    interceptors:
+      preStopSleep:
+        enabled: false
+        options:
+          seconds: 3
+      removeResourceSpecs:
+        enabled: true
+      waiter:
+        enabled: true
 

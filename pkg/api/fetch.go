@@ -23,8 +23,6 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 		"Branch":  branchName,
 	}).Debugf("fetching templates")
 
-	app.Settings.Clean(app.Parameters.Context)
-
 	service := app.Settings.Service(project)
 	if service == nil {
 		return nil, errors.Errorf("project '%s' not found", project)

@@ -11,7 +11,7 @@ import (
 
 func TestType(t *testing.T) {
 	var inter interceptors.ManifestRendered
-	inter = New()
+	inter = New(5)
 	_ = inter
 }
 
@@ -31,7 +31,7 @@ func TestModify(t *testing.T) {
 			},
 		},
 	}
-	AddToDeployment(deployment)
+	New(5).AddToDeployment(deployment)
 
 	testutil.AssertGoldenJSON(t, "test-fixtures/deployment-golden.json", deployment)
 }
