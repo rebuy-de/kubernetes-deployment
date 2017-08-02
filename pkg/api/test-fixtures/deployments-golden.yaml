@@ -1,0 +1,119 @@
+defaults:
+  context: prod
+  owner: rebuy-de
+  path: k8s
+  ref: master
+  variables:
+    stage: unknown
+  interceptors:
+    preStopSleep:
+      enabled: null
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: null
+services:
+- name: foobar
+  context: prod
+  owner: rebuy-de
+  repo: foobar
+  path: k8s/
+  ref: master
+  variables:
+    stage: production
+  interceptors:
+    preStopSleep:
+      enabled: null
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: null
+- name: repo-no-exist
+  context: prod
+  owner: rebuy-de
+  repo: repo-no-exist
+  path: k8s/
+  ref: master
+  variables:
+    stage: production
+  interceptors:
+    preStopSleep:
+      enabled: null
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: null
+- name: no-files
+  context: prod
+  owner: rebuy-de
+  repo: foobar
+  path: does-not-exist/
+  ref: master
+  variables:
+    stage: production
+  interceptors:
+    preStopSleep:
+      enabled: null
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: null
+- name: invalid-file
+  context: prod
+  owner: rebuy-de
+  repo: foobar
+  path: invalid/
+  ref: master
+  variables:
+    stage: production
+  interceptors:
+    preStopSleep:
+      enabled: null
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    waiter:
+      enabled: null
+contexts:
+  prod:
+    context: prod
+    owner: rebuy-de
+    path: k8s
+    ref: master
+    variables:
+      stage: production
+    interceptors:
+      preStopSleep:
+        enabled: null
+        options:
+          seconds: 3
+      removeResourceSpecs:
+        enabled: null
+      waiter:
+        enabled: null
+  test:
+    context: test
+    owner: rebuy-de
+    path: k8s
+    ref: master
+    variables:
+      stage: testing
+    interceptors:
+      preStopSleep:
+        enabled: null
+        options:
+          seconds: 3
+      removeResourceSpecs:
+        enabled: null
+      waiter:
+        enabled: null
+
