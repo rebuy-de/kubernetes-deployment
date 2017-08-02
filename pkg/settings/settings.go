@@ -17,6 +17,8 @@ type Settings struct {
 	Defaults Service  `yaml:"defaults"`
 	Services Services `yaml:"services"`
 	Contexts Contexts `yaml:"contexts"`
+
+	context string
 }
 
 func FromBytes(data []byte) (*Settings, error) {
@@ -60,6 +62,10 @@ func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
 	return FromBytes([]byte(data))
 }
 
+func (s *Settings) CurrentContext() Service {
+	return s.Contexts[s.context]
+}
+
 func (s *Settings) Service(name string) *Service {
 	for _, service := range s.Services {
 		if service.Name == name {
@@ -70,13 +76,26 @@ func (s *Settings) Service(name string) *Service {
 	return nil
 }
 
+func (s *Settings) GuessService(name string) *Service {
+	service := new(Service)
+	service.Defaults(Service{
+		Location: gh.Location{
+			Repo: name,
+		},
+	})
+	service.Defaults(s.CurrentContext())
+	service.Clean(s.CurrentContext())
+	return service
+}
+
 func (s *Settings) Clean(contextName string) {
-	if contextName == "" {
-		contextName = s.Defaults.Context
+	s.context = contextName
+	if s.context == "" {
+		s.context = s.Defaults.Context
 	}
 
 	log.WithFields(log.Fields{
-		"Context": contextName,
+		"Context": s.context,
 	}).Debug("cleaning settings file")
 
 	s.Defaults.Defaults(Defaults)
@@ -88,30 +107,11 @@ func (s *Settings) Clean(contextName string) {
 		s.Contexts[name] = context
 	}
 
-	context := s.Contexts[contextName]
-
 	for i := range s.Services {
-		service := &s.Services[i]
-		service.Defaults(context)
-
-		if strings.TrimSpace(service.Name) == "" {
-			nameParts := []string{}
-			if service.Location.Owner != s.Defaults.Location.Owner {
-				nameParts = append(nameParts, service.Location.Owner)
-			}
-
-			if service.Location.Repo != s.Defaults.Location.Repo {
-				nameParts = append(nameParts, service.Location.Repo)
-			}
-
-			if service.Location.Path != s.Defaults.Location.Path {
-				path := service.Location.Path
-				path = strings.Trim(path, "/")
-				path = strings.Replace(path, "/", "-", -1)
-				nameParts = append(nameParts, path)
-			}
-
-			service.Name = strings.Join(nameParts, "-")
-		}
+		service := new(Service)
+		service.Defaults(s.Services[i])
+		service.Defaults(s.CurrentContext())
+		service.Clean(s.CurrentContext())
+		s.Services[i] = *service
 	}
 }

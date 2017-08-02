@@ -25,7 +25,10 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 
 	service := app.Settings.Service(project)
 	if service == nil {
-		return nil, errors.Errorf("project '%s' not found", project)
+		service = app.Settings.GuessService(project)
+		log.WithFields(log.Fields{
+			"Service": service,
+		}).Debug("project not found in settings; guessing it")
 	}
 
 	log.WithFields(

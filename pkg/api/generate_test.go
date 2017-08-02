@@ -18,8 +18,7 @@ import (
 )
 
 var (
-	ExampleSettings *settings.Settings
-	ExampleGitHub   = &fakeGH.GitHub{
+	ExampleGitHub = &fakeGH.GitHub{
 		"rebuy-de": fakeGH.Repos{
 			"foobar": fakeGH.Branches{
 				"master": fakeGH.Branch{
@@ -37,12 +36,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	var err error
-	ExampleSettings, err = settings.ReadFromFile("test-fixtures/deployments.yaml")
-	if err != nil {
-		panic(err)
-	}
-
 	flag.Parse()
 
 	if testing.Verbose() {
@@ -54,13 +47,18 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func generateApp() *api.App {
+func generateApp(t *testing.T) *api.App {
+	exampleSettings, err := settings.ReadFromFile("test-fixtures/deployments.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	app := &api.App{
 		Clients: &api.Clients{
 			GitHub: ExampleGitHub,
 			Statsd: statsdw.NullClient{},
 		},
-		Settings:     ExampleSettings,
+		Settings:     exampleSettings,
 		Parameters:   new(api.Parameters),
 		Interceptors: interceptors.New(),
 	}
@@ -68,15 +66,20 @@ func generateApp() *api.App {
 	return app
 }
 
+func TestSettings(t *testing.T) {
+	app := generateApp(t)
+	testutil.AssertGoldenYAML(t, "test-fixtures/deployments-golden.yaml", app.Settings)
+}
+
 func TestProjectNoExist(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	_, err := app.Generate("project-no-exist", "master")
 	if err == nil {
 		t.Fatal("expected an error")
 	}
 
-	expect := "failed to fetch project: project 'project-no-exist' not found"
+	expect := "failed to fetch project: unable to get branch information: fake repo 'rebuy-de/project-no-exist' doesn't exist"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)
@@ -85,7 +88,7 @@ func TestProjectNoExist(t *testing.T) {
 }
 
 func TestMissingRepo(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	_, err := app.Generate("repo-no-exist", "master")
 	if err == nil {
@@ -101,7 +104,7 @@ func TestMissingRepo(t *testing.T) {
 }
 
 func TestMissingBranch(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	_, err := app.Generate("foobar", "missing-branch")
 	if err == nil {
@@ -117,7 +120,7 @@ func TestMissingBranch(t *testing.T) {
 }
 
 func TestMissingFiles(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	_, err := app.Generate("no-files", "master")
 	if err == nil {
@@ -133,7 +136,7 @@ func TestMissingFiles(t *testing.T) {
 }
 
 func TestInvalidFile(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	_, err := app.Generate("invalid-file", "master")
 	if err == nil {
@@ -149,7 +152,7 @@ func TestInvalidFile(t *testing.T) {
 }
 
 func TestGenerateSuccess(t *testing.T) {
-	app := generateApp()
+	app := generateApp(t)
 
 	objects, err := app.Generate("foobar", "master")
 	if err != nil {

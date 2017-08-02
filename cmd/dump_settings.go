@@ -20,8 +20,6 @@ func NewDumpSettingsCommand(params *api.Parameters) *cobra.Command {
 		checkError(err)
 		defer must(app.Close)
 
-		app.Settings.Clean(app.Parameters.Context)
-
 		raw, err := yaml.Marshal(app.Settings)
 		checkError(err)
 		fmt.Println(string(raw))
