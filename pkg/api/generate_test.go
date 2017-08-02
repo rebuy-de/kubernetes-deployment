@@ -79,7 +79,7 @@ func TestProjectNoExist(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := "failed to fetch project: project 'project-no-exist' not found"
+	expect := "failed to fetch project: unable to get branch information: fake repo 'rebuy-de/project-no-exist' doesn't exist"
 	if err.Error() != expect {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected: %s", expect)

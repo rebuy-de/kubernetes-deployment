@@ -76,6 +76,18 @@ func (s *Settings) Service(name string) *Service {
 	return nil
 }
 
+func (s *Settings) GuessService(name string) *Service {
+	service := new(Service)
+	service.Defaults(Service{
+		Location: gh.Location{
+			Repo: name,
+		},
+	})
+	service.Defaults(s.CurrentContext())
+	service.Clean(s.CurrentContext())
+	return service
+}
+
 func (s *Settings) Clean(contextName string) {
 	s.context = contextName
 	if s.context == "" {
