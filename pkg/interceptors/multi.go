@@ -20,14 +20,14 @@ func (m *Multi) Add(interceptors ...interface{}) {
 	m.Interceptors = append(m.Interceptors, interceptors...)
 }
 
-func (m *Multi) ManifestApplied(obj runtime.Object) error {
+func (m *Multi) PreManifestApply(obj runtime.Object) error {
 	for _, i := range m.Interceptors {
-		c, ok := i.(ManifestApplied)
+		c, ok := i.(PreManifestApplier)
 		if !ok {
 			continue
 		}
 
-		err := c.ManifestApplied(obj)
+		err := c.PreManifestApply(obj)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -36,14 +36,14 @@ func (m *Multi) ManifestApplied(obj runtime.Object) error {
 	return nil
 }
 
-func (m *Multi) AllManifestsApplied(objs []runtime.Object) error {
+func (m *Multi) PostApply(objs []runtime.Object) error {
 	for _, i := range m.Interceptors {
-		c, ok := i.(AllManifestsApplied)
+		c, ok := i.(PostApplier)
 		if !ok {
 			continue
 		}
 
-		err := c.AllManifestsApplied(objs)
+		err := c.PostApply(objs)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -52,16 +52,16 @@ func (m *Multi) AllManifestsApplied(objs []runtime.Object) error {
 	return nil
 }
 
-func (m *Multi) ManifestRendered(obj runtime.Object) (runtime.Object, error) {
+func (m *Multi) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
 	var err error
 
 	for _, i := range m.Interceptors {
-		c, ok := i.(ManifestRendered)
+		c, ok := i.(PostManifestRenderer)
 		if !ok {
 			continue
 		}
 
-		obj, err = c.ManifestRendered(obj)
+		obj, err = c.PostManifestRender(obj)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}

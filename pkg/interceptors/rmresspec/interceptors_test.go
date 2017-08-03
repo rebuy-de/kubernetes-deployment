@@ -7,7 +7,7 @@ import (
 )
 
 func TestType(t *testing.T) {
-	var inter interceptors.ManifestRendered
+	var inter interceptors.PostManifestRenderer
 	inter = New()
 	_ = inter
 }

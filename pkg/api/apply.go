@@ -26,7 +26,7 @@ func (app *App) Apply(project, branchName string) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}
-		err = app.Interceptors.ManifestApplied(upstreamObj)
+		err = app.Interceptors.PreManifestApply(upstreamObj)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -36,7 +36,7 @@ func (app *App) Apply(project, branchName string) error {
 		}).Debug("applied manifest")
 	}
 
-	err = app.Interceptors.AllManifestsApplied(objects)
+	err = app.Interceptors.PostApply(objects)
 	if err != nil {
 		return errors.WithStack(err)
 	}

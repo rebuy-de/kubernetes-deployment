@@ -21,7 +21,7 @@ func New(sleepSeconds int) *Interceptor {
 	}
 }
 
-func (i *Interceptor) ManifestRendered(obj runtime.Object) (runtime.Object, error) {
+func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
 	switch typed := obj.(type) {
 	case *v1beta1extensions.Deployment:
 		i.AddToDeployment(typed)
