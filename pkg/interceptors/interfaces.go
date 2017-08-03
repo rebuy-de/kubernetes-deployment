@@ -3,21 +3,22 @@ package interceptors
 import "k8s.io/apimachinery/pkg/runtime"
 
 type Interface interface {
-	ManifestApplied
-	AllManifestsApplied
+	PreManifestApplier
+	PostApplier
+	PostManifestRenderer
 	Closer
 }
 
-type ManifestApplied interface {
-	ManifestApplied(runtime.Object) error
+type PreManifestApplier interface {
+	PreManifestApply(runtime.Object) error
 }
 
-type AllManifestsApplied interface {
-	AllManifestsApplied([]runtime.Object) error
+type PostApplier interface {
+	PostApply([]runtime.Object) error
 }
 
-type ManifestRendered interface {
-	ManifestRendered(runtime.Object) (runtime.Object, error)
+type PostManifestRenderer interface {
+	PostManifestRender(runtime.Object) (runtime.Object, error)
 }
 
 type Closer interface {
