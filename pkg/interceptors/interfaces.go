@@ -1,12 +1,25 @@
 package interceptors
 
-import "k8s.io/apimachinery/pkg/runtime"
+import (
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"k8s.io/apimachinery/pkg/runtime"
+)
 
 type Interface interface {
+	PostFetcher
+	PreApplier
 	PreManifestApplier
 	PostApplier
 	PostManifestRenderer
 	Closer
+}
+
+type PostFetcher interface {
+	PostFetch(*gh.Branch) error
+}
+
+type PreApplier interface {
+	PreApply([]runtime.Object) error
 }
 
 type PreManifestApplier interface {

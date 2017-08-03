@@ -1,9 +1,10 @@
 package settings
 
 type Interceptors struct {
-	PreStopSleep        PreStopSleepInterceptor `yaml:"preStopSleep"`
-	RemoveResourceSpecs Interceptor             `yaml:"removeResourceSpecs"`
-	Waiter              Interceptor             `yaml:"waiter"`
+	PreStopSleep        PreStopSleepInterceptor    `yaml:"preStopSleep"`
+	RemoveResourceSpecs Interceptor                `yaml:"removeResourceSpecs"`
+	Waiter              Interceptor                `yaml:"waiter"`
+	GHStatusChecker     GHStatusCheckerInterceptor `yaml:"ghStatusChecker"`
 }
 
 type Interceptor struct {
@@ -17,6 +18,16 @@ type PreStopSleepOptions struct {
 type PreStopSleepInterceptor struct {
 	Enabled TriState            `yaml:"enabled"`
 	Options PreStopSleepOptions `yaml:"options"`
+}
+
+type GHStatusCheckerOptions struct {
+	TargetURLRegex string `yaml:"targetUrlRegex"`
+	JobRegex       string `yaml:"jobRegex"`
+}
+
+type GHStatusCheckerInterceptor struct {
+	Enabled TriState               `yaml:"enabled"`
+	Options GHStatusCheckerOptions `yaml:"options"`
 }
 
 type TriState int

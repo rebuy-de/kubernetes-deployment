@@ -15,6 +15,11 @@ defaults:
       enabled: null
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 services:
 - name: bish
   context: def
@@ -35,6 +40,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 - name: bash
   context: def
   owner: rebuy-de
@@ -54,6 +64,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 - name: bosh-deployment-foo
   context: def
   owner: rebuy-de
@@ -73,6 +88,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 - name: foo
   context: def
   owner: rebuy-de
@@ -92,6 +112,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 - name: kubernetes-blub
   context: def
   owner: kubernetes
@@ -111,6 +136,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 - name: meh
   context: def
   owner: rebuy-de
@@ -130,6 +160,11 @@ services:
       enabled: true
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        jobRegex: .*
 contexts:
   abc:
     context: abc
@@ -149,6 +184,11 @@ contexts:
         enabled: null
       waiter:
         enabled: true
+      ghStatusChecker:
+        enabled: null
+        options:
+          targetUrlRegex: .*
+          jobRegex: .*
   def:
     context: def
     owner: rebuy-de
@@ -167,4 +207,9 @@ contexts:
         enabled: true
       waiter:
         enabled: true
+      ghStatusChecker:
+        enabled: null
+        options:
+          targetUrlRegex: .*
+          jobRegex: .*
 

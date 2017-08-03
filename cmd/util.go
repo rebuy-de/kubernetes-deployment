@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/rebuy-de/kubernetes-deployment/pkg/cmdutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -38,8 +39,6 @@ func randomID() string {
 	return string(b)
 }
 
-type Exit struct{ Code int }
-
 func checkError(err error) {
 	if err == nil {
 		return
@@ -50,7 +49,7 @@ func checkError(err error) {
 	}).Debug("a fatal error occured")
 	log.Error(err)
 
-	panic(Exit{1})
+	cmdutil.Exit(1)
 }
 
 func must(fn func() error) {

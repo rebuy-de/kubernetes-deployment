@@ -6,6 +6,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmresspec"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/waiter"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
@@ -77,6 +78,19 @@ func New(p *Parameters) (*App, error) {
 			"Interceptor": "removeResourceSpecs",
 		}).Debug("enabling removeResourceSpecs interceptor")
 		app.Interceptors.Add(rmresspec.New())
+	}
+
+	if interceptors.GHStatusChecker.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor":    "ghStatusChecker",
+			"TargetURLRegex": interceptors.GHStatusChecker.Options.TargetURLRegex,
+			"JobRegex":       interceptors.GHStatusChecker.Options.JobRegex,
+		}).Debug("enabling ghStatusChecker interceptor")
+		app.Interceptors.Add(statuschecker.New(
+			app.Clients.GitHub,
+			interceptors.GHStatusChecker.Options.TargetURLRegex,
+			interceptors.GHStatusChecker.Options.JobRegex,
+		))
 	}
 
 	return app, nil

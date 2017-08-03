@@ -59,6 +59,11 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 		return nil, errors.WithStack(err)
 	}
 
+	err = app.Interceptors.PostFetch(branch)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
 	return &FetchResult{
 		Branch:    branch,
 		Service:   service,
