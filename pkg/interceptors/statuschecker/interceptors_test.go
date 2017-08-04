@@ -8,12 +8,12 @@ import (
 
 func TestTypePreApplier(t *testing.T) {
 	var inter interceptors.PreApplier
-	inter = New(nil, "", "")
+	inter = New(nil, Options{})
 	_ = inter
 }
 
 func TestTypePostFetcher(t *testing.T) {
 	var inter interceptors.PostFetcher
-	inter = New(nil, "", "")
+	inter = New(nil, Options{})
 	_ = inter
 }

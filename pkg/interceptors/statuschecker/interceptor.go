@@ -30,7 +30,8 @@ var (
 )
 
 type Interceptor struct {
-	GitHub gh.Interface
+	GitHub  gh.Interface
+	Options Options
 
 	TargetURLRegex string
 	JobRegex       string
@@ -38,11 +39,10 @@ type Interceptor struct {
 	Branch *gh.Branch
 }
 
-func New(gitHub gh.Interface, TargetURLRegex, JobRegex string) *Interceptor {
+func New(gitHub gh.Interface, options Options) *Interceptor {
 	return &Interceptor{
-		GitHub:         gitHub,
-		TargetURLRegex: TargetURLRegex,
-		JobRegex:       JobRegex,
+		GitHub:  gitHub,
+		Options: options,
 	}
 }
 
