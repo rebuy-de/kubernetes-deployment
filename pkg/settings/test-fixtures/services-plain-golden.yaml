@@ -18,7 +18,10 @@ defaults:
       enabled: null
       options:
         targetUrlRegex: ""
-        jobRegex: ""
+        contextRegex: ""
+        initialDelay: 0s
+        pullInterval: 0s
+        notificationInterval: 0s
 services:
 - repo: bish
 - repo: bash
@@ -52,5 +55,8 @@ contexts:
         enabled: null
         options:
           targetUrlRegex: ""
-          jobRegex: ""
+          contextRegex: ""
+          initialDelay: 0s
+          pullInterval: 0s
+          notificationInterval: 0s
 

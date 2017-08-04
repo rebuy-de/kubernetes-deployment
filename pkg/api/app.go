@@ -82,14 +82,12 @@ func New(p *Parameters) (*App, error) {
 
 	if interceptors.GHStatusChecker.Enabled == settings.Enabled {
 		log.WithFields(log.Fields{
-			"Interceptor":    "ghStatusChecker",
-			"TargetURLRegex": interceptors.GHStatusChecker.Options.TargetURLRegex,
-			"JobRegex":       interceptors.GHStatusChecker.Options.JobRegex,
+			"Interceptor": "ghStatusChecker",
+			"Options":     interceptors.GHStatusChecker.Options,
 		}).Debug("enabling ghStatusChecker interceptor")
 		app.Interceptors.Add(statuschecker.New(
 			app.Clients.GitHub,
-			interceptors.GHStatusChecker.Options.TargetURLRegex,
-			interceptors.GHStatusChecker.Options.JobRegex,
+			interceptors.GHStatusChecker.Options,
 		))
 	}
 

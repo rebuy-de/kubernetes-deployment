@@ -18,7 +18,10 @@ defaults:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 services:
 - name: foobar
   context: prod
@@ -41,7 +44,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: repo-no-exist
   context: prod
   owner: rebuy-de
@@ -63,7 +69,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: no-files
   context: prod
   owner: rebuy-de
@@ -85,7 +94,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: invalid-file
   context: prod
   owner: rebuy-de
@@ -107,7 +119,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 contexts:
   prod:
     context: prod
@@ -129,7 +144,10 @@ contexts:
         enabled: null
         options:
           targetUrlRegex: .*
-          jobRegex: .*
+          contextRegex: .*
+          initialDelay: 20s
+          pullInterval: 10s
+          notificationInterval: 3m0s
   test:
     context: test
     owner: rebuy-de
@@ -150,5 +168,8 @@ contexts:
         enabled: null
         options:
           targetUrlRegex: .*
-          jobRegex: .*
+          contextRegex: .*
+          initialDelay: 20s
+          pullInterval: 10s
+          notificationInterval: 3m0s
 
