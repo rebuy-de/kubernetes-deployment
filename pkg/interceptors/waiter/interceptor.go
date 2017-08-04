@@ -40,7 +40,7 @@ func NewDeploymentWaitInterceptor(client kubernetes.Interface) *DeploymentWaitIn
 	}
 }
 
-func (dwi *DeploymentWaitInterceptor) AllManifestsApplied([]runtime.Object) error {
+func (dwi *DeploymentWaitInterceptor) PostApply([]runtime.Object) error {
 	dwi.waitgroup.Wait()
 	dwi.cancel()
 	return nil
@@ -51,7 +51,7 @@ func (dwi *DeploymentWaitInterceptor) Close() error {
 	return nil
 }
 
-func (dwi *DeploymentWaitInterceptor) ManifestApplied(obj runtime.Object) error {
+func (dwi *DeploymentWaitInterceptor) PreManifestApply(obj runtime.Object) error {
 	deployment, ok := obj.(*v1beta1.Deployment)
 	if !ok {
 		return nil
