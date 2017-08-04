@@ -1,6 +1,10 @@
 package settings
 
-import "github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+import (
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
+)
 
 var (
 	Defaults = Service{
@@ -10,12 +14,12 @@ var (
 		},
 		Interceptors: Interceptors{
 			PreStopSleep: PreStopSleepInterceptor{
-				Options: PreStopSleepOptions{
+				Options: prestopsleep.Options{
 					Seconds: 3,
 				},
 			},
 			GHStatusChecker: GHStatusCheckerInterceptor{
-				Options: GHStatusCheckerOptions{
+				Options: statuschecker.Options{
 					TargetURLRegex: `.*`,
 					JobRegex:       `.*`,
 				},
