@@ -19,10 +19,7 @@ var (
 				},
 			},
 			GHStatusChecker: GHStatusCheckerInterceptor{
-				Options: statuschecker.Options{
-					TargetURLRegex: `.*`,
-					JobRegex:       `.*`,
-				},
+				Options: statuschecker.DefaultOptions,
 			},
 		},
 	}

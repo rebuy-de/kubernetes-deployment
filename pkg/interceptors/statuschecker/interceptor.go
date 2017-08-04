@@ -23,20 +23,10 @@ const (
 	Error
 )
 
-var (
-	InitialDelay         = 20 * time.Second
-	PullInterval         = 10 * time.Second
-	NotificationInterval = 3 * time.Minute
-)
-
 type Interceptor struct {
 	GitHub  gh.Interface
 	Options Options
-
-	TargetURLRegex string
-	JobRegex       string
-
-	Branch *gh.Branch
+	Branch  *gh.Branch
 }
 
 func New(gitHub gh.Interface, options Options) *Interceptor {
@@ -53,11 +43,11 @@ func (i *Interceptor) PostFetch(branch *gh.Branch) error {
 
 func (i *Interceptor) PreApply([]runtime.Object) error {
 	age := time.Since(i.Branch.Date)
-	if age < InitialDelay {
+	if age < i.Options.InitialDelay {
 		log.WithFields(log.Fields{
-			"Delay": InitialDelay - age,
-		}).Info("(woah) you are deploying very fast *sleep*")
-		time.Sleep(InitialDelay - age)
+			"Delay": i.Options.InitialDelay - age,
+		}).Debug("the commit is very young; waiting so the build system has time to register")
+		time.Sleep(i.Options.InitialDelay - age)
 	}
 
 	worst, err := i.getWorstState()
@@ -76,7 +66,7 @@ func (i *Interceptor) PreApply([]runtime.Object) error {
 
 	log.Warn("delaying deployment, because there are pending builds")
 
-	notification := time.NewTicker(NotificationInterval)
+	notification := time.NewTicker(i.Options.NotificationInterval)
 	defer notification.Stop()
 	go func() {
 		for _ = range notification.C {
@@ -101,7 +91,7 @@ func (i *Interceptor) PreApply([]runtime.Object) error {
 			cmdutil.Exit(1)
 		}
 
-		time.Sleep(PullInterval)
+		time.Sleep(i.Options.PullInterval)
 	}
 }
 
@@ -137,26 +127,26 @@ func (i *Interceptor) getState(status github.RepoStatus) (State, error) {
 		"Context":     *status.Context,
 	})
 
-	ok, err := regexp.MatchString(i.TargetURLRegex, *status.TargetURL)
+	ok, err := regexp.MatchString(i.Options.TargetURLRegex, *status.TargetURL)
 	if err != nil {
-		return Error, errors.Wrapf(err, "failed to execute regex %v", i.TargetURLRegex)
+		return Error, errors.Wrapf(err, "failed to execute regex %v", i.Options.TargetURLRegex)
 	}
 
 	if !ok {
 		logger.WithFields(log.Fields{
-			"Regex": i.TargetURLRegex,
+			"Regex": i.Options.TargetURLRegex,
 		}).Debugf("ignoring status, since target URL doesn't match regex")
 		return Ignored, nil
 	}
 
-	ok, err = regexp.MatchString(i.JobRegex, *status.Context)
+	ok, err = regexp.MatchString(i.Options.ContextRegex, *status.Context)
 	if err != nil {
-		return Error, errors.Wrapf(err, "failed to execute regex %v", i.TargetURLRegex)
+		return Error, errors.Wrapf(err, "failed to execute regex %v", i.Options.TargetURLRegex)
 	}
 
 	if !ok {
 		logger.WithFields(log.Fields{
-			"Regex": i.JobRegex,
+			"Regex": i.Options.ContextRegex,
 		}).Debugf("ignoring status, since context doesn't match regex")
 		return Ignored, nil
 	}

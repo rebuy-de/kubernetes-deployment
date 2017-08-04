@@ -19,7 +19,10 @@ defaults:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 services:
 - name: bish
   context: def
@@ -44,7 +47,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: bash
   context: def
   owner: rebuy-de
@@ -68,7 +74,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: bosh-deployment-foo
   context: def
   owner: rebuy-de
@@ -92,7 +101,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: foo
   context: def
   owner: rebuy-de
@@ -116,7 +128,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: kubernetes-blub
   context: def
   owner: kubernetes
@@ -140,7 +155,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 - name: meh
   context: def
   owner: rebuy-de
@@ -164,7 +182,10 @@ services:
       enabled: null
       options:
         targetUrlRegex: .*
-        jobRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 contexts:
   abc:
     context: abc
@@ -188,7 +209,10 @@ contexts:
         enabled: null
         options:
           targetUrlRegex: .*
-          jobRegex: .*
+          contextRegex: .*
+          initialDelay: 20s
+          pullInterval: 10s
+          notificationInterval: 3m0s
   def:
     context: def
     owner: rebuy-de
@@ -211,5 +235,8 @@ contexts:
         enabled: null
         options:
           targetUrlRegex: .*
-          jobRegex: .*
+          contextRegex: .*
+          initialDelay: 20s
+          pullInterval: 10s
+          notificationInterval: 3m0s
 
