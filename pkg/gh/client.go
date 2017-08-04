@@ -27,6 +27,7 @@ type Interface interface {
 	GetBranch(location *Location) (*Branch, error)
 	GetFile(location *Location) (string, error)
 	GetFiles(location *Location) (map[string]string, error)
+	GetStatuses(location *Location) ([]github.RepoStatus, error)
 }
 
 type API struct {
@@ -247,4 +248,33 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 	}
 
 	return result, nil
+}
+
+func (gh *API) GetStatuses(location *Location) ([]github.RepoStatus, error) {
+	log.WithFields(
+		log.Fields(structs.Map(location)),
+	).Debug("getting build status from GitHub")
+
+	combined, resp, err := gh.client.Repositories.GetCombinedStatus(
+		context.Background(),
+		location.Owner, location.Repo, location.Ref,
+		nil,
+	)
+
+	if err != nil {
+		return nil, errors.Wrapf(err,
+			"unable to fetch status '%v' from GitHub", location)
+	}
+
+	log.WithFields(log.Fields{
+		"TotalStatuses": combined.GetTotalCount(),
+		"SHA":           combined.GetSHA(),
+		"RateLimit":     resp.Rate.Limit,
+		"RateRemaining": resp.Rate.Remaining,
+		"RateReset":     resp.Rate.Reset,
+		"FromCache":     resp.Header.Get(httpcache.XFromCache),
+	}).Debug("retrieved statuses page")
+	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
+
+	return combined.Statuses, nil
 }

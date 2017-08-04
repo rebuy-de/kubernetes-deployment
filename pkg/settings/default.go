@@ -14,6 +14,12 @@ var (
 					Seconds: 3,
 				},
 			},
+			GHStatusChecker: GHStatusCheckerInterceptor{
+				Options: GHStatusCheckerOptions{
+					TargetURLRegex: `.*`,
+					JobRegex:       `.*`,
+				},
+			},
 		},
 	}
 )

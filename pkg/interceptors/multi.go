@@ -2,6 +2,7 @@ package interceptors
 
 import (
 	"github.com/pkg/errors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -18,6 +19,38 @@ func New(interceptors ...interface{}) *Multi {
 
 func (m *Multi) Add(interceptors ...interface{}) {
 	m.Interceptors = append(m.Interceptors, interceptors...)
+}
+
+func (m *Multi) PostFetch(branch *gh.Branch) error {
+	for _, i := range m.Interceptors {
+		c, ok := i.(PostFetcher)
+		if !ok {
+			continue
+		}
+
+		err := c.PostFetch(branch)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+
+	return nil
+}
+
+func (m *Multi) PreApply(objs []runtime.Object) error {
+	for _, i := range m.Interceptors {
+		c, ok := i.(PreApplier)
+		if !ok {
+			continue
+		}
+
+		err := c.PreApply(objs)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+
+	return nil
 }
 
 func (m *Multi) PreManifestApply(obj runtime.Object) error {

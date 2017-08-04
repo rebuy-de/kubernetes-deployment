@@ -14,6 +14,11 @@ defaults:
       enabled: null
     waiter:
       enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: ""
+        jobRegex: ""
 services:
 - repo: bish
 - repo: bash
@@ -43,4 +48,9 @@ contexts:
         enabled: true
       waiter:
         enabled: null
+      ghStatusChecker:
+        enabled: null
+        options:
+          targetUrlRegex: ""
+          jobRegex: ""
 

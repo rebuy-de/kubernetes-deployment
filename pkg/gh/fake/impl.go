@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/google/go-github/github"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 )
 
@@ -70,4 +71,8 @@ func (d *GitHub) GetFiles(l *gh.Location) (map[string]string, error) {
 	}
 
 	return files, nil
+}
+
+func (d *GitHub) GetStatuses(location *gh.Location) ([]github.RepoStatus, error) {
+	return nil, fmt.Errorf("not implmented, yet")
 }

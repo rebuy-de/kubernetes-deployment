@@ -21,6 +21,11 @@ func (app *App) Apply(project, branchName string) error {
 		return errors.WithStack(err)
 	}
 
+	err = app.Interceptors.PreApply(objects)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	for _, obj := range objects {
 		upstreamObj, err := app.Clients.Kubectl.Apply(obj)
 		if err != nil {
