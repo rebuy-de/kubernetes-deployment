@@ -39,7 +39,7 @@ func RemoveFromPodTemplace(tpl v1.PodTemplateSpec) v1.PodTemplateSpec {
 	}
 
 	for i := range tpl.Spec.InitContainers {
-		tpl.Spec.Containers[i].Resources = v1.ResourceRequirements{}
+		tpl.Spec.InitContainers[i].Resources = v1.ResourceRequirements{}
 	}
 
 	return tpl
