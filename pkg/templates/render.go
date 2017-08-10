@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 func RenderAll(templates map[string]string, variables Variables) (map[string]string, error) {
@@ -42,6 +43,10 @@ func Render(templateString string, variables Variables) (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "Unable to render template")
 	}
+
+	log.WithFields(log.Fields{
+		"Result": buf.String(),
+	}).Debug("Rendered file")
 
 	return buf.String(), nil
 }
