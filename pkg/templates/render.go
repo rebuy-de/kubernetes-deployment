@@ -25,6 +25,7 @@ func Render(templateString string, variables Variables) (string, error) {
 		"ToUpper":    strings.ToUpper,
 		"ToLower":    strings.ToLower,
 		"Identifier": IdentifierFunc,
+		"MakeSlice":  MakeSliceFunc,
 	}
 
 	t, err := template.

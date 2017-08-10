@@ -15,3 +15,8 @@ func IdentifierFunc(s string) string {
 	s = strings.Trim(s, "-")
 	return s
 }
+
+// Example: https://stackoverflow.com/a/25013152/393157
+func MakeSliceFunc(elements ...interface{}) []interface{} {
+	return elements
+}
