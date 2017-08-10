@@ -7,6 +7,7 @@ func TestRender(t *testing.T) {
 		template = `
 			branch: {{.branch}}
 			commit: {{.sha}}
+			range: {{ $langs := MakeSlice "de" "fr" "nl" }}{{ range $langs }}{{.}}-{{end}}
 		`
 		values = Variables{
 			"branch": "foobar",
@@ -15,6 +16,7 @@ func TestRender(t *testing.T) {
 		expected = `
 			branch: foobar
 			commit: 123abc
+			range: de-fr-nl-
 		`
 	)
 
