@@ -1,6 +1,7 @@
 package api
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -39,24 +40,28 @@ func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
 			continue
 		}
 
-		if strings.TrimSpace(data) == "" {
-			log.WithFields(log.Fields{
-				"Name": name,
-			}).Debug("Ignoring empty file.")
-			continue
-		}
+		splitted := regexp.MustCompile("[\n\r]---").Split(data, -1)
 
-		obj, _, err := decode([]byte(data), nil, nil)
-		if err != nil {
-			return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
-		}
+		for _, part := range splitted {
+			if strings.TrimSpace(part) == "" {
+				log.WithFields(log.Fields{
+					"Name": name,
+				}).Debug("Ignoring empty file.")
+				continue
+			}
 
-		obj, err = app.Interceptors.PostManifestRender(obj)
-		if err != nil {
-			return nil, errors.WithStack(err)
-		}
+			obj, _, err := decode([]byte(part), nil, nil)
+			if err != nil {
+				return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
+			}
 
-		objects = append(objects, obj)
+			obj, err = app.Interceptors.PostManifestRender(obj)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+
+			objects = append(objects, obj)
+		}
 	}
 
 	return objects, nil
