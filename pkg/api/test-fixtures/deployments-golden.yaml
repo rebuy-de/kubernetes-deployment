@@ -12,6 +12,8 @@ defaults:
         seconds: 3
     removeResourceSpecs:
       enabled: null
+    removeOldJob:
+      enabled: null
     waiter:
       enabled: null
     ghStatusChecker:
@@ -38,6 +40,8 @@ services:
         seconds: 3
     removeResourceSpecs:
       enabled: null
+    removeOldJob:
+      enabled: null
     waiter:
       enabled: null
     ghStatusChecker:
@@ -62,6 +66,8 @@ services:
       options:
         seconds: 3
     removeResourceSpecs:
+      enabled: null
+    removeOldJob:
       enabled: null
     waiter:
       enabled: null
@@ -88,6 +94,8 @@ services:
         seconds: 3
     removeResourceSpecs:
       enabled: null
+    removeOldJob:
+      enabled: null
     waiter:
       enabled: null
     ghStatusChecker:
@@ -112,6 +120,8 @@ services:
       options:
         seconds: 3
     removeResourceSpecs:
+      enabled: null
+    removeOldJob:
       enabled: null
     waiter:
       enabled: null
@@ -138,6 +148,8 @@ contexts:
           seconds: 3
       removeResourceSpecs:
         enabled: null
+      removeOldJob:
+        enabled: null
       waiter:
         enabled: null
       ghStatusChecker:
@@ -161,6 +173,8 @@ contexts:
         options:
           seconds: 3
       removeResourceSpecs:
+        enabled: null
+      removeOldJob:
         enabled: null
       waiter:
         enabled: null

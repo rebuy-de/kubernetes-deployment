@@ -12,8 +12,8 @@ func TestTypePostApplier(t *testing.T) {
 	_ = inter
 }
 
-func TestTypePreManifestApplier(t *testing.T) {
-	var inter interceptors.PreManifestApplier
+func TestTypePostManifestApplier(t *testing.T) {
+	var inter interceptors.PostManifestApplier
 	inter = &DeploymentWaitInterceptor{}
 	_ = inter
 }

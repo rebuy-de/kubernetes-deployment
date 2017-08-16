@@ -5,6 +5,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmoldjob"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmresspec"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/waiter"
@@ -88,6 +89,15 @@ func New(p *Parameters) (*App, error) {
 		app.Interceptors.Add(statuschecker.New(
 			app.Clients.GitHub,
 			interceptors.GHStatusChecker.Options,
+		))
+	}
+
+	if interceptors.RemoveOldJob.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "removeOldJob",
+		}).Debug("enabling removeOldJob interceptor")
+		app.Interceptors.Add(rmoldjob.New(
+			app.Clients.Kubernetes,
 		))
 	}
 

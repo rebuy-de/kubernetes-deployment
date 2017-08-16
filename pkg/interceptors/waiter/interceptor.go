@@ -51,7 +51,7 @@ func (dwi *DeploymentWaitInterceptor) Close() error {
 	return nil
 }
 
-func (dwi *DeploymentWaitInterceptor) PreManifestApply(obj runtime.Object) error {
+func (dwi *DeploymentWaitInterceptor) PostManifestApply(obj runtime.Object) error {
 	deployment, ok := obj.(*v1beta1.Deployment)
 	if !ok {
 		return nil
