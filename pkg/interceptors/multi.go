@@ -53,14 +53,32 @@ func (m *Multi) PreApply(objs []runtime.Object) error {
 	return nil
 }
 
-func (m *Multi) PreManifestApply(obj runtime.Object) error {
+func (m *Multi) PreManifestApply(obj runtime.Object) (runtime.Object, error) {
+	var err error
+
 	for _, i := range m.Interceptors {
 		c, ok := i.(PreManifestApplier)
 		if !ok {
 			continue
 		}
 
-		err := c.PreManifestApply(obj)
+		obj, err = c.PreManifestApply(obj)
+		if err != nil {
+			return obj, errors.WithStack(err)
+		}
+	}
+
+	return obj, nil
+}
+
+func (m *Multi) PostManifestApply(obj runtime.Object) error {
+	for _, i := range m.Interceptors {
+		c, ok := i.(PostManifestApplier)
+		if !ok {
+			continue
+		}
+
+		err := c.PostManifestApply(obj)
 		if err != nil {
 			return errors.WithStack(err)
 		}

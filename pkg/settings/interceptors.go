@@ -8,6 +8,7 @@ import (
 type Interceptors struct {
 	PreStopSleep        PreStopSleepInterceptor    `yaml:"preStopSleep"`
 	RemoveResourceSpecs Interceptor                `yaml:"removeResourceSpecs"`
+	RemoveOldJob        Interceptor                `yaml:"removeOldJob"`
 	Waiter              Interceptor                `yaml:"waiter"`
 	GHStatusChecker     GHStatusCheckerInterceptor `yaml:"ghStatusChecker"`
 }

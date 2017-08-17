@@ -9,6 +9,7 @@ type Interface interface {
 	PostFetcher
 	PreApplier
 	PreManifestApplier
+	PostManifestApplier
 	PostApplier
 	PostManifestRenderer
 	Closer
@@ -23,7 +24,11 @@ type PreApplier interface {
 }
 
 type PreManifestApplier interface {
-	PreManifestApply(runtime.Object) error
+	PreManifestApply(runtime.Object) (runtime.Object, error)
+}
+
+type PostManifestApplier interface {
+	PostManifestApply(runtime.Object) error
 }
 
 type PostApplier interface {
