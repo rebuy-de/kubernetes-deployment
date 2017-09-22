@@ -1,0 +1,30 @@
+sudo: required
+
+language: go
+
+services:
+  - docker
+
+script:
+- docker build -t kubernetes-deployment --no-cache .
+- >
+  docker run
+  --name kubernetes-deployment
+  --entrypoint "sh"
+  -e CGO_ENABLED=0
+  --workdir "/go/src/github.com/rebuy-de/kubernetes-deployment"
+  kubernetes-deployment
+  -euxc "make xc && mkdir releases && mv kubernetes-deployment-* releases"
+- docker cp -L kubernetes-deployment:/go/src/github.com/rebuy-de/kubernetes-deployment/releases ./releases
+- ls -l *
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: releases/*
+  skip_cleanup: true
+  on:
+    repo: rebuy-de/kubernetes-deployment
+    tags: true
+
