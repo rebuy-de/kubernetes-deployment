@@ -55,9 +55,13 @@ func New(p *Parameters) (*App, error) {
 
 	app.Settings.Clean(p.Context)
 
+	return app, nil
+}
+
+func (app *App) StartInterceptors(service *settings.Service) {
 	app.Interceptors = interceptors.New()
 
-	interceptors := app.CurrentContext().Interceptors
+	interceptors := service.Interceptors
 
 	if interceptors.Waiter.Enabled == settings.Enabled {
 		log.WithFields(log.Fields{
@@ -100,8 +104,6 @@ func New(p *Parameters) (*App, error) {
 			app.Clients.Kubernetes,
 		))
 	}
-
-	return app, nil
 }
 
 func (app *App) CurrentContext() settings.Service {

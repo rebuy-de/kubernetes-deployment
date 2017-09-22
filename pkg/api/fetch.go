@@ -59,6 +59,8 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 		return nil, errors.WithStack(err)
 	}
 
+	app.StartInterceptors(service)
+
 	err = app.Interceptors.PostFetch(branch)
 	if err != nil {
 		return nil, errors.WithStack(err)
