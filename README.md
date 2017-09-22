@@ -1,5 +1,10 @@
 # kubernetes-deployment
 
+[![Build Status](https://travis-ci.org/rebuy-de/kubernetes-deployment.svg?branch=master)](https://travis-ci.org/rebuy-de/kubernetes-deployment)
+[![license](https://img.shields.io/github/license/rebuy-de/kubernetes-deployment.svg)]()
+[![GitHub release](https://img.shields.io/github/release/rebuy-de/kubernetes-deployment.svg)]()
+
+
 Deploys our manifests from GitHub to Kubernetes.
 
 ## Usage
