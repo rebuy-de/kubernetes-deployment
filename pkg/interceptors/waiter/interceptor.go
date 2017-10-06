@@ -136,6 +136,7 @@ func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1bet
 			log.WithFields(log.Fields{
 				"Name":      pod.ObjectMeta.Name,
 				"Namespace": pod.ObjectMeta.Namespace,
+				"PodData":   pod,
 			}).Warn(err)
 		}
 	}
