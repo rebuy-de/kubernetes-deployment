@@ -7,6 +7,9 @@
 
 Deploys our manifests from GitHub to Kubernetes.
 
+> **Development Status** Currently, *kubernetes-deployment* is only intended
+> for internal use, so expect bigger changes at anytime.
+
 ## Usage
 
 There is a complete built-in help, which is probably more up to date, than this README:
