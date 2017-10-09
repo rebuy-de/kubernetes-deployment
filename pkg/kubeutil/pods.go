@@ -12,6 +12,11 @@ const (
 )
 
 func PodWarnings(pod *v1.Pod) error {
+	if pod.ObjectMeta.DeletionTimestamp != nil {
+		// ignore Pods with pending deletion
+		return nil
+	}
+
 	for _, cs := range pod.Status.InitContainerStatuses {
 		err := containerWarnings(cs)
 		if err != nil {
