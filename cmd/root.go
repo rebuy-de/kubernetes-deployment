@@ -61,6 +61,14 @@ func NewRootCommand() *cobra.Command {
 			"Commit":  BuildHash,
 		}).Debugf("kubernetes-deployment started")
 
+		if strings.TrimSpace(params.GitHubToken) == "" {
+			return fmt.Errorf("You have to specify a GitHubToken.")
+		}
+
+		if strings.TrimSpace(params.Kubeconfig) == "" {
+			return fmt.Errorf("You have to specify a path to kubeconfig.")
+		}
+
 		if strings.TrimSpace(params.Filename) == "" {
 			return fmt.Errorf("You have to specify a filename.")
 		}
