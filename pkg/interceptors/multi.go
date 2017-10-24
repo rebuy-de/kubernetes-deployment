@@ -124,6 +124,10 @@ func (m *Multi) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
 func (m *Multi) Close() error {
 	var err error
 
+	if m == nil {
+		return nil
+	}
+
 	for _, i := range m.Interceptors {
 		c, ok := i.(Closer)
 		if !ok {
