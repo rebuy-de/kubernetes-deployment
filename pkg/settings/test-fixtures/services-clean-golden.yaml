@@ -200,6 +200,35 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+- name: bim
+  context: abc
+  owner: rebuy-de
+  repo: aka
+  path: deployment/k8s/
+  ref: master
+  variables:
+    bish: bash
+    clusterDomain: unit-test.example.org
+    secret: foo
+  interceptors:
+    preStopSleep:
+      enabled: true
+      options:
+        seconds: 3
+    removeResourceSpecs:
+      enabled: null
+    removeOldJob:
+      enabled: null
+    waiter:
+      enabled: true
+    ghStatusChecker:
+      enabled: null
+      options:
+        targetUrlRegex: .*
+        contextRegex: .*
+        initialDelay: 20s
+        pullInterval: 10s
+        notificationInterval: 3m0s
 contexts:
   abc:
     context: abc

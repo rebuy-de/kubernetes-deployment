@@ -37,6 +37,8 @@ services:
   repo: blub
 - repo: meh
   path: deployment/k8s
+- name: bim
+  repo: aka
 contexts:
   abc:
     variables:
