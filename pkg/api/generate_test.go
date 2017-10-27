@@ -151,6 +151,17 @@ func TestInvalidFile(t *testing.T) {
 	}
 }
 
+func TestGenerateAlias(t *testing.T) {
+	app := generateApp(t)
+
+	objects, err := app.Generate("fbr", "master")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testutil.AssertGoldenJSON(t, "test-fixtures/generate-success-golden.json", objects)
+}
+
 func TestGenerateSuccess(t *testing.T) {
 	app := generateApp(t)
 

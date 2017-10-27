@@ -10,6 +10,7 @@ import (
 
 type Service struct {
 	Name         string              `yaml:"name,omitempty"`
+	Aliases      []string            `yaml:"aliases,omitempty"`
 	Context      string              `yaml:"context,omitempty"`
 	Location     gh.Location         `yaml:",inline,omitempty"`
 	Variables    templates.Variables `yaml:"variables,omitempty"`

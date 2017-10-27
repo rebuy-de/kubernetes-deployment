@@ -73,6 +73,15 @@ func (s *Settings) Service(name string) *Service {
 		}
 	}
 
+	// second loop, to prioritise names
+	for _, service := range s.Services {
+		for _, alias := range service.Aliases {
+			if alias == name {
+				return &service
+			}
+		}
+	}
+
 	return nil
 }
 

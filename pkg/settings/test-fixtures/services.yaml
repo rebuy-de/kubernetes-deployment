@@ -39,3 +39,7 @@ services:
   repo: blub
 - repo: meh
   path: deployment/k8s
+- repo: aka
+  name: bim
+  alias:
+  - baz

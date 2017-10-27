@@ -26,6 +26,8 @@ defaults:
         notificationInterval: 3m0s
 services:
 - name: foobar
+  aliases:
+  - fbr
   context: prod
   owner: rebuy-de
   repo: foobar
