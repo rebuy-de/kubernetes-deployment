@@ -33,7 +33,7 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 	return obj, nil
 }
 
-func RemoveFromPodTemplace(tpl v1.PodTemplateSpec) v1.PodTemplateSpec {
+func RemoveFromPodTemplate(tpl v1.PodTemplateSpec) v1.PodTemplateSpec {
 	for i := range tpl.Spec.Containers {
 		tpl.Spec.Containers[i].Resources = v1.ResourceRequirements{}
 	}
@@ -46,11 +46,11 @@ func RemoveFromPodTemplace(tpl v1.PodTemplateSpec) v1.PodTemplateSpec {
 }
 
 func RemoveFromDeployment(deployment *v1beta1extensions.Deployment) *v1beta1extensions.Deployment {
-	deployment.Spec.Template = RemoveFromPodTemplace(deployment.Spec.Template)
+	deployment.Spec.Template = RemoveFromPodTemplate(deployment.Spec.Template)
 	return deployment
 }
 
 func RemoveFromStatefulSet(set *v1beta1apps.StatefulSet) *v1beta1apps.StatefulSet {
-	set.Spec.Template = RemoveFromPodTemplace(set.Spec.Template)
+	set.Spec.Template = RemoveFromPodTemplate(set.Spec.Template)
 	return set
 }
