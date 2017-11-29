@@ -165,7 +165,7 @@ func (gh *API) GetFile(location *Location) (string, error) {
 
 	if file == nil {
 		return "", errors.Errorf(
-			"unable to fetch file '%v' from GitHub; probably it's a directoy",
+			"unable to fetch file '%v' from GitHub; probably it's a directory",
 			location)
 	}
 
