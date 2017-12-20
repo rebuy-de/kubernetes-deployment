@@ -11,12 +11,14 @@
                 "initContainers": [
                     {
                         "name": "",
+                        "image": "",
                         "resources": {}
                     }
                 ],
                 "containers": [
                     {
                         "name": "",
+                        "image": "",
                         "resources": {},
                         "lifecycle": {
                             "preStop": {
@@ -31,6 +33,7 @@
                     },
                     {
                         "name": "",
+                        "image": "",
                         "resources": {},
                         "lifecycle": {
                             "preStop": {
