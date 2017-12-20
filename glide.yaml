@@ -18,7 +18,7 @@ import:
 - package: github.com/imdario/mergo
   version: ^0.2.2
 - package: k8s.io/client-go
-  version: ^3.0.0-beta.0
+  version: ^4.0.0
 - package: github.com/gregjones/httpcache
 - package: github.com/peterbourgon/diskv
   version: ^2.0.0
