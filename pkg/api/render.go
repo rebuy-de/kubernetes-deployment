@@ -8,7 +8,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/pkg/api"
+	"k8s.io/client-go/kubernetes/scheme"
 )
 
 func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
@@ -28,9 +28,12 @@ func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	decode := api.Codecs.UniversalDeserializer().Decode
+	return app.decode(rendered)
+}
 
-	objects := []runtime.Object{}
+func (app *App) decode(rendered map[string]string) ([]runtime.Object, error) {
+	var objects []runtime.Object
+	decode := scheme.Codecs.UniversalDeserializer().Decode
 
 	for name, data := range rendered {
 		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {

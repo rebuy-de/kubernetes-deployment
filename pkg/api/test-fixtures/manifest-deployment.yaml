@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+metadata:
+  name: maintenance
+  namespace: kube-system
+  labels:
+    team: platform
+    tier: maintenance
+    app: maintenance
+
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+
+  template:
+    metadata:
+      name: maintenance
+      namespace: kube-system
+      labels:
+        team: platform
+        tier: maintenance
+        app: maintenance
+
+    spec:
+      containers:
+      - name: maintenance
+        image: 074509403805.dkr.ecr.eu-west-1.amazonaws.com/maintenance:master
+        imagePullPolicy: Always
