@@ -14,7 +14,7 @@ import (
 type FetchResult struct {
 	Branch    *gh.Branch
 	Service   *settings.Service
-	Templates map[string]string
+	Templates []gh.File
 }
 
 func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
@@ -54,7 +54,7 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 
 	service.Location.Ref = branch.SHA
 
-	templateStrings, err := app.Clients.GitHub.GetFiles(&service.Location)
+	files, err := app.Clients.GitHub.GetFiles(&service.Location)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -69,6 +69,6 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 	return &FetchResult{
 		Branch:    branch,
 		Service:   service,
-		Templates: templateStrings,
+		Templates: files,
 	}, nil
 }

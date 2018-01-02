@@ -5,7 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	yaml "gopkg.in/yaml.v2"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"gopkg.in/yaml.v2"
 )
 
 func YAML(obj interface{}) string {
@@ -18,7 +19,7 @@ func YAML(obj interface{}) string {
 }
 
 func ScanFiles(root string) Files {
-	files := make(Files)
+	var files Files
 
 	err := filepath.Walk(root, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
@@ -29,13 +30,13 @@ func ScanFiles(root string) Files {
 			return nil
 		}
 
-		name, err := filepath.Rel(root, path)
+		relPath, err := filepath.Rel(root, path)
 		if err != nil {
 			return err
 		}
 
 		raw, err := ioutil.ReadFile(path)
-		files[name] = string(raw)
+		files = append(files, gh.File{Path: relPath, Content: string(raw)})
 		return err
 	})
 	if err != nil {

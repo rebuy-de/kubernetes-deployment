@@ -22,10 +22,10 @@ var (
 				"master": Branch{
 					Meta: ExampleBranch,
 					Files: Files{
-						"deployments.yaml": YAML([]string{"foo", "bar"}),
-						"README.md":        "blubber",
-						"sub/foo.txt":      "bar",
-						"sub/bim.txt":      "baz",
+						{Path: "deployments.yaml", Content: YAML([]string{"foo", "bar"})},
+						{Path: "README.md", Content: "blubber"},
+						{Path: "sub/foo.txt", Content: "bar"},
+						{Path: "sub/bim.txt", Content: "baz"},
 					},
 				},
 			},
@@ -75,7 +75,7 @@ func TestGetFile(t *testing.T) {
 
 	expected := "- foo\n- bar\n"
 
-	if file != expected {
+	if file.Content != expected {
 		t.Errorf("File contents don't match:")
 		t.Errorf("  Expected: %#v", expected)
 		t.Errorf("  Obtained: %#v", file)
@@ -88,9 +88,9 @@ func TestGetFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := map[string]string{
-		"deployments.yaml": "- foo\n- bar\n",
-		"README.md":        "blubber",
+	expected := []gh.File{
+		{Path: "deployments.yaml", Content: "- foo\n- bar\n"},
+		{Path: "README.md", Content: "blubber"},
 	}
 
 	if !reflect.DeepEqual(files, expected) {
@@ -106,9 +106,9 @@ func TestGetSubdirectoryFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := map[string]string{
-		"foo.txt": "bar",
-		"bim.txt": "baz",
+	expected := []gh.File{
+		{Path: "sub/foo.txt", Content: "bar"},
+		{Path: "sub/bim.txt", Content: "baz"},
 	}
 
 	if !reflect.DeepEqual(files, expected) {

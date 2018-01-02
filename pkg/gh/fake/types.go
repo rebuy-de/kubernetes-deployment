@@ -13,4 +13,4 @@ type Branch struct {
 	Files Files
 }
 
-type Files map[string]string
+type Files []gh.File

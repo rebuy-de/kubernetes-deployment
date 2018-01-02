@@ -1,11 +1,12 @@
 package api
 
 import (
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
-	"testing"
 	"io/ioutil"
 	"path"
+	"testing"
 )
 
 func readFile(t *testing.T, path string) string {
@@ -18,9 +19,15 @@ func readFile(t *testing.T, path string) string {
 
 func TestDecode(t *testing.T) {
 	dir := "test-fixtures"
-	tcs := map[string]string{
-		"manifest-deployment.yaml": readFile(t, path.Join(dir, "manifest-deployment.yaml")),
-		"manifest-podpreset.yaml": readFile(t, path.Join(dir, "manifest-podpreset.yaml")),
+	tcs := []gh.File{
+		{
+			Path:    "manifest-deployment.yaml",
+			Content: readFile(t, path.Join(dir, "manifest-deployment.yaml")),
+		},
+		{
+			Path:    "manifest-podpreset.yaml",
+			Content: readFile(t, path.Join(dir, "manifest-podpreset.yaml")),
+		},
 	}
 	golden := "decoded-golden.yaml"
 

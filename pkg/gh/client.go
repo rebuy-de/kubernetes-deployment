@@ -25,8 +25,8 @@ var (
 
 type Interface interface {
 	GetBranch(location *Location) (*Branch, error)
-	GetFile(location *Location) (string, error)
-	GetFiles(location *Location) (map[string]string, error)
+	GetFile(location *Location) (File, error)
+	GetFiles(location *Location) ([]File, error)
 	GetStatuses(location *Location) ([]github.RepoStatus, error)
 }
 
@@ -111,11 +111,11 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 }
 
 type FileFuture struct {
-	file chan string
+	file chan File
 	err  chan error
 }
 
-func (ff *FileFuture) Get() (string, error) {
+func (ff *FileFuture) Get() (File, error) {
 	select {
 	case file := <-ff.file:
 		close(ff.file)
@@ -124,13 +124,13 @@ func (ff *FileFuture) Get() (string, error) {
 	case err := <-ff.err:
 		close(ff.file)
 		close(ff.err)
-		return "", err
+		return File{}, err
 	}
 }
 
 func (gh *API) GetFileAsync(location *Location) *FileFuture {
 	ff := &FileFuture{
-		file: make(chan string, 1),
+		file: make(chan File, 1),
 		err:  make(chan error, 1),
 	}
 
@@ -145,7 +145,7 @@ func (gh *API) GetFileAsync(location *Location) *FileFuture {
 	return ff
 }
 
-func (gh *API) GetFile(location *Location) (string, error) {
+func (gh *API) GetFile(location *Location) (File, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
 	).Debug("downloading file from GitHub")
@@ -159,19 +159,19 @@ func (gh *API) GetFile(location *Location) (string, error) {
 	)
 
 	if err != nil {
-		return "", errors.Wrapf(err,
+		return File{}, errors.Wrapf(err,
 			"unable to fetch file '%v' from GitHub", location)
 	}
 
 	if file == nil {
-		return "", errors.Errorf(
+		return File{}, errors.Errorf(
 			"unable to fetch file '%v' from GitHub; probably it's a directory",
 			location)
 	}
 
 	content, err := file.GetContent()
 	if err != nil {
-		return "", errors.Wrapf(err,
+		return File{}, errors.Wrapf(err,
 			"unable to decode file '%v'", location)
 	}
 
@@ -186,10 +186,10 @@ func (gh *API) GetFile(location *Location) (string, error) {
 
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 
-	return content, nil
+	return File{location.Path, content}, nil
 }
 
-func (gh *API) GetFiles(location *Location) (map[string]string, error) {
+func (gh *API) GetFiles(location *Location) ([]File, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
 	).Debug("downloading directory from GitHub")
@@ -237,17 +237,18 @@ func (gh *API) GetFiles(location *Location) (map[string]string, error) {
 		})
 	}
 
-	result := make(map[string]string)
-	for name, future := range futures {
-		result[name], err = future.Get()
+	var files []File
+	for _, future := range futures {
+		file, err := future.Get()
 		if err != nil {
 			return nil, errors.Wrapf(err,
 				"unable to decode file '%v'",
 				location)
 		}
+		files = append(files, file)
 	}
 
-	return result, nil
+	return files, nil
 }
 
 func (gh *API) GetStatuses(location *Location) ([]github.RepoStatus, error) {

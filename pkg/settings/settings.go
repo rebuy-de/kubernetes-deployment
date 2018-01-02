@@ -8,7 +8,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 
 	log "github.com/sirupsen/logrus"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 type Contexts map[string]Service
@@ -55,11 +55,11 @@ func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
 		return nil, errors.Wrapf(err, "parse GitHub location '%s'; use './' prefix to use a directory named 'github.com'", filename)
 	}
 
-	data, err := client.GetFile(location)
+	file, err := client.GetFile(location)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not download file '%s'", location)
 	}
-	return FromBytes([]byte(data))
+	return FromBytes([]byte(file.Content))
 }
 
 func (s *Settings) CurrentContext() Service {

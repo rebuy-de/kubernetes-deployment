@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes/scheme"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
