@@ -55,18 +55,22 @@ func (d *GitHub) GetBranch(l *gh.Location) (*gh.Branch, error) {
 	return &branch, nil
 }
 
-func (d *GitHub) GetFile(l *gh.Location) (string, error) {
-	content := (*d)[l.Owner][l.Repo][l.Ref].Files[l.Path]
-	return content, nil
+func (d *GitHub) GetFile(l *gh.Location) (gh.File, error) {
+	for _, file := range (*d)[l.Owner][l.Repo][l.Ref].Files {
+		if file.Path == l.Path {
+			return file, nil
+		}
+	}
+	return gh.File{}, nil
 }
 
-func (d *GitHub) GetFiles(l *gh.Location) (map[string]string, error) {
-	files := make(map[string]string)
+func (d *GitHub) GetFiles(l *gh.Location) ([]gh.File, error) {
+	var files []gh.File
 
-	for p, content := range (*d)[l.Owner][l.Repo][l.Ref].Files {
-		dir, file := path.Split("/" + p)
+	for _, file := range (*d)[l.Owner][l.Repo][l.Ref].Files {
+		dir, _ := path.Split("/" + file.Path)
 		if path.Clean("/"+dir+"/") == path.Clean("/"+l.Path+"/") {
-			files[path.Clean(file)] = content
+			files = append(files, file)
 		}
 	}
 
@@ -74,5 +78,5 @@ func (d *GitHub) GetFiles(l *gh.Location) (map[string]string, error) {
 }
 
 func (d *GitHub) GetStatuses(location *gh.Location) ([]github.RepoStatus, error) {
-	return nil, fmt.Errorf("not implmented, yet")
+	return nil, fmt.Errorf("not implemented, yet")
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"regexp"
 	"strings"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/pkg/api"
+	"k8s.io/client-go/kubernetes/scheme"
 )
 
 func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
@@ -28,31 +29,34 @@ func (app *App) Render(fetched *FetchResult) ([]runtime.Object, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	decode := api.Codecs.UniversalDeserializer().Decode
+	return app.decode(rendered)
+}
 
-	objects := []runtime.Object{}
+func (app *App) decode(files []gh.File) ([]runtime.Object, error) {
+	var objects []runtime.Object
+	decode := scheme.Codecs.UniversalDeserializer().Decode
 
-	for name, data := range rendered {
-		if !strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml") {
+	for _, file := range files {
+		if !strings.HasSuffix(file.Name(), ".yaml") && !strings.HasSuffix(file.Name(), ".yml") {
 			log.WithFields(log.Fields{
-				"Name": name,
+				"Name": file.Name(),
 			}).Debug("Ignoring file with wrong extension.")
 			continue
 		}
 
-		splitted := regexp.MustCompile("[\n\r]---").Split(data, -1)
+		splitted := regexp.MustCompile("[\n\r]---").Split(file.Content, -1)
 
 		for _, part := range splitted {
 			if strings.TrimSpace(part) == "" {
 				log.WithFields(log.Fields{
-					"Name": name,
+					"Name": file.Name(),
 				}).Debug("Ignoring empty file.")
 				continue
 			}
 
 			obj, _, err := decode([]byte(part), nil, nil)
 			if err != nil {
-				return nil, errors.Wrapf(err, "unable to decode file '%s'", name)
+				return nil, errors.Wrapf(err, "unable to decode file '%s'", file.Name())
 			}
 
 			obj, err = app.Interceptors.PostManifestRender(obj)

@@ -1,0 +1,73 @@
+[
+    {
+        "kind": "Deployment",
+        "apiVersion": "extensions/v1beta1",
+        "metadata": {
+            "name": "maintenance",
+            "namespace": "kube-system",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "maintenance",
+                "team": "platform",
+                "tier": "maintenance"
+            }
+        },
+        "spec": {
+            "replicas": 1,
+            "template": {
+                "metadata": {
+                    "name": "maintenance",
+                    "namespace": "kube-system",
+                    "creationTimestamp": null,
+                    "labels": {
+                        "app": "maintenance",
+                        "team": "platform",
+                        "tier": "maintenance"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "maintenance",
+                            "image": "074509403805.dkr.ecr.eu-west-1.amazonaws.com/maintenance:master",
+                            "resources": {},
+                            "imagePullPolicy": "Always"
+                        }
+                    ]
+                }
+            },
+            "strategy": {
+                "rollingUpdate": {
+                    "maxSurge": 0
+                }
+            },
+            "revisionHistoryLimit": 1
+        },
+        "status": {}
+    },
+    {
+        "kind": "PodPreset",
+        "apiVersion": "settings.k8s.io/v1alpha1",
+        "metadata": {
+            "name": "cluster-profile",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "team": "platform"
+            }
+        },
+        "spec": {
+            "selector": {
+                "matchExpressions": [
+                    {
+                        "key": "role",
+                        "operator": "In",
+                        "values": [
+                            "silo"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+]
