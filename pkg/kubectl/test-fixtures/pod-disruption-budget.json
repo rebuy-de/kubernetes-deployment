@@ -1,0 +1,22 @@
+{
+  "kind": "PodDisruptionBudget",
+  "apiVersion": "policy/v1beta1",
+  "metadata": {
+    "name": "foobar"
+  },
+  "spec": {
+    "minAvailable": 2,
+    "selector": {
+      "matchLabels": {
+        "app": "foobar"
+      }
+    }
+  },
+  "status": {
+    "disruptedPods": null,
+    "disruptionsAllowed": 0,
+    "currentHealthy": 0,
+    "desiredHealthy": 0,
+    "expectedPods": 0
+  }
+}
