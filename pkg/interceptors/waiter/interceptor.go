@@ -8,11 +8,11 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 	log "github.com/sirupsen/logrus"
+	"k8s.io/api/extensions/v1beta1"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/pkg/apis/extensions/v1beta1"
 )
 
 var (

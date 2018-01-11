@@ -4,10 +4,10 @@ import (
 	"reflect"
 
 	log "github.com/sirupsen/logrus"
+	v1beta1apps "k8s.io/api/apps/v1beta1"
+	"k8s.io/api/core/v1"
+	v1beta1extensions "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/pkg/api/v1"
-	v1beta1apps "k8s.io/client-go/pkg/apis/apps/v1beta1"
-	v1beta1extensions "k8s.io/client-go/pkg/apis/extensions/v1beta1"
 )
 
 type Interceptor struct {

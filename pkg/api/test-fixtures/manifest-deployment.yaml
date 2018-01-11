@@ -28,5 +28,5 @@ spec:
     spec:
       containers:
       - name: maintenance
-        image: 074509403805.dkr.ecr.eu-west-1.amazonaws.com/maintenance:master
+        image: maintenance:master
         imagePullPolicy: Always
