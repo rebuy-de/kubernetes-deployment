@@ -1,0 +1,13 @@
+{
+  "kind": "StorageClass",
+  "apiVersion": "storage.k8s.io/v1beta1",
+  "metadata": {
+    "name": "aws-ebs-gp2-encrypted",
+    "creationTimestamp": null
+  },
+  "provisioner": "kubernetes.io/aws-ebs",
+  "parameters": {
+    "encrypted": "true",
+    "type": "gp2"
+  }
+}

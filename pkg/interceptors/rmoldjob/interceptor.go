@@ -6,11 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	v1batch "k8s.io/api/batch/v1"
 	k8serr "k8s.io/apimachinery/pkg/api/errors"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
-	v1batch "k8s.io/client-go/pkg/apis/batch/v1"
 )
 
 const Annotation = "rebuy.com/delete-on-deploy"

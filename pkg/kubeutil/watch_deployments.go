@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
+	"k8s.io/api/core/v1"
+	"k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/pkg/api"
-	"k8s.io/client-go/pkg/apis/extensions/v1beta1"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -15,7 +15,7 @@ func WatchDeployments(ctx context.Context, client kubernetes.Interface, selector
 	lw := cache.NewListWatchFromClient(
 		client.ExtensionsV1beta1().RESTClient(),
 		"deployments",
-		api.NamespaceAll,
+		v1.NamespaceAll,
 		selector)
 
 	stop := make(chan struct{}, 1)

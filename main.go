@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/rebuy-de/kubernetes-deployment/cmd"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/cmdutil"
 	"math/rand"
 	"os"
 	"time"
-
-	"github.com/rebuy-de/kubernetes-deployment/cmd"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/cmdutil"
 )
 
 func init() {

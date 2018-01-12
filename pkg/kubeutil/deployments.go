@@ -3,9 +3,9 @@ package kubeutil
 import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"k8s.io/api/extensions/v1beta1"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/pkg/apis/extensions/v1beta1"
 )
 
 func DeploymentRolloutComplete(deployment *v1beta1.Deployment) bool {

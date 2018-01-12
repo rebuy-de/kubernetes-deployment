@@ -18,7 +18,7 @@ import:
 - package: github.com/imdario/mergo
   version: ^0.2.2
 - package: k8s.io/client-go
-  version: ^4.0.0
+  version: kubernetes-1.8.5
 - package: github.com/gregjones/httpcache
 - package: github.com/peterbourgon/diskv
   version: ^2.0.0
@@ -26,3 +26,5 @@ import:
   version: ^2.0.6
 - package: gopkg.in/alexcesaro/statsd.v2
   version: ^2.0.0
+- package: k8s.io/api
+  version: kubernetes-1.8.5

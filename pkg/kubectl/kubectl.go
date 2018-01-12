@@ -62,13 +62,30 @@ func (k *Kubectl) Apply(obj runtime.Object) (runtime.Object, error) {
 		return nil, errors.WithStack(err)
 	}
 
+	stripped, err := emptyStatus(raw)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
 	stdout := new(bytes.Buffer)
 
-	err = k.run(bytes.NewBuffer(raw), stdout, "apply", "-o", "json", "-f", "-")
+	err = k.run(bytes.NewBuffer(stripped), stdout, "apply", "-o", "json", "-f", "-")
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	newObj, _, err := scheme.Codecs.UniversalDeserializer().Decode(stdout.Bytes(), nil, nil)
 	return newObj, errors.Wrapf(err, "failed to decode result json")
+}
+
+func emptyStatus(raw []byte) ([]byte, error) {
+	obj := make(map[string]interface{})
+	if err := json.Unmarshal(raw, &obj); err != nil {
+		return nil, err
+	}
+	if _, ok := obj["status"]; ok {
+		obj["status"] = nil
+	}
+
+	return json.MarshalIndent(obj, "", "  ")
 }

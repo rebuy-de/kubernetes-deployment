@@ -5,8 +5,8 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
-	"k8s.io/client-go/pkg/api/v1"
-	v1beta1extensions "k8s.io/client-go/pkg/apis/extensions/v1beta1"
+	"k8s.io/api/core/v1"
+	v1beta1extensions "k8s.io/api/extensions/v1beta1"
 )
 
 func TestType(t *testing.T) {
