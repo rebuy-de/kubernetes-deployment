@@ -16,6 +16,8 @@ defaults:
       enabled: null
     waiter:
       enabled: null
+    annotater:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -46,6 +48,8 @@ services:
       enabled: null
     waiter:
       enabled: null
+    annotater:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -72,6 +76,8 @@ services:
     removeOldJob:
       enabled: null
     waiter:
+      enabled: null
+    annotater:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -100,6 +106,8 @@ services:
       enabled: null
     waiter:
       enabled: null
+    annotater:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -126,6 +134,8 @@ services:
     removeOldJob:
       enabled: null
     waiter:
+      enabled: null
+    annotater:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -154,6 +164,8 @@ contexts:
         enabled: null
       waiter:
         enabled: null
+      annotater:
+        enabled: null
       ghStatusChecker:
         enabled: null
         options:
@@ -179,6 +191,8 @@ contexts:
       removeOldJob:
         enabled: null
       waiter:
+        enabled: null
+      annotater:
         enabled: null
       ghStatusChecker:
         enabled: null

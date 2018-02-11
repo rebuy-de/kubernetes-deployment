@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/annotater"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmoldjob"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmresspec"
@@ -103,6 +104,13 @@ func (app *App) StartInterceptors(service *settings.Service) {
 		app.Interceptors.Add(rmoldjob.New(
 			app.Clients.Kubernetes,
 		))
+	}
+
+	if interceptors.Annotater.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "annotater",
+		}).Debug("enabling annotater interceptor")
+		app.Interceptors.Add(annotater.New())
 	}
 }
 
