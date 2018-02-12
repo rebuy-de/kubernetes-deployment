@@ -16,6 +16,8 @@ defaults:
       enabled: null
     waiter:
       enabled: true
+    annotater:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -56,6 +58,8 @@ contexts:
       removeOldJob:
         enabled: null
       waiter:
+        enabled: null
+      annotater:
         enabled: null
       ghStatusChecker:
         enabled: null
