@@ -13,7 +13,10 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-const Annotation = "rebuy.com/delete-on-deploy"
+const (
+	AnnotationDelete  = "rebuy.com/delete-on-deploy"
+	AnnotationCascade = "rebuy.com/cascade-delete"
+)
 
 type Interceptor struct {
 	client kubernetes.Interface
@@ -26,11 +29,11 @@ func New(client kubernetes.Interface) *Interceptor {
 }
 
 func (i *Interceptor) PreManifestApply(obj runtime.Object) (runtime.Object, error) {
+	logger := log.WithField("Type", reflect.TypeOf(obj))
+
 	job, ok := obj.(*v1batch.Job)
 	if !ok {
-		log.WithFields(log.Fields{
-			"type": reflect.TypeOf(obj),
-		}).Debug("type doesn't support deletion of old jobs")
+		logger.Debug("type doesn't support deletion of old jobs")
 		return obj, nil
 	}
 
@@ -41,29 +44,35 @@ func (i *Interceptor) PreManifestApply(obj runtime.Object) (runtime.Object, erro
 		namespace = "default"
 	}
 
+	logger = logger.WithField("Namespace", namespace)
+	logger = logger.WithField("Name", name)
+
 	has, err := i.hasJob(namespace, name)
 	if !has || err != nil {
 		return obj, errors.WithStack(err)
 	}
 
-	if !v1meta.HasAnnotation(job.ObjectMeta, Annotation) ||
-		job.ObjectMeta.Annotations[Annotation] != "true" {
-		log.WithFields(log.Fields{
-			"Namespace": namespace,
-			"Name":      name,
-		}).Debug("skip deletion of job, because the annotation is missing")
+	if !v1meta.HasAnnotation(job.ObjectMeta, AnnotationDelete) ||
+		job.ObjectMeta.Annotations[AnnotationDelete] != "true" {
+		logger.Debug("skip deletion of job, because the annotation is missing")
 		return obj, nil
 	}
 
-	log.WithFields(log.Fields{
-		"Namespace": namespace,
-		"Name":      name,
-	}).Infof("deleting pending job: %s", name)
+	logger.Infof("deleting pending job: %s", name)
+
+	opts := new(v1meta.DeleteOptions)
+
+	if v1meta.HasAnnotation(job.ObjectMeta, AnnotationCascade) &&
+		job.ObjectMeta.Annotations[AnnotationCascade] == "true" {
+		logger.Debug("enabling cascading delete")
+		policy := v1meta.DeletePropagationBackground
+		opts.PropagationPolicy = &policy
+	}
 
 	return obj, i.client.
 		Batch().
 		Jobs(namespace).
-		Delete(name, nil)
+		Delete(name, opts)
 }
 
 func (i *Interceptor) hasJob(namespace, name string) (bool, error) {
