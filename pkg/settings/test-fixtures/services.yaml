@@ -43,3 +43,9 @@ services:
   name: bim
   alias:
   - baz
+- name: guess
+  repo: k8s-guess
+  path: other
+- repo: cloud
+  name: cloud
+  path: /

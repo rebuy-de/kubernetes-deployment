@@ -41,6 +41,12 @@ services:
   path: deployment/k8s
 - name: bim
   repo: aka
+- name: guess
+  repo: k8s-guess
+  path: other
+- name: cloud
+  repo: cloud
+  path: /
 contexts:
   abc:
     variables:

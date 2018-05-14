@@ -24,12 +24,6 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 	}).Debugf("fetching templates")
 
 	service := app.Settings.Service(project)
-	if service == nil {
-		service = app.Settings.GuessService(project)
-		log.WithFields(log.Fields{
-			"Service": service,
-		}).Debug("project not found in settings; guessing it")
-	}
 
 	log.WithFields(
 		log.Fields(structs.Map(service)),

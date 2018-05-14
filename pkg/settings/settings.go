@@ -2,6 +2,7 @@ package settings
 
 import (
 	"io/ioutil"
+	"path"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -66,35 +67,33 @@ func (s *Settings) CurrentContext() Service {
 	return s.Contexts[s.context]
 }
 
-func (s *Settings) Service(name string) *Service {
-	for _, service := range s.Services {
-		if service.Name == name {
-			return &service
+func (s *Settings) Service(project string) *Service {
+	var (
+		parts   = strings.SplitN(project, "/", 2)
+		name    = parts[0]
+		subpath = ""
+	)
+
+	if len(parts) > 1 {
+		subpath = parts[1]
+	}
+
+	service := s.Services.Get(name)
+	if service == nil {
+		service = &Service{
+			Location: gh.Location{
+				Repo: name,
+			},
 		}
 	}
 
-	// second loop, to prioritise names
-	for _, service := range s.Services {
-		for _, alias := range service.Aliases {
-			if alias == name {
-				return &service
-			}
-		}
-	}
+	merged := new(Service)
+	merged.Defaults(*service)
+	merged.Defaults(s.CurrentContext())
+	merged.Location.Path = path.Join(merged.Location.Path, subpath)
+	merged.Clean(s.CurrentContext())
 
-	return nil
-}
-
-func (s *Settings) GuessService(name string) *Service {
-	service := new(Service)
-	service.Defaults(Service{
-		Location: gh.Location{
-			Repo: name,
-		},
-	})
-	service.Defaults(s.CurrentContext())
-	service.Clean(s.CurrentContext())
-	return service
+	return merged
 }
 
 func (s *Settings) Clean(contextName string) {
