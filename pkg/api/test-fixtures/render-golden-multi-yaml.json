@@ -8,7 +8,8 @@
             "creationTimestamp": null,
             "labels": {
                 "app": "maintenance",
-                "team": "platform"
+                "team": "platform",
+                "test": "bish-bash-bosh"
             }
         },
         "spec": {

@@ -2,25 +2,12 @@ package templates
 
 import (
 	"bytes"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"strings"
 	"text/template"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
-
-func RenderAll(templates []gh.File, variables Variables) ([]gh.File, error) {
-	var result []gh.File
-	for _, file := range templates {
-		rendered, err := Render(file.Content, variables)
-		if err != nil {
-			return nil, errors.Wrapf(err, "Unable to render '%s'", file.Name)
-		}
-		result = append(result, gh.File{Path: file.Path, Content: rendered})
-	}
-	return result, nil
-}
 
 func Render(templateString string, variables Variables) (string, error) {
 	funcMap := template.FuncMap{

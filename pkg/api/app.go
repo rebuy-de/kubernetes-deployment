@@ -2,6 +2,10 @@ package api
 
 import (
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
+
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/annotater"
@@ -13,9 +17,6 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubectl"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
-	log "github.com/sirupsen/logrus"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 type Clients struct {

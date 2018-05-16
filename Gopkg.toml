@@ -65,3 +65,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/benbjohnson/clock"
+
+[[constraint]]
+  name = "github.com/google/go-jsonnet"
+  version = "^0.10.0"

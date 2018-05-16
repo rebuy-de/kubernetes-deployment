@@ -1,12 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path"
 	"testing"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
@@ -19,24 +21,61 @@ func readFile(t *testing.T, path string) string {
 }
 
 func TestDecode(t *testing.T) {
-	dir := "test-fixtures"
-	tcs := []gh.File{
+	cases := []struct {
+		name  string
+		files []string
+	}{
 		{
-			Path:    "manifest-deployment.yaml",
-			Content: readFile(t, path.Join(dir, "manifest-deployment.yaml")),
+			name: "multi-yaml",
+			files: []string{
+				"render-deployment.yaml",
+				"render-podpreset.yaml",
+			},
 		},
 		{
-			Path:    "manifest-podpreset.yaml",
-			Content: readFile(t, path.Join(dir, "manifest-podpreset.yaml")),
+			name: "simple-jsonnet",
+			files: []string{
+				"render-pdb.jsonnet",
+			},
+		},
+		{
+			name: "complex-jsonnet",
+			files: []string{
+				"render-job.jsonnet",
+			},
+		},
+		{
+			name: "local-import-jsonnet",
+			files: []string{
+				"render-silo.jsonnet",
+				"render-silo.libsonnet",
+			},
 		},
 	}
-	golden := "decoded-golden.yaml"
 
-	app := App{Interceptors: &interceptors.Multi{}}
-	objects, err := app.decode(tcs)
-	if err != nil {
-		t.Fatal(err)
+	vars := templates.Variables{
+		"testString":  "bish-bash-bosh",
+		"gitCommitID": "ffffff",
+		"clusterName": "staging",
 	}
-	g := path.Join(dir, golden)
-	testutil.AssertGoldenJSON(t, g, objects)
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			files := []gh.File{}
+			for _, fname := range tc.files {
+				files = append(files, gh.File{
+					Path:    fname,
+					Content: readFile(t, path.Join("test-fixtures", fname)),
+				})
+			}
+
+			app := App{Interceptors: &interceptors.Multi{}}
+			objects, err := app.decode(files, vars)
+			if err != nil {
+				t.Fatal(err)
+			}
+			g := path.Join("test-fixtures", fmt.Sprintf("render-golden-%s.json", tc.name))
+			testutil.AssertGoldenJSON(t, g, objects)
+		})
+	}
 }
