@@ -6,10 +6,11 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/cmdutil"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 )
 
 type State int

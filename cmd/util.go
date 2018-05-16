@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/rebuy-de/kubernetes-deployment/pkg/cmdutil"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 )
 
 const (

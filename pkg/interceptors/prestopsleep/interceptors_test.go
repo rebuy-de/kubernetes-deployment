@@ -3,10 +3,11 @@ package prestopsleep
 import (
 	"testing"
 
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
 	"k8s.io/api/core/v1"
 	v1beta1extensions "k8s.io/api/extensions/v1beta1"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
 func TestType(t *testing.T) {
