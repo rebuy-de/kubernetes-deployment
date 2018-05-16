@@ -2,6 +2,7 @@ package gh
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"path"
 	"regexp"
@@ -145,6 +146,17 @@ func (gh *API) GetFileAsync(location *Location) *FileFuture {
 	return ff
 }
 
+type ErrNotAFile struct {
+	Location *Location
+}
+
+func (err ErrNotAFile) Error() string {
+	return fmt.Sprintf(
+		"unable to fetch file '%v' from GitHub; probably it's a directory",
+		err.Location)
+
+}
+
 func (gh *API) GetFile(location *Location) (File, error) {
 	log.WithFields(
 		log.Fields(structs.Map(location)),
@@ -164,9 +176,7 @@ func (gh *API) GetFile(location *Location) (File, error) {
 	}
 
 	if file == nil {
-		return File{}, errors.Errorf(
-			"unable to fetch file '%v' from GitHub; probably it's a directory",
-			location)
+		return File{}, ErrNotAFile{Location: location}
 	}
 
 	content, err := file.GetContent()
@@ -241,9 +251,13 @@ func (gh *API) GetFiles(location *Location) ([]File, error) {
 	for _, future := range futures {
 		file, err := future.Get()
 		if err != nil {
-			return nil, errors.Wrapf(err,
-				"unable to decode file '%v'",
-				location)
+			_, notAFile := err.(ErrNotAFile)
+			if !notAFile {
+				return nil, errors.Wrapf(err,
+					"unable to decode file '%v'",
+					location)
+			}
+
 		}
 		files = append(files, file)
 	}
