@@ -6,6 +6,7 @@ import (
 
 	graylog "gopkg.in/gemnasium/logrus-graylog-hook.v2"
 
+	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -56,9 +57,9 @@ func NewRootCommand() *cobra.Command {
 		}
 
 		log.WithFields(log.Fields{
-			"Version": BuildVersion,
-			"Date":    BuildDate,
-			"Commit":  BuildHash,
+			"Version": cmdutil.BuildVersion,
+			"Date":    cmdutil.BuildDate,
+			"Commit":  cmdutil.BuildHash,
 		}).Debugf("kubernetes-deployment started")
 
 		if strings.TrimSpace(params.GitHubToken) == "" {
@@ -82,7 +83,7 @@ func NewRootCommand() *cobra.Command {
 		return nil
 	}
 
-	cmd.AddCommand(NewVersionCommand())
+	cmd.AddCommand(cmdutil.NewVersionCommand())
 	cmd.AddCommand(NewDumpConfigCommand())
 	cmd.AddCommand(NewDumpSettingsCommand(params))
 	cmd.AddCommand(NewApplyCommand(params))
