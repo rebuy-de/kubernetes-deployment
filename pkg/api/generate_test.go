@@ -6,15 +6,15 @@ import (
 	"strings"
 	"testing"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	fakeGH "github.com/rebuy-de/kubernetes-deployment/pkg/gh/fake"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/settings"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
-
-	log "github.com/sirupsen/logrus"
+	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
 var (

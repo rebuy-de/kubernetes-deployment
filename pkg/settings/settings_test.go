@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
+	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
 func TestReadFile(t *testing.T) {

@@ -1,12 +1,13 @@
 package api
 
 import (
-	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/testutil"
 	"io/ioutil"
 	"path"
 	"testing"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
+	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
 func readFile(t *testing.T, path string) string {

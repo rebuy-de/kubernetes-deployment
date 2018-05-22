@@ -6,7 +6,7 @@ services:
   - docker
 
 script:
-- docker build -t kubernetes-deployment --no-cache .
+- docker build -t kubernetes-deployment --no-cache --target builder .
 - >
   docker run
   --name kubernetes-deployment
