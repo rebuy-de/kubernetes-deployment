@@ -1,10 +1,15 @@
 package annotater
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
-	v1beta1extensions "k8s.io/api/extensions/v1beta1"
+	"github.com/benbjohnson/clock"
+	apps "k8s.io/api/apps/v1beta1"
+	core "k8s.io/api/core/v1"
+	extensions "k8s.io/api/extensions/v1beta1"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
@@ -24,13 +29,33 @@ func TestTypePostFetcher(t *testing.T) {
 }
 
 func TestModify(t *testing.T) {
-	deployment := &v1beta1extensions.Deployment{}
+	cases := []struct {
+		name string
+		obj  runtime.Object
+	}{
+		{
+			name: "deployment",
+			obj:  &extensions.Deployment{},
+		},
+		{
+			name: "statefulset",
+			obj:  &apps.StatefulSet{},
+		},
+		{
+			name: "service",
+			obj:  &core.Service{},
+		},
+	}
+
+	mockClock := clock.NewMock()
+	mockClock.Set(time.Unix(1234567890, 0).UTC())
 
 	inter := New()
+	inter.clock = mockClock
 
 	err := inter.PostFetch(&gh.Branch{
 		Author:  "bim baz",
-		Date:    time.Unix(1234567890, 123456789).UTC(),
+		Date:    mockClock.Now(),
 		Message: "fancy feature",
 		SHA:     "1234567890abcdef",
 		Location: gh.Location{
@@ -44,10 +69,15 @@ func TestModify(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	obj, err := inter.PostManifestRender(deployment)
-	if err != nil {
-		t.Fatal(err)
-	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			obj, err := inter.PostManifestRender(tc.obj)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-	testutil.AssertGoldenJSON(t, "test-fixtures/deployment-golden.json", obj)
+			golden := fmt.Sprintf("test-fixtures/%s-golden.json", tc.name)
+			testutil.AssertGoldenJSON(t, golden, obj)
+		})
+	}
 }

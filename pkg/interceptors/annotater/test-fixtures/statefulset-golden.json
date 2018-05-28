@@ -19,7 +19,10 @@
                 "containers": null
             }
         },
-        "strategy": {}
+        "serviceName": "",
+        "updateStrategy": {}
     },
-    "status": {}
+    "status": {
+        "replicas": 0
+    }
 }
