@@ -13,6 +13,12 @@
   revision = "5bd2802263f21d8788851d5305584c82a5c75d7e"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/benbjohnson/clock"
+  packages = ["."]
+  revision = "7dc76406b6d3c05b5f71a86293cbcf3c4ea03b19"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "782f4967f2dc4564575ca782fe2d04090b5faca8"
@@ -129,10 +135,10 @@
   revision = "bf9dde6d0d2c004a008c27aaee91170c786f6db8"
 
 [[projects]]
+  branch = "master"
   name = "github.com/imdario/mergo"
   packages = ["."]
-  revision = "9d5f1277e9a8ed20c3684bda8fde67c05628518c"
-  version = "v0.3.4"
+  revision = "7045960c0518a75bb33954ac60b3894b6b6c4cf5"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -324,6 +330,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "374b2453d0ae5e26d59403325ddefd5b04c485eeb8883f982f8f9c174c2c3af3"
+  inputs-digest = "4d6cf061ba64168e5107f26df30e5dd8c9ddea7ec095465ced95d5c703def485"
   solver-name = "gps-cdcl"
   solver-version = 1
