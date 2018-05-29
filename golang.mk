@@ -62,7 +62,7 @@ cov:
 	gocov test -v $(GOPKGS) \
 		| gocov-html > coverage.html
 
-build:
+build: vendor
 	go build \
 		$(BUILD_FLAGS) \
 		-o $(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH)$(shell go env GOEXE)
