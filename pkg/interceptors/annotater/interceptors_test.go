@@ -9,6 +9,7 @@ import (
 	apps "k8s.io/api/apps/v1beta1"
 	core "k8s.io/api/core/v1"
 	extensions "k8s.io/api/extensions/v1beta1"
+	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
@@ -44,6 +45,16 @@ func TestModify(t *testing.T) {
 		{
 			name: "service",
 			obj:  &core.Service{},
+		},
+		{
+			name: "pvc",
+			obj: &core.PersistentVolumeClaim{
+				ObjectMeta: meta.ObjectMeta{
+					Annotations: map[string]string{
+						"volume.beta.kubernetes.io/storage-class": "aws-ebs-gp2",
+					},
+				},
+			},
 		},
 	}
 
