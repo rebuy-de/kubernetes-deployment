@@ -1,6 +1,8 @@
 package annotater
 
 import (
+	"fmt"
+
 	"github.com/benbjohnson/clock"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -32,14 +34,19 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 	now := i.clock.Now()
 
-	accessor.SetAnnotations(map[string]string{
-		"rebuy.com/kubernetes-deployment.deployment-date": now.String(),
-		"rebuy.com/kubernetes-deployment.commit-sha":      i.branch.SHA,
-		"rebuy.com/kubernetes-deployment.commit-date":     i.branch.Date.String(),
-		"rebuy.com/kubernetes-deployment.commit-author":   i.branch.Author,
-		"rebuy.com/kubernetes-deployment.commit-message":  i.branch.Message,
-		"rebuy.com/kubernetes-deployment.commit-location": i.branch.Location.String(),
-	})
+	annotations := accessor.GetAnnotations()
+	if annotations == nil {
+		annotations = map[string]string{}
+	}
+
+	annotations["rebuy.com/kubernetes-deployment.deployment-date"] = fmt.Sprint(now)
+	annotations["rebuy.com/kubernetes-deployment.commit-sha"] = i.branch.SHA
+	annotations["rebuy.com/kubernetes-deployment.commit-date"] = fmt.Sprint(i.branch.Date)
+	annotations["rebuy.com/kubernetes-deployment.commit-author"] = i.branch.Author
+	annotations["rebuy.com/kubernetes-deployment.commit-message"] = i.branch.Message
+	annotations["rebuy.com/kubernetes-deployment.commit-location"] = i.branch.Location.String()
+
+	accessor.SetAnnotations(annotations)
 
 	return obj, nil
 }
