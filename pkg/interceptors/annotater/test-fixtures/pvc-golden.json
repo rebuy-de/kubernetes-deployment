@@ -3,11 +3,11 @@
         "creationTimestamp": null,
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
-            "rebuy.com/kubernetes-deployment.commit-date": "2009-02-13 23:31:30 +0000 UTC",
+            "rebuy.com/kubernetes-deployment.commit-date": "2009-02-13T23:31:30Z",
             "rebuy.com/kubernetes-deployment.commit-location": "github.com/rebuy-de/example-silo/deployment/k8s@master",
             "rebuy.com/kubernetes-deployment.commit-message": "fancy feature",
             "rebuy.com/kubernetes-deployment.commit-sha": "1234567890abcdef",
-            "rebuy.com/kubernetes-deployment.deployment-date": "2009-02-13 23:31:30 +0000 UTC",
+            "rebuy.com/kubernetes-deployment.deployment-date": "2009-02-13T23:31:30Z",
             "volume.beta.kubernetes.io/storage-class": "aws-ebs-gp2"
         }
     },
