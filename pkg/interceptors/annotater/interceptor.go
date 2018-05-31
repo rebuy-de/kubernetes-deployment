@@ -1,7 +1,7 @@
 package annotater
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/benbjohnson/clock"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -11,13 +11,15 @@ import (
 )
 
 type Interceptor struct {
-	clock  clock.Clock
-	branch gh.Branch
+	clock    clock.Clock
+	branch   gh.Branch
+	timezone *time.Location
 }
 
 func New() *Interceptor {
 	return &Interceptor{
-		clock: clock.New(),
+		clock:    clock.New(),
+		timezone: time.Local,
 	}
 }
 
@@ -39,9 +41,9 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 		annotations = map[string]string{}
 	}
 
-	annotations["rebuy.com/kubernetes-deployment.deployment-date"] = fmt.Sprint(now)
+	annotations["rebuy.com/kubernetes-deployment.deployment-date"] = now.In(i.timezone).Format(time.RFC3339Nano)
 	annotations["rebuy.com/kubernetes-deployment.commit-sha"] = i.branch.SHA
-	annotations["rebuy.com/kubernetes-deployment.commit-date"] = fmt.Sprint(i.branch.Date)
+	annotations["rebuy.com/kubernetes-deployment.commit-date"] = i.branch.Date.In(i.timezone).Format(time.RFC3339Nano)
 	annotations["rebuy.com/kubernetes-deployment.commit-author"] = i.branch.Author
 	annotations["rebuy.com/kubernetes-deployment.commit-message"] = i.branch.Message
 	annotations["rebuy.com/kubernetes-deployment.commit-location"] = i.branch.Location.String()
