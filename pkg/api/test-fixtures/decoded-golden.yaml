@@ -8,8 +8,7 @@
             "creationTimestamp": null,
             "labels": {
                 "app": "maintenance",
-                "team": "platform",
-                "tier": "maintenance"
+                "team": "platform"
             }
         },
         "spec": {
@@ -21,8 +20,7 @@
                     "creationTimestamp": null,
                     "labels": {
                         "app": "maintenance",
-                        "team": "platform",
-                        "tier": "maintenance"
+                        "team": "platform"
                     }
                 },
                 "spec": {
