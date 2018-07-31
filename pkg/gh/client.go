@@ -86,9 +86,9 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		Location: *location,
 		Rate:     resp.Rate,
 		Name:     *ghBranch.Name,
-		Author:   *ghBranch.Commit.Author.Login,
 		SHA:      *ghBranch.Commit.SHA,
 		Message:  *ghBranch.Commit.Commit.Message,
+		Author:   *ghBranch.Commit.Commit.Author.Name,
 		Date:     *ghBranch.Commit.Commit.Author.Date,
 	}
 
