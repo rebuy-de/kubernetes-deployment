@@ -101,7 +101,7 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		"RateReset":     resp.Rate.Reset,
 		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 		"Branch":        *ghBranch.Name,
-		"Author":        *ghBranch.Commit.Author.Login,
+		"Author":        *ghBranch.Commit.Commit.Author.Name,
 		"SHA":           *ghBranch.Commit.SHA,
 		"Date":          ghBranch.Commit.Commit.Author.Date,
 	}).Debug("fetched branch information")
