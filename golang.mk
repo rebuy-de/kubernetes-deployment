@@ -35,7 +35,7 @@ Gopkg.lock: Gopkg.toml
 	touch Gopkg.lock
 
 vendor: Gopkg.lock Gopkg.toml
-	dep ensure
+	dep ensure -vendor-only
 	touch vendor
 
 format:
