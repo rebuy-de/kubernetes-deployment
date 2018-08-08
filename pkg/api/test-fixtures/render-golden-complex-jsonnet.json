@@ -1,0 +1,341 @@
+[
+    {
+        "kind": "Job",
+        "apiVersion": "batch/v1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "de",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "backoffLimit": 4,
+            "template": {
+                "metadata": {
+                    "creationTimestamp": null
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "process",
+                            "image": "my-app",
+                            "args": [
+                                "de"
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "2048m",
+                                    "memory": "2Gi"
+                                },
+                                "requests": {
+                                    "cpu": "1024m",
+                                    "memory": "1Gi"
+                                }
+                            }
+                        }
+                    ],
+                    "restartPolicy": "OnFailure"
+                }
+            }
+        },
+        "status": {}
+    },
+    {
+        "kind": "Job",
+        "apiVersion": "batch/v1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "fr",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "backoffLimit": 4,
+            "template": {
+                "metadata": {
+                    "creationTimestamp": null
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "process",
+                            "image": "my-app",
+                            "args": [
+                                "fr"
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "2048m",
+                                    "memory": "2Gi"
+                                },
+                                "requests": {
+                                    "cpu": "1024m",
+                                    "memory": "1Gi"
+                                }
+                            }
+                        }
+                    ],
+                    "restartPolicy": "OnFailure"
+                }
+            }
+        },
+        "status": {}
+    },
+    {
+        "kind": "Job",
+        "apiVersion": "batch/v1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "nl",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "backoffLimit": 4,
+            "template": {
+                "metadata": {
+                    "creationTimestamp": null
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "process",
+                            "image": "my-app",
+                            "args": [
+                                "nl"
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "2048m",
+                                    "memory": "2Gi"
+                                },
+                                "requests": {
+                                    "cpu": "1024m",
+                                    "memory": "1Gi"
+                                }
+                            }
+                        }
+                    ],
+                    "restartPolicy": "OnFailure"
+                }
+            }
+        },
+        "status": {}
+    },
+    {
+        "kind": "CronJob",
+        "apiVersion": "batch/v2alpha1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "de",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "schedule": "0 */6 * * *",
+            "jobTemplate": {
+                "metadata": {
+                    "name": "my-app",
+                    "namespace": "default",
+                    "creationTimestamp": null,
+                    "labels": {
+                        "app": "my-app",
+                        "lang": "de",
+                        "role": "job",
+                        "team": "me",
+                        "test": "bish-bash-bosh"
+                    }
+                },
+                "spec": {
+                    "backoffLimit": 4,
+                    "template": {
+                        "metadata": {
+                            "creationTimestamp": null
+                        },
+                        "spec": {
+                            "containers": [
+                                {
+                                    "name": "process",
+                                    "image": "my-app",
+                                    "args": [
+                                        "de"
+                                    ],
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "2048m",
+                                            "memory": "2Gi"
+                                        },
+                                        "requests": {
+                                            "cpu": "1024m",
+                                            "memory": "1Gi"
+                                        }
+                                    }
+                                }
+                            ],
+                            "restartPolicy": "OnFailure"
+                        }
+                    }
+                }
+            },
+            "successfulJobsHistoryLimit": 1,
+            "failedJobsHistoryLimit": 5
+        },
+        "status": {}
+    },
+    {
+        "kind": "CronJob",
+        "apiVersion": "batch/v2alpha1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "de",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "schedule": "0 */6 * * *",
+            "jobTemplate": {
+                "metadata": {
+                    "name": "my-app",
+                    "namespace": "default",
+                    "creationTimestamp": null,
+                    "labels": {
+                        "app": "my-app",
+                        "lang": "de",
+                        "role": "job",
+                        "team": "me",
+                        "test": "bish-bash-bosh"
+                    }
+                },
+                "spec": {
+                    "backoffLimit": 4,
+                    "template": {
+                        "metadata": {
+                            "creationTimestamp": null
+                        },
+                        "spec": {
+                            "containers": [
+                                {
+                                    "name": "process",
+                                    "image": "my-app",
+                                    "args": [
+                                        "fr"
+                                    ],
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "2048m",
+                                            "memory": "2Gi"
+                                        },
+                                        "requests": {
+                                            "cpu": "1024m",
+                                            "memory": "1Gi"
+                                        }
+                                    }
+                                }
+                            ],
+                            "restartPolicy": "OnFailure"
+                        }
+                    }
+                }
+            },
+            "successfulJobsHistoryLimit": 1,
+            "failedJobsHistoryLimit": 5
+        },
+        "status": {}
+    },
+    {
+        "kind": "CronJob",
+        "apiVersion": "batch/v2alpha1",
+        "metadata": {
+            "name": "my-app",
+            "namespace": "default",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "my-app",
+                "lang": "de",
+                "role": "job",
+                "team": "me",
+                "test": "bish-bash-bosh"
+            }
+        },
+        "spec": {
+            "schedule": "0 */6 * * *",
+            "jobTemplate": {
+                "metadata": {
+                    "name": "my-app",
+                    "namespace": "default",
+                    "creationTimestamp": null,
+                    "labels": {
+                        "app": "my-app",
+                        "lang": "de",
+                        "role": "job",
+                        "team": "me",
+                        "test": "bish-bash-bosh"
+                    }
+                },
+                "spec": {
+                    "backoffLimit": 4,
+                    "template": {
+                        "metadata": {
+                            "creationTimestamp": null
+                        },
+                        "spec": {
+                            "containers": [
+                                {
+                                    "name": "process",
+                                    "image": "my-app",
+                                    "args": [
+                                        "nl"
+                                    ],
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "2048m",
+                                            "memory": "2Gi"
+                                        },
+                                        "requests": {
+                                            "cpu": "1024m",
+                                            "memory": "1Gi"
+                                        }
+                                    }
+                                }
+                            ],
+                            "restartPolicy": "OnFailure"
+                        }
+                    }
+                }
+            },
+            "successfulJobsHistoryLimit": 1,
+            "failedJobsHistoryLimit": 5
+        },
+        "status": {}
+    }
+]
