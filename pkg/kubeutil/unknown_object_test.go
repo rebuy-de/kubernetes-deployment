@@ -27,12 +27,26 @@ func TestUnknownObject_parseJSON(t *testing.T) {
 	raw := readFile(t, "unknown.json")
 
 	uo := new(UnknownObject)
-	err := uo.FromJson(raw)
+	err := uo.FromJSON(raw)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	uo.ObjectMeta.Labels["foo"] = "bar"
 
-	testutil.AssertGoldenJSON(t, "test-fixtures/unknown-golden.json", uo)
+	testutil.AssertGoldenJSON(t, "test-fixtures/unknown-json-golden.json", uo)
+}
+
+func TestUnknownObject_parseYAML(t *testing.T) {
+	raw := readFile(t, "unknown.yaml")
+
+	uo := new(UnknownObject)
+	err := uo.FromYAML(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	uo.ObjectMeta.Labels["foo"] = "bar"
+
+	testutil.AssertGoldenJSON(t, "test-fixtures/unknown-yaml-golden.json", uo)
 }

@@ -3,6 +3,7 @@ package kubeutil
 import (
 	"encoding/json"
 
+	"github.com/ghodss/yaml"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -23,7 +24,7 @@ func (o *UnknownObject) DeepCopyObject() runtime.Object {
 	return nil
 }
 
-func (o *UnknownObject) FromJson(raw []byte) error {
+func (o *UnknownObject) FromJSON(raw []byte) error {
 	err := json.Unmarshal(raw, o)
 	if err != nil {
 		return err
@@ -31,6 +32,15 @@ func (o *UnknownObject) FromJson(raw []byte) error {
 
 	o.Raw = map[string]interface{}{}
 	return json.Unmarshal(raw, &o.Raw)
+}
+
+func (o *UnknownObject) FromYAML(raw []byte) error {
+	json, err := yaml.YAMLToJSON(raw)
+	if err != nil {
+		return err
+	}
+
+	return o.FromJSON(json)
 }
 
 func (o *UnknownObject) syncRaw() {
