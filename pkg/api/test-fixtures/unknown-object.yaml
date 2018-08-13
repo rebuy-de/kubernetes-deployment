@@ -1,0 +1,21 @@
+apiVersion: "lifecycle.rebuy.com/v1alpha1"
+kind: "PodRestarter"
+
+metadata:
+  name: thumbs
+  labels:
+    team: platform
+    app: thumbs
+
+spec:
+  selector:
+    matchLabels:
+      app: thumbs
+
+  cooldownPeriod: 1h
+
+  maxUnavailable: 1
+  minAvailable: 2
+
+  restartCriteria:
+    maxAge: 1h

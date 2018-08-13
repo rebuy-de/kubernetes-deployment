@@ -11,6 +11,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 )
 
@@ -80,7 +81,18 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 		}
 
 		obj, _, err := decode([]byte(part), nil, nil)
+
+		// Fallback to UnknownObject if the API/Kind is not registered, so the
+		// interceptors still work. In case the Kind actually does not exist,
+		// kubectl will fail later anyway.
+		if runtime.IsNotRegisteredError(err) {
+			unknown := new(kubeutil.UnknownObject)
+			err = unknown.FromYAML([]byte(part))
+			obj = unknown
+		}
+
 		if err != nil {
+			log.Warnf("%#v", err)
 			return nil, errors.Wrapf(err, "unable to decode file '%s'", file.Name())
 		}
 
@@ -118,6 +130,16 @@ func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.F
 
 	for _, doc := range docs {
 		obj, _, err := decode([]byte(doc), nil, nil)
+
+		// Fallback to UnknownObject if the API/Kind is not registered, so the
+		// interceptors still work. In case the Kind actually does not exist,
+		// kubectl will fail later anyway.
+		if runtime.IsNotRegisteredError(err) {
+			unknown := new(kubeutil.UnknownObject)
+			err = unknown.FromJSON([]byte(doc))
+			obj = unknown
+		}
+
 		if err != nil {
 			return nil, errors.Wrapf(err, "unable to decode file '%s'", file.Name())
 		}
