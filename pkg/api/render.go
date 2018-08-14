@@ -8,7 +8,6 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes/scheme"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
@@ -70,7 +69,6 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 
 	var objects []runtime.Object
 	splitted := regexp.MustCompile("[\n\r]---").Split(rendered, -1)
-	decode := scheme.Codecs.UniversalDeserializer().Decode
 
 	for _, part := range splitted {
 		if strings.TrimSpace(part) == "" {
@@ -80,20 +78,9 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 			continue
 		}
 
-		obj, _, err := decode([]byte(part), nil, nil)
-
-		// Fallback to UnknownObject if the API/Kind is not registered, so the
-		// interceptors still work. In case the Kind actually does not exist,
-		// kubectl will fail later anyway.
-		if runtime.IsNotRegisteredError(err) {
-			unknown := new(kubeutil.UnknownObject)
-			err = unknown.FromYAML([]byte(part))
-			obj = unknown
-		}
-
+		obj, err := kubeutil.Decode([]byte(part))
 		if err != nil {
-			log.Warnf("%#v", err)
-			return nil, errors.Wrapf(err, "unable to decode file '%s'", file.Name())
+			return nil, errors.WithStack(err)
 		}
 
 		obj, err = app.Interceptors.PostManifestRender(obj)
@@ -109,7 +96,6 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 
 func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.File) ([]runtime.Object, error) {
 	var objects []runtime.Object
-	decode := scheme.Codecs.UniversalDeserializer().Decode
 
 	importer := new(jsonnet.MemoryImporter)
 	importer.Data = make(map[string]string)
@@ -129,19 +115,9 @@ func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.F
 	}
 
 	for _, doc := range docs {
-		obj, _, err := decode([]byte(doc), nil, nil)
-
-		// Fallback to UnknownObject if the API/Kind is not registered, so the
-		// interceptors still work. In case the Kind actually does not exist,
-		// kubectl will fail later anyway.
-		if runtime.IsNotRegisteredError(err) {
-			unknown := new(kubeutil.UnknownObject)
-			err = unknown.FromJSON([]byte(doc))
-			obj = unknown
-		}
-
+		obj, err := kubeutil.Decode([]byte(doc))
 		if err != nil {
-			return nil, errors.Wrapf(err, "unable to decode file '%s'", file.Name())
+			return nil, errors.WithStack(err)
 		}
 
 		obj, err = app.Interceptors.PostManifestRender(obj)

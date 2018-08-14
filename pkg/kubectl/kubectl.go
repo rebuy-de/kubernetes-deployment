@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes/scheme"
 
 	"github.com/pkg/errors"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -74,7 +74,7 @@ func (k *Kubectl) Apply(obj runtime.Object) (runtime.Object, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	newObj, _, err := scheme.Codecs.UniversalDeserializer().Decode(stdout.Bytes(), nil, nil)
+	newObj, err := kubeutil.Decode(stdout.Bytes())
 	return newObj, errors.Wrapf(err, "failed to decode result json")
 }
 
