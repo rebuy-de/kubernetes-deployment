@@ -143,7 +143,7 @@ func TestInvalidFile(t *testing.T) {
 		t.Fatal("expected an error")
 	}
 
-	expect := `failed to render project: unable to decode file 'invalid.yaml': couldn't get version/kind; json parse error: json: cannot unmarshal array into Go value of type struct { APIVersion string "json:\"apiVersion,omitempty\""; Kind string "json:\"kind,omitempty\"" }`
+	expect := `failed to render project: unable to decode manifest: couldn't get version/kind; json parse error: json: cannot unmarshal array into Go value of type struct { APIVersion string "json:\"apiVersion,omitempty\""; Kind string "json:\"kind,omitempty\"" }`
 	if !strings.HasPrefix(err.Error(), expect) {
 		t.Errorf("Got wrong error:")
 		t.Errorf("  Expected prefix:  %s", expect)
