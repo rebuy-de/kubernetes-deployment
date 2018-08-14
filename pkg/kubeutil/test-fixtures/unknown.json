@@ -1,0 +1,17 @@
+{
+  "apiVersion": "blubber/v42alpha1337",
+  "kind": "BishBashBosh",
+  "metadata": {
+    "annotations": {
+      "useless": "true"
+    },
+    "labels": {
+      "bim": "baz"
+    },
+    "name": "example"
+  },
+  "spec": {
+    "availability": "100%"
+  }
+}
+

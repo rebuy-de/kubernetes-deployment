@@ -51,6 +51,18 @@ func TestDecode(t *testing.T) {
 				"render-silo.libsonnet",
 			},
 		},
+		{
+			name: "unknown-object-yaml",
+			files: []string{
+				"unknown-object.yaml",
+			},
+		},
+		{
+			name: "unknown-object-jsonnet",
+			files: []string{
+				"unknown-object.jsonnet",
+			},
+		},
 	}
 
 	vars := templates.Variables{
