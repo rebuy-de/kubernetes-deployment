@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	"regexp"
 	"strings"
 	"time"
 
@@ -18,10 +17,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	ContentLocationRE = regexp.MustCompile(`^github.com/([^/]+)/([^/]+)/(.*)$`)
 )
 
 type Interface interface {
@@ -186,7 +181,7 @@ func (gh *API) GetFile(location *Location) (File, error) {
 
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 
-	return File{location.Path, content}, nil
+	return File{Location: location, Content: content}, nil
 }
 
 func (gh *API) GetFiles(location *Location) ([]File, error) {
@@ -244,11 +239,16 @@ func (gh *API) GetFiles(location *Location) ([]File, error) {
 			_, notAFile := err.(ErrNotAFile)
 			if !notAFile {
 				return nil, errors.Wrapf(err,
-					"unable to decode file '%v'",
+					"unable to download file '%v'",
 					location)
 			}
 
+			log.WithFields(log.Fields{
+				"Location": file.Location,
+			}).Debug("skipping path, because it is not a file")
+			continue
 		}
+
 		files = append(files, file)
 	}
 

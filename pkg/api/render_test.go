@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	fakeGH "github.com/rebuy-de/kubernetes-deployment/pkg/gh/fake"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/templates"
 	"github.com/rebuy-de/rebuy-go-sdk/testutil"
@@ -73,18 +74,43 @@ func TestDecode(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			files := []gh.File{}
+			files := fakeGH.Files{}
 			for _, fname := range tc.files {
 				files = append(files, gh.File{
-					Path:    fname,
+					Location: &gh.Location{
+						Owner: "rebuy-de",
+						Repo:  "test",
+						Path:  fname,
+						Ref:   "master",
+					},
 					Content: readFile(t, path.Join("test-fixtures", fname)),
 				})
 			}
 
-			app := App{Interceptors: &interceptors.Multi{}}
+			github := &fakeGH.GitHub{
+				"rebuy-de": fakeGH.Repos{
+					"test": fakeGH.Branches{
+						"master": fakeGH.Branch{
+							Meta: gh.Branch{
+								Name: "master",
+								SHA:  "5a5369823a2a9a6ad9c241b404be39f802d41d48",
+							},
+							Files: files,
+						},
+					},
+				},
+			}
+
+			app := App{
+				Interceptors: &interceptors.Multi{},
+				Clients: &Clients{
+					GitHub: github,
+				},
+			}
+
 			objects, err := app.decode(files, vars)
 			if err != nil {
-				t.Fatal(err)
+				t.Fatalf("%+v", err)
 			}
 			g := path.Join("test-fixtures", fmt.Sprintf("render-golden-%s.json", tc.name))
 			testutil.AssertGoldenJSON(t, g, objects)

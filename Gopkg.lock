@@ -62,7 +62,7 @@
   branch = "master"
   name = "github.com/google/btree"
   packages = ["."]
-  revision = "e89373fe6b4a7413d7acd6da1725b83ef713e6e4"
+  revision = "4030bb1f1f0c35b30ca7009e9ebd06849dd45306"
 
 [[projects]]
   name = "github.com/google/go-github"
@@ -77,8 +77,8 @@
     "ast",
     "parser"
   ]
-  revision = "dfddf2b4e3aec377b0dcdf247ff92e7d078b8179"
-  version = "v0.10.0"
+  revision = "6144c57d2a054b72ff46219f655bf863b940e174"
+  version = "v0.11.2"
 
 [[projects]]
   branch = "master"
@@ -255,7 +255,7 @@
   branch = "master"
   name = "github.com/spf13/jwalterweatherman"
   packages = ["."]
-  revision = "7c0cea34c8ece3fbeb2b27ab9b59511d360fb394"
+  revision = "14d3d4c518341bea657dd8a226f5121c0ff8c9f2"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -286,7 +286,7 @@
     "http2/hpack",
     "idna"
   ]
-  revision = "f9ce57c11b242f0f1599cf25c89d8cb02c45295a"
+  revision = "c39426892332e1bb5ec0a434a079bf82f5d30c54"
 
 [[projects]]
   branch = "master"
@@ -304,7 +304,7 @@
     "unix",
     "windows"
   ]
-  revision = "f0d5e33068cb57c22a181f5df0ffda885309eb5a"
+  revision = "14742f9018cd6651ec7364dc6ee08af0baaa1031"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -514,6 +514,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "83bba37b06273ef571e890f3d49ce4711ddc90c251e9d2f7ee508b8a61b705d0"
+  inputs-digest = "19a20a55c50c1a3aa4567b55bb18425454067a9437bb9a8e4545034ae7f705bc"
   solver-name = "gps-cdcl"
   solver-version = 1

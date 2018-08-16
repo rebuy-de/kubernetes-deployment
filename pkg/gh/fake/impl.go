@@ -57,18 +57,18 @@ func (d *GitHub) GetBranch(l *gh.Location) (*gh.Branch, error) {
 
 func (d *GitHub) GetFile(l *gh.Location) (gh.File, error) {
 	for _, file := range (*d)[l.Owner][l.Repo][l.Ref].Files {
-		if file.Path == l.Path {
+		if file.Location.Path == l.Path {
 			return file, nil
 		}
 	}
-	return gh.File{}, nil
+	return gh.File{}, fmt.Errorf("File %s not found", l.String())
 }
 
 func (d *GitHub) GetFiles(l *gh.Location) ([]gh.File, error) {
 	var files []gh.File
 
 	for _, file := range (*d)[l.Owner][l.Repo][l.Ref].Files {
-		dir, _ := path.Split("/" + file.Path)
+		dir, _ := path.Split("/" + file.Location.Path)
 		if path.Clean("/"+dir+"/") == path.Clean("/"+l.Path+"/") {
 			files = append(files, file)
 		}
