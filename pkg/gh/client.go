@@ -112,35 +112,25 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 }
 
 type FileFuture struct {
-	file chan File
-	err  chan error
+	file File
+	err  error
+
+	done chan struct{}
 }
 
 func (ff *FileFuture) Get() (File, error) {
-	select {
-	case file := <-ff.file:
-		close(ff.file)
-		close(ff.err)
-		return file, nil
-	case err := <-ff.err:
-		close(ff.file)
-		close(ff.err)
-		return File{}, err
-	}
+	<-ff.done
+	return ff.file, ff.err
 }
 
 func (gh *API) GetFileAsync(location *Location) *FileFuture {
 	ff := &FileFuture{
-		file: make(chan File, 1),
-		err:  make(chan error, 1),
+		done: make(chan struct{}, 1),
 	}
 
 	go func() {
-		file, err := gh.GetFile(location)
-		if err != nil {
-			ff.err <- err
-		}
-		ff.file <- file
+		ff.file, ff.err = gh.GetFile(location)
+		close(ff.done)
 	}()
 
 	return ff
