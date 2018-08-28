@@ -36,22 +36,40 @@ func TestModify(t *testing.T) {
 	}{
 		{
 			name: "deployment",
-			obj:  &extensions.Deployment{},
+			obj: &extensions.Deployment{
+				ObjectMeta: meta.ObjectMeta{Name: "deployment"},
+			},
 		},
 		{
 			name: "statefulset",
-			obj:  &apps.StatefulSet{},
+			obj: &apps.StatefulSet{
+				ObjectMeta: meta.ObjectMeta{Name: "statefulset"},
+			},
 		},
 		{
 			name: "service",
-			obj:  &core.Service{},
+			obj: &core.Service{
+				ObjectMeta: meta.ObjectMeta{Name: "service"},
+			},
 		},
 		{
 			name: "pvc",
 			obj: &core.PersistentVolumeClaim{
 				ObjectMeta: meta.ObjectMeta{
+					Name: "pvc",
 					Annotations: map[string]string{
 						"volume.beta.kubernetes.io/storage-class": "aws-ebs-gp2",
+					},
+				},
+			},
+		},
+		{
+			name: "deployment-name",
+			obj: &core.PersistentVolumeClaim{
+				ObjectMeta: meta.ObjectMeta{
+					Name: "deployment-name",
+					Labels: map[string]string{
+						"name": "bish-bash-bosh",
 					},
 				},
 			},

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
+	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 
@@ -49,6 +50,22 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 	annotations["rebuy.com/kubernetes-deployment.commit-location"] = i.branch.Location.String()
 
 	accessor.SetAnnotations(annotations)
+
+	labels := accessor.GetLabels()
+	if labels == nil {
+		labels = map[string]string{}
+	}
+
+	name := accessor.GetName()
+	labelName, ok := labels["name"]
+	if ok && name != labelName {
+		logrus.Warnf("Existing label name '%s' not match manifest name '%s'",
+			labelName, name)
+	} else if !ok {
+		labels["name"] = name
+	}
+
+	accessor.SetLabels(labels)
 
 	return obj, nil
 }
