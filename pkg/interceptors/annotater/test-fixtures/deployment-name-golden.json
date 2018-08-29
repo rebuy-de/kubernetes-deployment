@@ -1,9 +1,9 @@
 {
     "metadata": {
-        "name": "service",
+        "name": "deployment-name",
         "creationTimestamp": null,
         "labels": {
-            "name": "service"
+            "name": "bish-bash-bosh"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -14,8 +14,8 @@
             "rebuy.com/kubernetes-deployment.deployment-date": "2009-02-13T23:31:30Z"
         }
     },
-    "spec": {},
-    "status": {
-        "loadBalancer": {}
-    }
+    "spec": {
+        "resources": {}
+    },
+    "status": {}
 }

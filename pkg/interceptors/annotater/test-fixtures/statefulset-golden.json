@@ -1,6 +1,10 @@
 {
     "metadata": {
+        "name": "statefulset",
         "creationTimestamp": null,
+        "labels": {
+            "name": "statefulset"
+        },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
             "rebuy.com/kubernetes-deployment.commit-date": "2009-02-13T23:31:30Z",

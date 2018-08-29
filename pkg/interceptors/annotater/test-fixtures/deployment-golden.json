@@ -1,6 +1,10 @@
 {
     "metadata": {
+        "name": "deployment",
         "creationTimestamp": null,
+        "labels": {
+            "name": "deployment"
+        },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
             "rebuy.com/kubernetes-deployment.commit-date": "2009-02-13T23:31:30Z",
