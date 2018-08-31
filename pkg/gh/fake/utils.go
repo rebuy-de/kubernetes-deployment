@@ -36,7 +36,7 @@ func ScanFiles(root string) Files {
 		}
 
 		raw, err := ioutil.ReadFile(path)
-		files = append(files, gh.File{Path: relPath, Content: string(raw)})
+		files = append(files, gh.File{Location: &gh.Location{Path: relPath}, Content: string(raw)})
 		return err
 	})
 	if err != nil {

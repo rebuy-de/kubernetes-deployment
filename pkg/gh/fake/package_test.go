@@ -22,10 +22,10 @@ var (
 				"master": Branch{
 					Meta: ExampleBranch,
 					Files: Files{
-						{Path: "deployments.yaml", Content: YAML([]string{"foo", "bar"})},
-						{Path: "README.md", Content: "blubber"},
-						{Path: "sub/foo.txt", Content: "bar"},
-						{Path: "sub/bim.txt", Content: "baz"},
+						{Location: &gh.Location{Path: "deployments.yaml"}, Content: YAML([]string{"foo", "bar"})},
+						{Location: &gh.Location{Path: "README.md"}, Content: "blubber"},
+						{Location: &gh.Location{Path: "sub/foo.txt"}, Content: "bar"},
+						{Location: &gh.Location{Path: "sub/bim.txt"}, Content: "baz"},
 					},
 				},
 			},
@@ -89,8 +89,8 @@ func TestGetFiles(t *testing.T) {
 	}
 
 	expected := []gh.File{
-		{Path: "deployments.yaml", Content: "- foo\n- bar\n"},
-		{Path: "README.md", Content: "blubber"},
+		{Location: &gh.Location{Path: "deployments.yaml"}, Content: "- foo\n- bar\n"},
+		{Location: &gh.Location{Path: "README.md"}, Content: "blubber"},
 	}
 
 	if !reflect.DeepEqual(files, expected) {
@@ -107,8 +107,8 @@ func TestGetSubdirectoryFiles(t *testing.T) {
 	}
 
 	expected := []gh.File{
-		{Path: "sub/foo.txt", Content: "bar"},
-		{Path: "sub/bim.txt", Content: "baz"},
+		{Location: &gh.Location{Path: "sub/foo.txt"}, Content: "bar"},
+		{Location: &gh.Location{Path: "sub/bim.txt"}, Content: "baz"},
 	}
 
 	if !reflect.DeepEqual(files, expected) {

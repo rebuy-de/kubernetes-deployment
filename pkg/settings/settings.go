@@ -56,6 +56,10 @@ func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
 		return nil, errors.Wrapf(err, "parse GitHub location '%s'; use './' prefix to use a directory named 'github.com'", filename)
 	}
 
+	location.Defaults(gh.Location{
+		Ref: "master",
+	})
+
 	file, err := client.GetFile(location)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not download file '%s'", location)

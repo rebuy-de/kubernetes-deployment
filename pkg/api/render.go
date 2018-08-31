@@ -33,6 +33,10 @@ func (app *App) decode(files []gh.File, vars templates.Variables) ([]runtime.Obj
 	var objects []runtime.Object
 
 	for _, file := range files {
+		log.WithFields(log.Fields{
+			"Location": file.Location,
+		}).Debug("decoding file")
+
 		switch {
 		case strings.HasSuffix(file.Name(), ".yml"):
 			fallthrough
@@ -97,11 +101,7 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.File) ([]runtime.Object, error) {
 	var objects []runtime.Object
 
-	importer := new(jsonnet.MemoryImporter)
-	importer.Data = make(map[string]string)
-	for _, f := range all {
-		importer.Data[f.Name()] = f.Content
-	}
+	importer := gh.NewJsonnetImporter(app.Clients.GitHub)
 
 	vm := jsonnet.MakeVM()
 	vm.Importer(importer)
@@ -109,7 +109,7 @@ func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.F
 		vm.ExtVar(k, v)
 	}
 
-	docs, err := vm.EvaluateSnippetStream(file.Name(), file.Content)
+	docs, err := vm.EvaluateSnippetStream(file.Location.String(), file.Content)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
