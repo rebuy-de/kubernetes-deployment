@@ -62,7 +62,8 @@ _build: vendor
 	mkdir -p dist
 	$(foreach TARGET,$(TARGETS),go build \
 		$(BUILD_FLAGS) \
-		-o dist/$(OUTPUT_FILE);\
+		-o dist/$(OUTPUT_FILE) \
+		$(TARGET);\
 	)
 
 build: _build

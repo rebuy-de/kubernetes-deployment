@@ -37,4 +37,5 @@ RUN set -x \
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /usr/local/bin/* /usr/local/bin/
+COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/
+COPY --from=builder /src/dist/* /usr/local/bin/
