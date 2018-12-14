@@ -1,3 +1,4 @@
 /vendor
-/kubernetes-deployment*
+/dist
+
 coverage.html

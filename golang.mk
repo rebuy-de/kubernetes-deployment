@@ -3,7 +3,8 @@
 # * gocov (https://github.com/axw/gocov)
 # * gocov-html (https://github.com/matm/gocov-html)
 
-PACKAGE=$(shell GOPATH= go list)
+TARGETS?="."
+PACKAGE=$(shell GOPATH= go list $(TARGET))
 NAME=$(notdir $(PACKAGE))
 
 BUILD_VERSION=$(shell git describe --always --dirty --tags | tr '-' '.' )
@@ -27,26 +28,29 @@ BUILD_FLAGS=-ldflags "\
 GOFILES=$(shell find . -type f -name '*.go' -not -path "./vendor/*")
 GOPKGS=$(shell go list ./...)
 
+OUTPUT_FILE=$(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH)$(shell go env GOEXE)
+OUTPUT_LINK=$(NAME)$(shell go env GOEXE)
+
 default: build
 
 vendor: go.mod go.sum
-	GOPATH= go mod vendor
+	go mod vendor
 	touch vendor
 
 format:
 	gofmt -s -w $(GOFILES)
 
 vet: vendor
-	GOPATH= go vet $(GOPKGS)
+	go vet $(GOPKGS)
 
 lint:
 	$(foreach pkg,$(GOPKGS),golint $(pkg);)
 
 test_packages: vendor
-	GOPATH= go test $(GOPKGS)
+	go test $(GOPKGS)
 
 test_format:
-	GOPATH= gofmt -s -l $(GOFILES)
+	gofmt -s -l $(GOFILES)
 
 test: test_format vet lint test_packages
 
@@ -54,21 +58,23 @@ cov:
 	gocov test -v $(GOPKGS) \
 		| gocov-html > coverage.html
 
-build: vendor
-	GOPATH= go build \
+_build: vendor
+	mkdir -p dist
+	$(foreach TARGET,$(TARGETS),go build \
 		$(BUILD_FLAGS) \
-		-o $(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH)$(shell go env GOEXE)
-	ln -sf $(NAME)-$(BUILD_VERSION)-$(shell go env GOOS)-$(shell go env GOARCH)$(shell go env GOEXE) $(NAME)$(shell go env GOEXE)
+		-o dist/$(OUTPUT_FILE);\
+	)
+
+build: _build
+	$(foreach TARGET,$(TARGETS),ln -sf $(OUTPUT_FILE) dist/$(OUTPUT_LINK);)
 
 xc:
-	GOOS=linux GOARCH=amd64 make build
-	GOOS=darwin GOARCH=amd64 make build
+	GOOS=linux GOARCH=amd64 $(MAKE) _build
+	GOOS=darwin GOARCH=amd64 $(MAKE) _build
 
-install: vendor #test
-	GOPATH= go install \
-		$(BUILD_FLAGS)
+install: vendor test
+	$(foreach TARGET,$(TARGETS),go install \
+		$(BUILD_FLAGS);)
 
 clean:
-	rm -f $(NAME)*
-
-.PHONY: build install test
+	rm dist/*
