@@ -11,11 +11,9 @@ script:
   docker run
   --name kubernetes-deployment
   --entrypoint "sh"
-  -e CGO_ENABLED=0
-  --workdir "/go/src/github.com/rebuy-de/kubernetes-deployment"
   kubernetes-deployment
-  -euxc "make xc && mkdir releases && mv kubernetes-deployment-* releases"
-- docker cp -L kubernetes-deployment:/go/src/github.com/rebuy-de/kubernetes-deployment/releases ./releases
+  -euxc "make xc"
+- docker cp -L kubernetes-deployment:/src/dist ./releases
 - ls -l *
 
 deploy:

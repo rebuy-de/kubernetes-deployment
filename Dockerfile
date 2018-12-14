@@ -6,16 +6,15 @@ FROM golang:1.11-alpine as builder
 RUN apk add --no-cache git make
 
 # Configure Go
-ENV GOPATH /go
-ENV PATH /go/bin:$PATH
+ENV GOPATH=/go PATH=/go/bin:$PATH CGO_ENABLED=0 GO111MODULE=on
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
 # Install Go Tools
-RUN go get -u golang.org/x/lint/golint
+RUN GO111MODULE= go get -u golang.org/x/lint/golint
 
 COPY . /src
 WORKDIR /src
-RUN CGO_ENABLED=0 GO111MODULE=on make build
+RUN make build
 
 FROM alpine:latest
 
