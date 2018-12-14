@@ -28,9 +28,6 @@ func (a *API) Mux() http.Handler {
 	r.HandleFunc("/render/{project:[a-z0-9-_/]+}", a.HandleRender).
 		Methods("GET")
 
-	r.HandleFunc("/deploy/{project:[a-z0-9-_/]+}", a.HandleDeploy).
-		Methods("POST")
-
 	return r
 }
 
@@ -73,32 +70,4 @@ func (a *API) HandleRender(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func (a *API) HandleDeploy(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	project := vars["project"]
-
-	branch := r.FormValue("branch")
-	if branch == "" {
-		branch = "master"
-	}
-
-	legacy := api.App{
-		Settings: a.Settings,
-		Clients: &api.Clients{
-			GitHub:     a.GitHub,
-			Statsd:     statsdw.NullClient{},
-			Kubectl:    a.Kubectl,
-			Kubernetes: a.Kubernetes,
-		},
-	}
-
-	err := legacy.Apply(project, branch)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
 }
