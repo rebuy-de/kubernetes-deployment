@@ -72,5 +72,3 @@ clean:
 	rm -f $(NAME)*
 
 .PHONY: build install test
-
-PHONY: build install test
