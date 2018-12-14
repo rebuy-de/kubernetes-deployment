@@ -6,18 +6,17 @@ FROM golang:1.11-alpine as builder
 RUN apk add --no-cache git make
 
 # Configure Go
-ENV GOPATH /go
-ENV PATH /go/bin:$PATH
+ENV GOPATH=/go PATH=/go/bin:$PATH CGO_ENABLED=0 GO111MODULE=on
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
 # Install Go Tools
-RUN go get -u golang.org/x/lint/golint
+RUN GO111MODULE= go get -u golang.org/x/lint/golint
 
-COPY . /go/src/github.com/rebuy-de/kubernetes-deployment
-WORKDIR /go/src/github.com/rebuy-de/kubernetes-deployment
-RUN CGO_ENABLED=0 make install
-
+COPY . /src
+WORKDIR /src
+RUN make build
 
 FROM alpine:latest
-COPY --from=builder /go/bin/kubernetes-deployment /usr/local/bin/
-ENTRYPOINT ["/usr/local/bin/kubernetes-deployment"]
+
+RUN apk add --no-cache ca-certificates
+COPY --from=builder /src/dist/* /usr/local/bin/
