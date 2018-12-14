@@ -3,14 +3,11 @@ module github.com/rebuy-de/kubernetes-deployment
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/benbjohnson/clock v0.0.0-20161215174838-7dc76406b6d3
-	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/fatih/structs v1.0.0
-	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/gogo/protobuf v1.1.1 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/groupcache v0.0.0-20181024230925-c65c006176ff // indirect
-	github.com/golang/protobuf v1.1.0 // indirect
 	github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c // indirect
 	github.com/google/go-github v15.0.0+incompatible
 	github.com/google/go-jsonnet v0.11.2
@@ -21,7 +18,6 @@ require (
 	github.com/hashicorp/golang-lru v0.0.0-20180201235237-0fb14efe8c47 // indirect
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/imdario/mergo v0.3.6
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/magiconair/properties v1.8.0 // indirect
 	github.com/mitchellh/go-homedir v0.0.0-20180801233206-58046073cbff
@@ -31,23 +27,16 @@ require (
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.8.0
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rebuy-de/rebuy-go-sdk v1.2.0
+	github.com/rebuy-de/rebuy-go-sdk v1.6.0
 	github.com/sergi/go-diff v1.0.0 // indirect
-	github.com/sirupsen/logrus v0.11.5
+	github.com/sirupsen/logrus v1.0.6
 	github.com/spf13/afero v1.1.1 // indirect
 	github.com/spf13/cast v1.2.0 // indirect
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/jwalterweatherman v0.0.0-20180814060501-14d3d4c51834 // indirect
-	github.com/spf13/pflag v1.0.2 // indirect
 	github.com/spf13/viper v1.1.0
-	github.com/stretchr/testify v1.2.2 // indirect
-	golang.org/x/crypto v0.0.0-20180808211826-de0752318171 // indirect
-	golang.org/x/net v0.0.0-20180811021610-c39426892332 // indirect
 	golang.org/x/oauth2 v0.0.0-20180724155351-3d292e4d0cdc
 	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
-	golang.org/x/sys v0.0.0-20180815093151-14742f9018cd // indirect
-	golang.org/x/text v0.3.0 // indirect
 	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2 // indirect
 	google.golang.org/appengine v1.1.0 // indirect
 	gopkg.in/alexcesaro/statsd.v2 v2.0.0

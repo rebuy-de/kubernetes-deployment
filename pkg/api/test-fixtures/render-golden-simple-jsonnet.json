@@ -21,7 +21,6 @@
             "maxUnavailable": 1
         },
         "status": {
-            "disruptedPods": null,
             "disruptionsAllowed": 0,
             "currentHealthy": 0,
             "desiredHealthy": 0,
