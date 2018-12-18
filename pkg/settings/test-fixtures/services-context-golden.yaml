@@ -19,7 +19,7 @@ defaults:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -53,7 +53,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -86,7 +86,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -119,7 +119,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -152,7 +152,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -185,7 +185,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -218,7 +218,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -251,7 +251,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -284,7 +284,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -317,7 +317,7 @@ services:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -350,7 +350,7 @@ contexts:
         enabled: true
       annotater:
         enabled: null
-      injecter:
+      injector:
         enabled: null
       ghStatusChecker:
         enabled: null
@@ -382,7 +382,7 @@ contexts:
         enabled: true
       annotater:
         enabled: null
-      injecter:
+      injector:
         enabled: null
       ghStatusChecker:
         enabled: null

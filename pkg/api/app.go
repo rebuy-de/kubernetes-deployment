@@ -9,7 +9,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/annotater"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injecter"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmoldjob"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmresspec"
@@ -115,11 +115,11 @@ func (app *App) StartInterceptors(service *settings.Service) {
 		app.Interceptors.Add(annotater.New())
 	}
 
-	if interceptors.Injecter.Enabled == settings.Enabled {
+	if interceptors.Injector.Enabled == settings.Enabled {
 		log.WithFields(log.Fields{
-			"Interceptor": "injecter",
-		}).Debug("enabling injecter interceptor")
-		app.Interceptors.Add(injecter.New())
+			"Interceptor": "injector",
+		}).Debug("enabling injector interceptor")
+		app.Interceptors.Add(injector.New())
 	}
 }
 

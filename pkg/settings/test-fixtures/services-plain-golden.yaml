@@ -18,7 +18,7 @@ defaults:
       enabled: true
     annotater:
       enabled: null
-    injecter:
+    injector:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -69,7 +69,7 @@ contexts:
         enabled: null
       annotater:
         enabled: null
-      injecter:
+      injector:
         enabled: null
       ghStatusChecker:
         enabled: null
