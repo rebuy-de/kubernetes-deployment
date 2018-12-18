@@ -13,9 +13,12 @@ RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 RUN GO111MODULE= go get -u golang.org/x/lint/golint
 
 # Install Linkerd
-RUN curl -Lo /usr/local/bin/linkerd https://github.com/linkerd/linkerd2/releases/download/stable-2.1.0/linkerd2-cli-stable-2.1.0-linux
-RUN chmod +x /usr/local/bin/linkerd
-RUN linkerd version --client --api-addr="localhost"
+RUN set -x \
+ && curl -Lo /usr/local/bin/linkerd https://github.com/linkerd/linkerd2/releases/download/stable-2.1.0/linkerd2-cli-stable-2.1.0-linux \
+ && sha256sum /usr/local/bin/linkerd \
+ && echo "2e8baf093ea38c29c830e32e50688c16ccdf973c76c50beb2b4827647c12fa62  /usr/local/bin/linkerd" | sha256sum -c \
+ && chmod +x /usr/local/bin/linkerd \
+ && linkerd version --client --api-addr="localhost"
 
 COPY . /src
 WORKDIR /src
