@@ -11,6 +11,7 @@ type Interceptors struct {
 	RemoveOldJob        Interceptor                `yaml:"removeOldJob"`
 	Waiter              Interceptor                `yaml:"waiter"`
 	Annotater           Interceptor                `yaml:"annotater"`
+	Injecter            Interceptor                `yaml:"injecter"`
 	GHStatusChecker     GHStatusCheckerInterceptor `yaml:"ghStatusChecker"`
 }
 

@@ -18,6 +18,8 @@ defaults:
       enabled: null
     annotater:
       enabled: null
+    injecter:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -50,6 +52,8 @@ services:
       enabled: null
     annotater:
       enabled: null
+    injecter:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -78,6 +82,8 @@ services:
     waiter:
       enabled: null
     annotater:
+      enabled: null
+    injecter:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -108,6 +114,8 @@ services:
       enabled: null
     annotater:
       enabled: null
+    injecter:
+      enabled: null
     ghStatusChecker:
       enabled: null
       options:
@@ -136,6 +144,8 @@ services:
     waiter:
       enabled: null
     annotater:
+      enabled: null
+    injecter:
       enabled: null
     ghStatusChecker:
       enabled: null
@@ -166,6 +176,8 @@ contexts:
         enabled: null
       annotater:
         enabled: null
+      injecter:
+        enabled: null
       ghStatusChecker:
         enabled: null
         options:
@@ -193,6 +205,8 @@ contexts:
       waiter:
         enabled: null
       annotater:
+        enabled: null
+      injecter:
         enabled: null
       ghStatusChecker:
         enabled: null
