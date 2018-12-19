@@ -3,7 +3,7 @@
 
 FROM golang:1.11-alpine as builder
 
-RUN apk add --no-cache git make curl openssl 
+RUN apk add --no-cache git make curl openssl
 
 # Configure Go
 ENV GOPATH=/go PATH=/go/bin:$PATH CGO_ENABLED=0 GO111MODULE=on
@@ -20,12 +20,21 @@ RUN set -x \
  && chmod +x /usr/local/bin/linkerd \
  && linkerd version --client --api-addr="localhost"
 
+# Install kubectl
+RUN set -x \
+ && curl -O https://storage.googleapis.com/kubernetes-release/release/v1.11.6/bin/linux/amd64/kubectl \
+ && mv kubectl /usr/local/bin/kubectl \
+ && chmod 755 /usr/local/bin/kubectl \
+ && kubectl version --client
+
 COPY . /src
 WORKDIR /src
-RUN make build
+RUN set -x \
+ && make build \
+ && cp --dereference /src/dist/kubernetes-deployment /usr/local/bin/ \
+ && kubernetes-deployment version
 
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /usr/local/bin/linkerd /usr/local/bin/
-COPY --from=builder /src/dist/* /usr/local/bin/
+COPY --from=builder /usr/local/bin/* /usr/local/bin/
