@@ -125,7 +125,12 @@
                                 }
                             }
                         ],
-                        "resources": {},
+                        "resources": {
+                            "requests": {
+                                "cpu": "35m",
+                                "memory": "20Mi"
+                            }
+                        },
                         "livenessProbe": {
                             "httpGet": {
                                 "path": "/metrics",
