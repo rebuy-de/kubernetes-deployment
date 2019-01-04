@@ -32,7 +32,9 @@ WORKDIR /src
 RUN set -x \
  && make build \
  && cp --dereference /src/dist/kubernetes-deployment /usr/local/bin/ \
- && kubernetes-deployment version
+ && cp --dereference /src/dist/k26r /usr/local/bin/ \
+ && kubernetes-deployment version \
+ && k26r version
 
 FROM alpine:latest
 
