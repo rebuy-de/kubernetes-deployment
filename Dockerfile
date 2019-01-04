@@ -32,10 +32,11 @@ WORKDIR /src
 RUN set -x \
  && make build \
  && cp --dereference /src/dist/kubernetes-deployment /usr/local/bin/ \
- && kubernetes-deployment version
+ && cp --dereference /src/dist/k26r /usr/local/bin/ \
+ && kubernetes-deployment version \
+ && k26r version
 
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/
-COPY --from=builder /src/dist/* /usr/local/bin/
+COPY --from=builder /usr/local/bin/* /usr/local/bin/
