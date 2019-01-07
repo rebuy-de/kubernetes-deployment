@@ -13,10 +13,11 @@ import (
 )
 
 type Interceptor struct {
+	options Options
 }
 
-func New() *Interceptor {
-	return &Interceptor{}
+func New(options Options) *Interceptor {
+	return &Interceptor{options: options}
 }
 
 func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
@@ -42,7 +43,7 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 	cmd := exec.Command(
 		"linkerd", "inject",
-		"--linkerd-version", "stable-2.1.0",
+		"--linkerd-version", i.options.LinkerdVersion,
 		"--proxy-memory", "20Mi",
 		"--proxy-cpu", "35m",
 		"-")

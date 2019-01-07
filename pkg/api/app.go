@@ -119,7 +119,9 @@ func (app *App) StartInterceptors(service *settings.Service) {
 		log.WithFields(log.Fields{
 			"Interceptor": "injector",
 		}).Debug("enabling injector interceptor")
-		app.Interceptors.Add(injector.New())
+		app.Interceptors.Add(injector.New(
+			interceptors.Injector.Options,
+		))
 	}
 }
 
