@@ -28,14 +28,14 @@
                 },
                 "annotations": {
                     "linkerd.io/created-by": "linkerd/cli stable-2.1.0",
-                    "linkerd.io/proxy-version": "stable-2.1.0"
+                    "linkerd.io/proxy-version": "123"
                 }
             },
             "spec": {
                 "initContainers": [
                     {
                         "name": "linkerd-init",
-                        "image": "gcr.io/linkerd-io/proxy-init:stable-2.1.0",
+                        "image": "gcr.io/linkerd-io/proxy-init:123",
                         "args": [
                             "--incoming-proxy-port",
                             "4143",
@@ -72,7 +72,7 @@
                     },
                     {
                         "name": "linkerd-proxy",
-                        "image": "gcr.io/linkerd-io/proxy:stable-2.1.0",
+                        "image": "gcr.io/linkerd-io/proxy:123",
                         "ports": [
                             {
                                 "name": "linkerd-proxy",

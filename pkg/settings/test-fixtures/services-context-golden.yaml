@@ -21,6 +21,8 @@ defaults:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -55,6 +57,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -88,6 +92,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -121,6 +127,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -154,6 +162,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -187,6 +197,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -220,6 +232,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -253,6 +267,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -286,6 +302,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -319,6 +337,8 @@ services:
       enabled: null
     injector:
       enabled: null
+      options:
+        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -352,6 +372,8 @@ contexts:
         enabled: null
       injector:
         enabled: null
+        options:
+          linkerdVersion: ""
       ghStatusChecker:
         enabled: null
         options:
@@ -384,6 +406,8 @@ contexts:
         enabled: null
       injector:
         enabled: null
+        options:
+          linkerdVersion: ""
       ghStatusChecker:
         enabled: null
         options:

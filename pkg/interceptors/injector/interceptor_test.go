@@ -12,7 +12,9 @@ import (
 
 func TestTypePostManifestRenderer(t *testing.T) {
 	var inter interceptors.PostManifestRenderer
-	inter = New()
+	inter = New(Options{
+		LinkerdVersion: "123",
+	})
 	_ = inter
 }
 
@@ -37,7 +39,9 @@ func TestRendering(t *testing.T) {
 				t.Error(err)
 			}
 
-			newObj, err := New().PostManifestRender(obj)
+			newObj, err := New(Options{
+				LinkerdVersion: "123",
+			}).PostManifestRender(obj)
 			if err != nil {
 				t.Error(err)
 			}
