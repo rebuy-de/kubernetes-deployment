@@ -30,6 +30,7 @@ RUN set -x \
 COPY . /src
 WORKDIR /src
 RUN set -x \
+ && make test \
  && make build \
  && cp --dereference /src/dist/kubernetes-deployment /usr/local/bin/ \
  && cp --dereference /src/dist/k26r /usr/local/bin/ \
