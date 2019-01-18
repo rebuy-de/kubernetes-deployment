@@ -3,14 +3,23 @@ package settings
 import (
 	"io/ioutil"
 	"path"
+	"regexp"
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
-
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
+	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 )
+
+// This matches the value of `.metadata.selfLink` if ConfigMaps. It is a bit
+// weird for identifying that a ConfigMap is requested, but it is good enough
+// for now.
+var reKubeSelfLink = regexp.MustCompile(`^/api/v1/namespaces/([^/]+)/configmaps/([^/]+)$`)
+var configMapFilename = `settings.yaml`
 
 type Contexts map[string]Service
 
@@ -32,9 +41,12 @@ func FromBytes(data []byte) (*Settings, error) {
 	return config, nil
 }
 
-func Read(location string, client gh.Interface) (*Settings, error) {
+func Read(location string, ghClient gh.Interface, kubeClient kubernetes.Interface) (*Settings, error) {
 	if strings.HasPrefix(location, "github.com") {
-		return ReadFromGitHub(location, client)
+		return ReadFromGitHub(location, ghClient)
+	} else if reKubeSelfLink.MatchString(location) {
+		matches := reKubeSelfLink.FindStringSubmatch(location)
+		return ReadFromConfigMap(matches[1], matches[2], kubeClient)
 	} else {
 		return ReadFromFile(location)
 	}
@@ -48,6 +60,22 @@ func ReadFromFile(filename string) (*Settings, error) {
 
 	return FromBytes(data)
 
+}
+
+func ReadFromConfigMap(namespace, name string, client kubernetes.Interface) (*Settings, error) {
+	cm, err := client.Core().ConfigMaps(namespace).Get(name, meta.GetOptions{})
+	if err != nil {
+		return nil, errors.Wrapf(err, "Could read ConfigMap '%s/%s'", namespace, name)
+	}
+
+	content, exists := cm.Data[configMapFilename]
+
+	if !exists {
+		return nil, errors.Errorf("Configmap '%s/%s' does not have a file named '%s'",
+			namespace, name, configMapFilename)
+	}
+
+	return FromBytes([]byte(content))
 }
 
 func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
