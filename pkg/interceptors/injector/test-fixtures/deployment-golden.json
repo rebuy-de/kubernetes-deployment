@@ -27,7 +27,7 @@
                     "linkerd.io/proxy-deployment": "nginx-deployment"
                 },
                 "annotations": {
-                    "linkerd.io/created-by": "linkerd/cli stable-2.1.0",
+                    "linkerd.io/created-by": "linkerd/cli edge-19.1.1",
                     "linkerd.io/proxy-version": "123"
                 }
             },
@@ -55,7 +55,9 @@
                                     "NET_ADMIN"
                                 ]
                             },
-                            "privileged": false
+                            "privileged": false,
+                            "runAsUser": 0,
+                            "runAsNonRoot": false
                         }
                     }
                 ],
