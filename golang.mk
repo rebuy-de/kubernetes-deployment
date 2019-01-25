@@ -1,7 +1,4 @@
 # Source: https://github.com/rebuy-de/golang-template
-# Dependencies:
-# * gocov (https://github.com/axw/gocov)
-# * gocov-html (https://github.com/matm/gocov-html)
 
 TARGETS?="."
 PACKAGE=$(shell GOPATH= go list $(TARGET))
