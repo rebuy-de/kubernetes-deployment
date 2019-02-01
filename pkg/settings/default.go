@@ -8,7 +8,6 @@ import (
 
 var (
 	Defaults = Service{
-		Context: "default",
 		Aliases: []string{},
 		Location: gh.Location{
 			Ref: "master",

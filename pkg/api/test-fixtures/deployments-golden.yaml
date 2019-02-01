@@ -1,5 +1,4 @@
 defaults:
-  context: prod
   owner: rebuy-de
   path: k8s
   ref: master
@@ -34,13 +33,12 @@ services:
 - name: foobar
   aliases:
   - fbr
-  context: prod
   owner: rebuy-de
   repo: foobar
   path: k8s/
   ref: master
   variables:
-    stage: production
+    stage: unknown
   interceptors:
     preStopSleep:
       enabled: null
@@ -67,13 +65,12 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: repo-no-exist
-  context: prod
   owner: rebuy-de
   repo: repo-no-exist
   path: k8s/
   ref: master
   variables:
-    stage: production
+    stage: unknown
   interceptors:
     preStopSleep:
       enabled: null
@@ -100,13 +97,12 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: no-files
-  context: prod
   owner: rebuy-de
   repo: foobar
   path: does-not-exist/
   ref: master
   variables:
-    stage: production
+    stage: unknown
   interceptors:
     preStopSleep:
       enabled: null
@@ -133,13 +129,12 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: invalid-file
-  context: prod
   owner: rebuy-de
   repo: foobar
   path: invalid/
   ref: master
   variables:
-    stage: production
+    stage: unknown
   interceptors:
     preStopSleep:
       enabled: null
@@ -165,69 +160,4 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
-contexts:
-  prod:
-    context: prod
-    owner: rebuy-de
-    path: k8s
-    ref: master
-    variables:
-      stage: production
-    interceptors:
-      preStopSleep:
-        enabled: null
-        options:
-          seconds: 3
-      removeResourceSpecs:
-        enabled: null
-      removeOldJob:
-        enabled: null
-      waiter:
-        enabled: null
-      annotater:
-        enabled: null
-      injector:
-        enabled: null
-        options:
-          linkerdVersion: ""
-      ghStatusChecker:
-        enabled: null
-        options:
-          targetUrlRegex: .*
-          contextRegex: .*
-          initialDelay: 20s
-          pullInterval: 10s
-          notificationInterval: 3m0s
-  test:
-    context: test
-    owner: rebuy-de
-    path: k8s
-    ref: master
-    variables:
-      stage: testing
-    interceptors:
-      preStopSleep:
-        enabled: null
-        options:
-          seconds: 3
-      removeResourceSpecs:
-        enabled: null
-      removeOldJob:
-        enabled: null
-      waiter:
-        enabled: null
-      annotater:
-        enabled: null
-      injector:
-        enabled: null
-        options:
-          linkerdVersion: ""
-      ghStatusChecker:
-        enabled: null
-        options:
-          targetUrlRegex: .*
-          contextRegex: .*
-          initialDelay: 20s
-          pullInterval: 10s
-          notificationInterval: 3m0s
 

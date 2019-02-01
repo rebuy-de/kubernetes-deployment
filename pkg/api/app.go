@@ -56,7 +56,7 @@ func New(p *Parameters) (*App, error) {
 		return nil, err
 	}
 
-	app.Settings.Clean(p.Context)
+	app.Settings.Clean()
 
 	return app, nil
 }
@@ -123,26 +123,6 @@ func (app *App) StartInterceptors(service *settings.Service) {
 			interceptors.Injector.Options,
 		))
 	}
-}
-
-func (app *App) CurrentContext() settings.Service {
-	contextName := app.Parameters.Context
-	if contextName == "" {
-		contextName = app.Settings.Defaults.Context
-		log.WithFields(log.Fields{
-			"Context": contextName,
-		}).Debug("no context set; using default")
-	}
-
-	context, ok := app.Settings.Contexts[contextName]
-	if !ok {
-		context = app.Settings.Defaults
-		log.WithFields(log.Fields{
-			"Context": contextName,
-		}).Debug("context not found; falling back to defaults")
-	}
-
-	return context
 }
 
 func (app *App) Close() error {

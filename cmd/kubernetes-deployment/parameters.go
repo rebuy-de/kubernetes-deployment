@@ -24,11 +24,6 @@ const (
 func BindParameters(cmd *cobra.Command) *api.Parameters {
 	params := new(api.Parameters)
 
-	// context (not part of viper)
-	cmd.PersistentFlags().StringVarP(&params.Context,
-		"context", "c", "",
-		"name of the context to use")
-
 	// kubeconfig
 	cmd.PersistentFlags().String(
 		FlagKubeconfig, "",
@@ -86,16 +81,6 @@ func ReadInParameters(p *api.Parameters) error {
 	viper.SetConfigName("default")
 	viper.AddConfigPath(path)
 	viper.ReadInConfig()
-
-	if p.Context != "" {
-		viper.SetConfigName(p.Context)
-		viper.AddConfigPath(path)
-		viper.MergeInConfig()
-	}
-
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.MergeInConfig()
 
 	return viper.Unmarshal(p)
 }

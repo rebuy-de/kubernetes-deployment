@@ -21,14 +21,9 @@ import (
 var reKubeSelfLink = regexp.MustCompile(`^/api/v1/namespaces/([^/]+)/configmaps/([^/]+)$`)
 var configMapFilename = `settings.yaml`
 
-type Contexts map[string]Service
-
 type Settings struct {
 	Defaults Service  `yaml:"defaults"`
 	Services Services `yaml:"services"`
-	Contexts Contexts `yaml:"contexts"`
-
-	context string
 }
 
 func FromBytes(data []byte) (*Settings, error) {
@@ -95,10 +90,6 @@ func ReadFromGitHub(filename string, client gh.Interface) (*Settings, error) {
 	return FromBytes([]byte(file.Content))
 }
 
-func (s *Settings) CurrentContext() Service {
-	return s.Contexts[s.context]
-}
-
 func (s *Settings) Service(project string) *Service {
 	var (
 		parts   = strings.SplitN(project, "/", 2)
@@ -121,37 +112,23 @@ func (s *Settings) Service(project string) *Service {
 
 	merged := new(Service)
 	merged.Defaults(*service)
-	merged.Defaults(s.CurrentContext())
+	merged.Defaults(s.Defaults)
 	merged.Location.Path = path.Join(merged.Location.Path, subpath)
-	merged.Clean(s.CurrentContext())
+	merged.Clean(s.Defaults)
 
 	return merged
 }
 
-func (s *Settings) Clean(contextName string) {
-	s.context = contextName
-	if s.context == "" {
-		s.context = s.Defaults.Context
-	}
-
-	log.WithFields(log.Fields{
-		"Context": s.context,
-	}).Debug("cleaning settings file")
+func (s *Settings) Clean() {
+	log.Debug("cleaning settings file")
 
 	s.Defaults.Defaults(Defaults)
-
-	for name := range s.Contexts {
-		context := s.Contexts[name]
-		context.Defaults(s.Defaults)
-		context.Context = name
-		s.Contexts[name] = context
-	}
 
 	for i := range s.Services {
 		service := new(Service)
 		service.Defaults(s.Services[i])
-		service.Defaults(s.CurrentContext())
-		service.Clean(s.CurrentContext())
+		service.Defaults(s.Defaults)
+		service.Clean(s.Defaults)
 		s.Services[i] = *service
 	}
 }

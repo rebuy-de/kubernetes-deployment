@@ -62,7 +62,7 @@ func generateApp(t *testing.T) *api.App {
 		Parameters:   new(api.Parameters),
 		Interceptors: interceptors.New(),
 	}
-	app.Settings.Clean(app.Parameters.Context)
+	app.Settings.Clean()
 	return app
 }
 
