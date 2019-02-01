@@ -1,0 +1,23 @@
+[
+    {
+        "kind": "Pod",
+        "apiVersion": "v1",
+        "metadata": {
+            "name": "myapp-pod",
+            "creationTimestamp": null,
+            "labels": {
+                "app": "myapp"
+            }
+        },
+        "spec": {
+            "containers": [
+                {
+                    "name": "myapp-container",
+                    "image": "busybox:5a5369823a2a9a6ad9c241b404be39f802d41d48",
+                    "resources": {}
+                }
+            ]
+        },
+        "status": {}
+    }
+]

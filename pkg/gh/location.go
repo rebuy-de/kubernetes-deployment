@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	ContentLocationRE = regexp.MustCompile(`^github.com/([^/]+)/([^/]+)/(.*?)(@([^@]+))?$`)
+	ContentLocationRE = regexp.MustCompile(`^github.com/([^/]+)/([^/]+)(/.*)?(@([^@]+))??$`)
 )
 
 type Location struct {
@@ -19,19 +19,36 @@ type Location struct {
 }
 
 func NewLocation(location string) (*Location, error) {
-	matches := ContentLocationRE.FindStringSubmatch(location)
-	if matches == nil {
-		return nil, errors.Errorf(
-			"GitHub location must have the form `github.com/:owner:/:repo:/:path:[@:ref:]`, but got `%s`",
-			location)
+	formatError := errors.Errorf(
+		"GitHub location must have the form `github.com/:owner:/:repo:/:path:[@:ref:]`, but got `%s`", location)
+
+	result := new(Location)
+
+	pathAndRef := strings.SplitN(location, "@", 2)
+	if len(pathAndRef) != 1 && len(pathAndRef) != 2 {
+		return nil, formatError
 	}
 
-	return &Location{
-		Owner: matches[1],
-		Repo:  matches[2],
-		Path:  matches[3],
-		Ref:   matches[5],
-	}, nil
+	path := pathAndRef[0]
+	if len(pathAndRef) > 1 {
+		result.Ref = pathAndRef[1]
+	}
+
+	parts := strings.SplitN(path, "/", 4)
+	if parts[0] != "github.com" || len(parts) < 3 {
+		return nil, errors.Errorf(
+			"GitHub location must have the form `github.com/:owner:/:repo:/:path:[@:ref:]`, but got `%s`", location)
+
+	}
+
+	result.Owner = parts[1]
+	result.Repo = parts[2]
+
+	// avoid index out of range error when skipping path
+	parts = append(parts, "")
+	result.Path = parts[3]
+
+	return result, nil
 }
 
 func (l Location) String() string {

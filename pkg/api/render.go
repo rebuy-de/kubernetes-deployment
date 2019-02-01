@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	jsonnet "github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet/ast"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -108,6 +109,24 @@ func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.F
 	for k, v := range vars {
 		vm.ExtVar(k, v)
 	}
+
+	vm.NativeFunction(&jsonnet.NativeFunction{
+		Name:   "resolveGitSHA",
+		Params: ast.Identifiers{"location"},
+		Func: func(x []interface{}) (interface{}, error) {
+			location, err := gh.NewLocation(x[0].(string))
+			if err != nil {
+				return nil, err
+			}
+
+			branch, err := app.Clients.GitHub.GetBranch(location)
+			if err != nil {
+				return nil, err
+			}
+
+			return branch.SHA, nil
+		},
+	})
 
 	docs, err := vm.EvaluateSnippetStream(file.Location.String(), file.Content)
 	if err != nil {

@@ -64,6 +64,12 @@ func TestDecode(t *testing.T) {
 				"unknown-object.jsonnet",
 			},
 		},
+		{
+			name: "resolve-git-sha-jsonnet",
+			files: []string{
+				"render-resolve-git-sha.jsonnet",
+			},
+		},
 	}
 
 	vars := templates.Variables{
