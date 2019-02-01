@@ -1,5 +1,4 @@
 defaults:
-  context: abc
   owner: rebuy-de
   path: deployment/k8s/
   ref: master
@@ -33,13 +32,11 @@ defaults:
         notificationInterval: 3m0s
 services:
 - name: bish
-  context: abc
   owner: rebuy-de
   repo: bish
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -68,13 +65,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: bash
-  context: abc
   owner: rebuy-de
   repo: bash
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: test.example.com
     secret: foo
   interceptors:
@@ -103,13 +98,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: bosh-deployment-foo
-  context: abc
   owner: rebuy-de
   repo: bosh
   path: deployment/foo/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -138,13 +131,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: foo
-  context: abc
   owner: rebuy-de
   repo: bar
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -173,13 +164,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: kubernetes-blub
-  context: abc
   owner: kubernetes
   repo: blub
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -208,13 +197,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: meh
-  context: abc
   owner: rebuy-de
   repo: meh
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -243,13 +230,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: bim
-  context: abc
   owner: rebuy-de
   repo: aka
   path: deployment/k8s/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -278,13 +263,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: guess
-  context: abc
   owner: rebuy-de
   repo: k8s-guess
   path: other/
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -313,13 +296,11 @@ services:
         pullInterval: 10s
         notificationInterval: 3m0s
 - name: cloud
-  context: abc
   owner: rebuy-de
   repo: cloud
   path: ./
   ref: master
   variables:
-    bish: bash
     clusterDomain: unit-test.example.org
     secret: foo
   interceptors:
@@ -347,73 +328,4 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
-contexts:
-  abc:
-    context: abc
-    owner: rebuy-de
-    path: deployment/k8s/
-    ref: master
-    variables:
-      bish: bash
-      clusterDomain: unit-test.example.org
-      secret: foo
-    interceptors:
-      preStopSleep:
-        enabled: true
-        options:
-          seconds: 3
-      removeResourceSpecs:
-        enabled: null
-      removeOldJob:
-        enabled: null
-      waiter:
-        enabled: true
-      annotater:
-        enabled: null
-      injector:
-        enabled: null
-        options:
-          linkerdVersion: ""
-      ghStatusChecker:
-        enabled: null
-        options:
-          targetUrlRegex: .*
-          contextRegex: .*
-          initialDelay: 20s
-          pullInterval: 10s
-          notificationInterval: 3m0s
-  def:
-    context: def
-    owner: rebuy-de
-    path: deployment/k8s/
-    ref: master
-    variables:
-      bish: bosh
-      clusterDomain: unit-test.example.org
-      secret: foo
-    interceptors:
-      preStopSleep:
-        enabled: false
-        options:
-          seconds: 3
-      removeResourceSpecs:
-        enabled: true
-      removeOldJob:
-        enabled: null
-      waiter:
-        enabled: true
-      annotater:
-        enabled: null
-      injector:
-        enabled: null
-        options:
-          linkerdVersion: ""
-      ghStatusChecker:
-        enabled: null
-        options:
-          targetUrlRegex: .*
-          contextRegex: .*
-          initialDelay: 20s
-          pullInterval: 10s
-          notificationInterval: 3m0s
 

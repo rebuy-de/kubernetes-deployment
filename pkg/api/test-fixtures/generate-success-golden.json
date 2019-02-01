@@ -9,7 +9,7 @@
                 "app": "example-app",
                 "branch": "master",
                 "role": "backend",
-                "stage": "production",
+                "stage": "unknown",
                 "version": "v1"
             }
         },

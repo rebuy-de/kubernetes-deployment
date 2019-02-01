@@ -1,5 +1,4 @@
 defaults:
-  context: abc
   owner: rebuy-de
   path: deployment/k8s/
   variables:
@@ -51,36 +50,4 @@ services:
 - name: cloud
   repo: cloud
   path: /
-contexts:
-  abc:
-    variables:
-      bish: bash
-  def:
-    variables:
-      bish: bosh
-    interceptors:
-      preStopSleep:
-        enabled: false
-        options:
-          seconds: 0
-      removeResourceSpecs:
-        enabled: true
-      removeOldJob:
-        enabled: null
-      waiter:
-        enabled: null
-      annotater:
-        enabled: null
-      injector:
-        enabled: null
-        options:
-          linkerdVersion: ""
-      ghStatusChecker:
-        enabled: null
-        options:
-          targetUrlRegex: ""
-          contextRegex: ""
-          initialDelay: 0s
-          pullInterval: 0s
-          notificationInterval: 0s
 

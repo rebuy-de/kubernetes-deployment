@@ -24,10 +24,8 @@ There are different sources of retrieving parameter. They are loaded in the foll
 
 1. Hardcoded default values
 2. Values in `~/.rebuy/kubernetes-deployment/default.[yaml|toml|json|hcl]` (eg `kubeconfig`)
-2. Values in `~/.rebuy/kubernetes-deployment/$context.[yaml|toml|json|hcl]` (eg `kubeconfig`)
-3. Values in `./config.[yaml|toml|json|hcl]` (eg `kubeconfig`)
-4. Environment variables (eg `KUBECONFIG`)
-5. Command line flags (eg `--kubeconfig`)
+3. Environment variables (eg `KUBECONFIG`)
+4. Command line flags (eg `--kubeconfig`)
 
 The key names in the configuration files always equals the long command line flags. You can generate a complete config with `kubectl dump-config`.
 
@@ -57,8 +55,7 @@ The following functions are provided:
 1. generated values
 2. hardcoded default values
 3. default variables from project config, ie `default.variables`.
-4. variables from context, ie `contexts.$context.variables`.
-5. variables from service, ie `services[i].variables`.
+4. variables from service, ie `services[i].variables`.
 
 These are the generated values:
 

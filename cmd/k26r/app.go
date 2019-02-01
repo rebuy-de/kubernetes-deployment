@@ -41,7 +41,7 @@ func (app *App) Bind(cmd *cobra.Command) {
 func (app *App) MustReadSettings() *settings.Settings {
 	settings, err := settings.ReadFromFile(app.SettingsFile)
 	cmdutil.Must(err)
-	settings.Clean("")
+	settings.Clean()
 	return settings
 }
 

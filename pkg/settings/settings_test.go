@@ -54,20 +54,9 @@ func TestClean(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	settings.Clean("")
+	settings.Clean()
 
 	testutil.AssertGoldenYAML(t, "test-fixtures/services-clean-golden.yaml", settings)
-}
-
-func TestCleanWithContext(t *testing.T) {
-	settings, err := Read("./test-fixtures/services.yaml", nil, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	settings.Clean("def")
-
-	testutil.AssertGoldenYAML(t, "test-fixtures/services-context-golden.yaml", settings)
 }
 
 func TestServiceGuessing(t *testing.T) {
@@ -76,7 +65,7 @@ func TestServiceGuessing(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	settings.Clean("")
+	settings.Clean()
 
 	cases := []struct {
 		input  string
