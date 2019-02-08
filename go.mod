@@ -10,7 +10,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20181024230925-c65c006176ff // indirect
 	github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c // indirect
 	github.com/google/go-github v15.0.0+incompatible
-	github.com/google/go-jsonnet v0.11.2
+	github.com/google/go-jsonnet v0.12.1
 	github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135 // indirect
 	github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf // indirect
 	github.com/googleapis/gnostic v0.2.0 // indirect
