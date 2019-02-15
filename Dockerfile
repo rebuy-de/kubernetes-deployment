@@ -1,5 +1,4 @@
 # Source: https://github.com/rebuy-de/golang-template
-# Version: 2.0.2
 
 FROM golang:1.11-alpine as builder
 
@@ -32,8 +31,9 @@ WORKDIR /src
 RUN set -x \
  && make test \
  && make build \
- && cp --dereference /src/dist/kubernetes-deployment /usr/local/bin/ \
- && cp --dereference /src/dist/k26r /usr/local/bin/ \
+ && cp --dereference /src/dist/* /usr/local/bin/
+
+RUN set -x \
  && kubernetes-deployment version \
  && k26r version
 
