@@ -3,7 +3,8 @@
         "name": "pvc",
         "creationTimestamp": null,
         "labels": {
-            "name": "pvc"
+            "rebuy.com/kubernetes-deployment.location": "github.com/rebuy-de/example-silo/deployment/k8s@master",
+            "rebuy.com/kubernetes-deployment.workload-name": "pvc"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",

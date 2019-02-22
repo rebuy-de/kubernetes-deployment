@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
-	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -33,17 +32,17 @@ func (i *Interceptor) PostFetch(branch *gh.Branch) error {
 }
 
 func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
-	accessor, err := meta.Accessor(obj)
+	workload, err := meta.Accessor(obj)
 	if err != nil {
 		return nil, err
 	}
 
-	i.annotate(accessor, accessor)
+	i.annotate(workload.GetName(), workload)
 
 	return obj, nil
 }
 
-func (i *Interceptor) annotate(owner, obj v1meta.Object) {
+func (i *Interceptor) annotate(workload string, obj v1meta.Object) {
 	key := func(n string) string { return fmt.Sprintf("rebuy.com/kubernetes-deployment.%s", n) }
 
 	annotations := obj.GetAnnotations()
@@ -65,14 +64,8 @@ func (i *Interceptor) annotate(owner, obj v1meta.Object) {
 		labels = map[string]string{}
 	}
 
-	name := owner.GetName()
-	labelName, ok := labels["name"]
-	if ok && name != labelName {
-		logrus.Warnf("Existing label name '%s' not match manifest name '%s'",
-			labelName, name)
-	} else if !ok {
-		labels["name"] = name
-	}
+	labels[key("workload-name")] = workload
+	labels[key("location")] = i.branch.Location.String()
 
 	obj.SetLabels(labels)
 }
