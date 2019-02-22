@@ -5,6 +5,13 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
+
+	apps_v1 "k8s.io/api/apps/v1"
+	apps_v1beta1 "k8s.io/api/apps/v1beta1"
+	apps_v1beta2 "k8s.io/api/apps/v1beta2"
+	batch_v1 "k8s.io/api/batch/v1"
+	batch_v1beta1 "k8s.io/api/batch/v1beta1"
+	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -38,6 +45,38 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 	}
 
 	i.annotate(workload.GetName(), workload)
+
+	switch typed := obj.(type) {
+	case *apps_v1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *extensions_v1beta1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *apps_v1.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *extensions_v1beta1.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *apps_v1.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta1.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *batch_v1beta1.CronJob:
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate)
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate.Spec.Template)
+
+	case *batch_v1.Job:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	}
 
 	return obj, nil
 }
