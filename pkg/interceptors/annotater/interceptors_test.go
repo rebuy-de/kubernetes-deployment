@@ -92,6 +92,7 @@ func TestModify(t *testing.T) {
 	inter.timezone = time.UTC
 
 	err := inter.PostFetch(&gh.Branch{
+		Name:    "master",
 		Author:  "bim baz",
 		Date:    mockClock.Now(),
 		Message: "fancy feature",

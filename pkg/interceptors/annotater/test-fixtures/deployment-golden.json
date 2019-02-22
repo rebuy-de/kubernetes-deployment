@@ -3,7 +3,8 @@
         "name": "deployment",
         "creationTimestamp": null,
         "labels": {
-            "rebuy.com/kubernetes-deployment.location": "github.com/rebuy-de/example-silo/deployment/k8s@master",
+            "rebuy.com/kubernetes-deployment.branch": "master",
+            "rebuy.com/kubernetes-deployment.repo": "example-silo",
             "rebuy.com/kubernetes-deployment.workload-name": "deployment"
         },
         "annotations": {
@@ -21,7 +22,8 @@
             "metadata": {
                 "creationTimestamp": null,
                 "labels": {
-                    "rebuy.com/kubernetes-deployment.location": "github.com/rebuy-de/example-silo/deployment/k8s@master",
+                    "rebuy.com/kubernetes-deployment.branch": "master",
+                    "rebuy.com/kubernetes-deployment.repo": "example-silo",
                     "rebuy.com/kubernetes-deployment.workload-name": "deployment"
                 },
                 "annotations": {

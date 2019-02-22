@@ -59,6 +59,10 @@ func (l Location) String() string {
 	return path
 }
 
+func (l Location) ShortString() string {
+	return fmt.Sprintf("%s/%s/%s", l.Owner, l.Repo, l.Path)
+}
+
 func (l *Location) Defaults(defaults Location) {
 	mergo.Merge(l, defaults)
 }

@@ -28,7 +28,8 @@ type Interceptor struct {
 
 func New() *Interceptor {
 	return &Interceptor{
-		clock: clock.New(),
+		timezone: time.Local,
+		clock:    clock.New(),
 	}
 }
 
@@ -104,7 +105,8 @@ func (i *Interceptor) annotate(workload string, obj v1meta.Object) {
 	}
 
 	labels[key("workload-name")] = workload
-	labels[key("location")] = i.branch.Location.String()
+	labels[key("repo")] = i.branch.Location.Repo
+	labels[key("branch")] = i.branch.Name
 
 	obj.SetLabels(labels)
 }
