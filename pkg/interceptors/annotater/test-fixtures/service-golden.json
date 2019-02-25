@@ -3,7 +3,9 @@
         "name": "service",
         "creationTimestamp": null,
         "labels": {
-            "name": "service"
+            "rebuy.com/kubernetes-deployment.branch": "master",
+            "rebuy.com/kubernetes-deployment.repo": "example-silo",
+            "rebuy.com/kubernetes-deployment.workload-name": "service"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",

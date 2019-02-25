@@ -1,11 +1,11 @@
 {
     "metadata": {
-        "name": "statefulset",
+        "name": "cronjob",
         "creationTimestamp": null,
         "labels": {
             "rebuy.com/kubernetes-deployment.branch": "master",
             "rebuy.com/kubernetes-deployment.repo": "example-silo",
-            "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+            "rebuy.com/kubernetes-deployment.workload-name": "cronjob"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -17,14 +17,14 @@
         }
     },
     "spec": {
-        "selector": null,
-        "template": {
+        "schedule": "",
+        "jobTemplate": {
             "metadata": {
                 "creationTimestamp": null,
                 "labels": {
                     "rebuy.com/kubernetes-deployment.branch": "master",
                     "rebuy.com/kubernetes-deployment.repo": "example-silo",
-                    "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+                    "rebuy.com/kubernetes-deployment.workload-name": "cronjob"
                 },
                 "annotations": {
                     "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -36,13 +36,29 @@
                 }
             },
             "spec": {
-                "containers": null
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "rebuy.com/kubernetes-deployment.branch": "master",
+                            "rebuy.com/kubernetes-deployment.repo": "example-silo",
+                            "rebuy.com/kubernetes-deployment.workload-name": "cronjob"
+                        },
+                        "annotations": {
+                            "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
+                            "rebuy.com/kubernetes-deployment.commit-date": "2009-02-13T23:31:30Z",
+                            "rebuy.com/kubernetes-deployment.commit-location": "github.com/rebuy-de/example-silo/deployment/k8s@master",
+                            "rebuy.com/kubernetes-deployment.commit-message": "fancy feature",
+                            "rebuy.com/kubernetes-deployment.commit-sha": "1234567890abcdef",
+                            "rebuy.com/kubernetes-deployment.deployment-date": "2009-02-13T23:31:30Z"
+                        }
+                    },
+                    "spec": {
+                        "containers": null
+                    }
+                }
             }
-        },
-        "serviceName": "",
-        "updateStrategy": {}
+        }
     },
-    "status": {
-        "replicas": 0
-    }
+    "status": {}
 }

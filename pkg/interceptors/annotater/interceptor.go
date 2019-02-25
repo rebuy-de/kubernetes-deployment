@@ -1,11 +1,19 @@
 package annotater
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/benbjohnson/clock"
-	"github.com/sirupsen/logrus"
+
+	apps_v1 "k8s.io/api/apps/v1"
+	apps_v1beta1 "k8s.io/api/apps/v1beta1"
+	apps_v1beta2 "k8s.io/api/apps/v1beta2"
+	batch_v1 "k8s.io/api/batch/v1"
+	batch_v1beta1 "k8s.io/api/batch/v1beta1"
+	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/meta"
+	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
@@ -13,59 +21,92 @@ import (
 
 type Interceptor struct {
 	clock    clock.Clock
+	now      time.Time
 	branch   gh.Branch
 	timezone *time.Location
 }
 
 func New() *Interceptor {
 	return &Interceptor{
-		clock:    clock.New(),
 		timezone: time.Local,
+		clock:    clock.New(),
 	}
 }
 
 func (i *Interceptor) PostFetch(branch *gh.Branch) error {
 	i.branch = *branch
+	i.now = i.clock.Now().In(i.timezone)
 	return nil
 }
 
 func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
-	accessor, err := meta.Accessor(obj)
+	workload, err := meta.Accessor(obj)
 	if err != nil {
 		return nil, err
 	}
 
-	now := i.clock.Now()
+	i.annotate(workload.GetName(), workload)
 
-	annotations := accessor.GetAnnotations()
+	switch typed := obj.(type) {
+	case *apps_v1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *extensions_v1beta1.Deployment:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *apps_v1.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *extensions_v1beta1.DaemonSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *apps_v1.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta2.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	case *apps_v1beta1.StatefulSet:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+
+	case *batch_v1beta1.CronJob:
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate)
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate.Spec.Template)
+
+	case *batch_v1.Job:
+		i.annotate(workload.GetName(), &typed.Spec.Template)
+	}
+
+	return obj, nil
+}
+
+func (i *Interceptor) annotate(workload string, obj v1meta.Object) {
+	key := func(n string) string { return fmt.Sprintf("rebuy.com/kubernetes-deployment.%s", n) }
+
+	annotations := obj.GetAnnotations()
 	if annotations == nil {
 		annotations = map[string]string{}
 	}
 
-	annotations["rebuy.com/kubernetes-deployment.deployment-date"] = now.In(i.timezone).Format(time.RFC3339Nano)
-	annotations["rebuy.com/kubernetes-deployment.commit-sha"] = i.branch.SHA
-	annotations["rebuy.com/kubernetes-deployment.commit-date"] = i.branch.Date.In(i.timezone).Format(time.RFC3339Nano)
-	annotations["rebuy.com/kubernetes-deployment.commit-author"] = i.branch.Author
-	annotations["rebuy.com/kubernetes-deployment.commit-message"] = i.branch.Message
-	annotations["rebuy.com/kubernetes-deployment.commit-location"] = i.branch.Location.String()
+	annotations[key("deployment-date")] = i.now.Format(time.RFC3339Nano)
+	annotations[key("commit-sha")] = i.branch.SHA
+	annotations[key("commit-date")] = i.branch.Date.In(i.timezone).Format(time.RFC3339Nano)
+	annotations[key("commit-author")] = i.branch.Author
+	annotations[key("commit-message")] = i.branch.Message
+	annotations[key("commit-location")] = i.branch.Location.String()
 
-	accessor.SetAnnotations(annotations)
+	obj.SetAnnotations(annotations)
 
-	labels := accessor.GetLabels()
+	labels := obj.GetLabels()
 	if labels == nil {
 		labels = map[string]string{}
 	}
 
-	name := accessor.GetName()
-	labelName, ok := labels["name"]
-	if ok && name != labelName {
-		logrus.Warnf("Existing label name '%s' not match manifest name '%s'",
-			labelName, name)
-	} else if !ok {
-		labels["name"] = name
-	}
+	labels[key("workload-name")] = workload
+	labels[key("repo")] = i.branch.Location.Repo
+	labels[key("branch")] = i.branch.Name
 
-	accessor.SetLabels(labels)
-
-	return obj, nil
+	obj.SetLabels(labels)
 }

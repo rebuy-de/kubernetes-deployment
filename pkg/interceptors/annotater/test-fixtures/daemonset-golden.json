@@ -1,11 +1,11 @@
 {
     "metadata": {
-        "name": "statefulset",
+        "name": "daemonset",
         "creationTimestamp": null,
         "labels": {
             "rebuy.com/kubernetes-deployment.branch": "master",
             "rebuy.com/kubernetes-deployment.repo": "example-silo",
-            "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+            "rebuy.com/kubernetes-deployment.workload-name": "daemonset"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -24,7 +24,7 @@
                 "labels": {
                     "rebuy.com/kubernetes-deployment.branch": "master",
                     "rebuy.com/kubernetes-deployment.repo": "example-silo",
-                    "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+                    "rebuy.com/kubernetes-deployment.workload-name": "daemonset"
                 },
                 "annotations": {
                     "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -39,10 +39,12 @@
                 "containers": null
             }
         },
-        "serviceName": "",
         "updateStrategy": {}
     },
     "status": {
-        "replicas": 0
+        "currentNumberScheduled": 0,
+        "numberMisscheduled": 0,
+        "desiredNumberScheduled": 0,
+        "numberReady": 0
     }
 }

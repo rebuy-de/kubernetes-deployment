@@ -1,11 +1,11 @@
 {
     "metadata": {
-        "name": "statefulset",
+        "name": "job",
         "creationTimestamp": null,
         "labels": {
             "rebuy.com/kubernetes-deployment.branch": "master",
             "rebuy.com/kubernetes-deployment.repo": "example-silo",
-            "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+            "rebuy.com/kubernetes-deployment.workload-name": "job"
         },
         "annotations": {
             "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -17,14 +17,13 @@
         }
     },
     "spec": {
-        "selector": null,
         "template": {
             "metadata": {
                 "creationTimestamp": null,
                 "labels": {
                     "rebuy.com/kubernetes-deployment.branch": "master",
                     "rebuy.com/kubernetes-deployment.repo": "example-silo",
-                    "rebuy.com/kubernetes-deployment.workload-name": "statefulset"
+                    "rebuy.com/kubernetes-deployment.workload-name": "job"
                 },
                 "annotations": {
                     "rebuy.com/kubernetes-deployment.commit-author": "bim baz",
@@ -38,11 +37,7 @@
             "spec": {
                 "containers": null
             }
-        },
-        "serviceName": "",
-        "updateStrategy": {}
+        }
     },
-    "status": {
-        "replicas": 0
-    }
+    "status": {}
 }

@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
-	apps "k8s.io/api/apps/v1beta1"
-	core "k8s.io/api/core/v1"
-	extensions "k8s.io/api/extensions/v1beta1"
+	apps_v1 "k8s.io/api/apps/v1"
+	batch_v1 "k8s.io/api/batch/v1"
+	batch_v1beta1 "k8s.io/api/batch/v1beta1"
+	core_v1 "k8s.io/api/core/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
@@ -36,40 +37,47 @@ func TestModify(t *testing.T) {
 	}{
 		{
 			name: "deployment",
-			obj: &extensions.Deployment{
+			obj: &apps_v1.Deployment{
 				ObjectMeta: meta.ObjectMeta{Name: "deployment"},
 			},
 		},
 		{
 			name: "statefulset",
-			obj: &apps.StatefulSet{
+			obj: &apps_v1.StatefulSet{
 				ObjectMeta: meta.ObjectMeta{Name: "statefulset"},
 			},
 		},
 		{
+			name: "daemonset",
+			obj: &apps_v1.DaemonSet{
+				ObjectMeta: meta.ObjectMeta{Name: "daemonset"},
+			},
+		},
+		{
+			name: "cronjob",
+			obj: &batch_v1beta1.CronJob{
+				ObjectMeta: meta.ObjectMeta{Name: "cronjob"},
+			},
+		},
+		{
+			name: "job",
+			obj: &batch_v1.Job{
+				ObjectMeta: meta.ObjectMeta{Name: "job"},
+			},
+		},
+		{
 			name: "service",
-			obj: &core.Service{
+			obj: &core_v1.Service{
 				ObjectMeta: meta.ObjectMeta{Name: "service"},
 			},
 		},
 		{
 			name: "pvc",
-			obj: &core.PersistentVolumeClaim{
+			obj: &core_v1.PersistentVolumeClaim{
 				ObjectMeta: meta.ObjectMeta{
 					Name: "pvc",
 					Annotations: map[string]string{
 						"volume.beta.kubernetes.io/storage-class": "aws-ebs-gp2",
-					},
-				},
-			},
-		},
-		{
-			name: "deployment-name",
-			obj: &core.PersistentVolumeClaim{
-				ObjectMeta: meta.ObjectMeta{
-					Name: "deployment-name",
-					Labels: map[string]string{
-						"name": "bish-bash-bosh",
 					},
 				},
 			},
@@ -84,6 +92,7 @@ func TestModify(t *testing.T) {
 	inter.timezone = time.UTC
 
 	err := inter.PostFetch(&gh.Branch{
+		Name:    "master",
 		Author:  "bim baz",
 		Date:    mockClock.Now(),
 		Message: "fancy feature",
