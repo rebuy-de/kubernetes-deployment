@@ -43,7 +43,7 @@ func New(p *Parameters) (*App, error) {
 
 	app.Clients = &Clients{}
 	app.Clients.Statsd = statsdw.New(p.StatsdAddress)
-	app.Clients.GitHub = gh.New(p.GitHubToken, p.HTTPCacheDir, app.Clients.Statsd)
+	app.Clients.GitHub = gh.New(p.GitHubToken, app.Clients.Statsd)
 	app.Clients.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
 
 	app.Clients.Kubernetes, err = newKubernetesClient(p.Kubeconfig)
