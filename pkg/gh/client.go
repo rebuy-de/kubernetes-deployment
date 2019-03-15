@@ -12,8 +12,6 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/google/go-github/github"
-	"github.com/gregjones/httpcache"
-	"github.com/gregjones/httpcache/diskcache"
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	log "github.com/sirupsen/logrus"
@@ -31,7 +29,7 @@ type API struct {
 	statsd statsdw.Interface
 }
 
-func New(token string, cacheDir string, statsd statsdw.Interface) Interface {
+func New(token string, statsd statsdw.Interface) Interface {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -39,17 +37,8 @@ func New(token string, cacheDir string, statsd statsdw.Interface) Interface {
 
 	oauthTransport := oauth2.NewClient(ctx, ts).Transport
 
-	cache := diskcache.New(cacheDir)
-
-	cacheTransport := &httpcache.Transport{
-		Transport: oauthTransport,
-		Cache:     cache,
-
-		MarkCachedResponses: true,
-	}
-
 	client := github.NewClient(&http.Client{
-		Transport: cacheTransport,
+		Transport: oauthTransport,
 	})
 
 	return &API{
@@ -94,7 +83,6 @@ func (gh *API) GetBranch(location *Location) (*Branch, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
-		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 		"Branch":        *ghBranch.Name,
 		"Author":        *ghBranch.Commit.Commit.Author.Name,
 		"SHA":           *ghBranch.Commit.SHA,
@@ -176,7 +164,6 @@ func (gh *API) GetFile(location *Location) (File, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
-		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debugf("found file")
 
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
@@ -217,7 +204,6 @@ func (gh *API) GetFiles(location *Location) ([]File, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
-		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debug("found files in directory")
 
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
@@ -277,7 +263,6 @@ func (gh *API) GetStatuses(location *Location) ([]github.RepoStatus, error) {
 		"RateLimit":     resp.Rate.Limit,
 		"RateRemaining": resp.Rate.Remaining,
 		"RateReset":     resp.Rate.Reset,
-		"FromCache":     resp.Header.Get(httpcache.XFromCache),
 	}).Debug("retrieved statuses page")
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 

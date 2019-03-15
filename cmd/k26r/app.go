@@ -17,7 +17,6 @@ type App struct {
 	HTTPListenAddress string
 	GitHubToken       string
 	SettingsFile      string
-	HTTPCacheDir      string
 	Kubeconfig        string
 }
 
@@ -33,9 +32,6 @@ func (app *App) Bind(cmd *cobra.Command) {
 
 	cmd.PersistentFlags().StringVar(&app.GitHubToken, "github-token", "",
 		"authentication token for the GitHub API")
-	cmd.PersistentFlags().StringVar(&app.HTTPCacheDir, "http-cache-dir",
-		"/tmp/kubernetes-deployment-cache",
-		"cache directory for HTTP client requests")
 }
 
 func (app *App) MustReadSettings() *settings.Settings {
@@ -50,7 +46,7 @@ func (app *App) Run(ctx context.Context, cmd *cobra.Command, args []string) {
 
 	api := new(API)
 	api.Settings = app.MustReadSettings()
-	api.GitHub = gh.New(app.GitHubToken, app.HTTPCacheDir, statsdw.NullClient{})
+	api.GitHub = gh.New(app.GitHubToken, statsdw.NullClient{})
 
 	api.Kubectl = kubectl.New("kubectl", app.Kubeconfig)
 

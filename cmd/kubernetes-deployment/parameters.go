@@ -12,7 +12,6 @@ const (
 	FlagKubectlPath   = "kubectl-path"
 	FlagGitHubToken   = "github-token"
 	FlagFilename      = "filename"
-	FlagHTTPCacheDir  = "http-cache-dir"
 	FlagGELFAddress   = "gelf-address"
 	FlagStatsdAddress = "statsd-address"
 )
@@ -43,13 +42,6 @@ func BindParameters(cmd *cobra.Command) *api.Parameters {
 		"oauth token for GitHub ($GITHUB_TOKEN)")
 	viper.BindPFlag(FlagGitHubToken, cmd.PersistentFlags().Lookup(FlagGitHubToken))
 	viper.BindEnv(FlagGitHubToken, "GITHUB_TOKEN")
-
-	// http-cache-dir
-	cmd.PersistentFlags().String(
-		FlagHTTPCacheDir, "/tmp/kubernetes-deployment-cache",
-		"cache directory for HTTP client requests ($HTTP_CACHE_DIR)")
-	viper.BindPFlag(FlagHTTPCacheDir, cmd.PersistentFlags().Lookup(FlagHTTPCacheDir))
-	viper.BindEnv(FlagHTTPCacheDir, "HTTP_CACHE_DIR")
 
 	// filename
 	cmd.PersistentFlags().StringP(
