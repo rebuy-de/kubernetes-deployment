@@ -45,44 +45,44 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 		return nil, err
 	}
 
-	i.annotate(workload.GetName(), workload)
+	i.annotate(workload.GetName(), workload, true)
 
 	switch typed := obj.(type) {
 	case *apps_v1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *apps_v1beta2.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *apps_v1beta1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *extensions_v1beta1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 
 	case *apps_v1.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *apps_v1beta2.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *extensions_v1beta1.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 
 	case *apps_v1.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *apps_v1beta2.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	case *apps_v1beta1.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 
 	case *batch_v1beta1.CronJob:
-		i.annotate(workload.GetName(), &typed.Spec.JobTemplate)
-		i.annotate(workload.GetName(), &typed.Spec.JobTemplate.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate, false)
+		i.annotate(workload.GetName(), &typed.Spec.JobTemplate.Spec.Template, false)
 
 	case *batch_v1.Job:
-		i.annotate(workload.GetName(), &typed.Spec.Template)
+		i.annotate(workload.GetName(), &typed.Spec.Template, false)
 	}
 
 	return obj, nil
 }
 
-func (i *Interceptor) annotate(workload string, obj v1meta.Object) {
+func (i *Interceptor) annotate(workload string, obj v1meta.Object, isRoot bool) {
 	key := func(n string) string { return fmt.Sprintf("rebuy.com/kubernetes-deployment.%s", n) }
 
 	annotations := obj.GetAnnotations()
@@ -90,7 +90,9 @@ func (i *Interceptor) annotate(workload string, obj v1meta.Object) {
 		annotations = map[string]string{}
 	}
 
-	annotations[key("deployment-date")] = i.now.Format(time.RFC3339Nano)
+	if isRoot {
+		annotations[key("deployment-date")] = i.now.Format(time.RFC3339Nano)
+	}
 	annotations[key("commit-sha")] = i.branch.SHA
 	annotations[key("commit-date")] = i.branch.Date.In(i.timezone).Format(time.RFC3339Nano)
 	annotations[key("commit-author")] = i.branch.Author
