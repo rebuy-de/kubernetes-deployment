@@ -1,6 +1,6 @@
 # Source: https://github.com/rebuy-de/golang-template
 
-FROM golang:1.11-alpine as builder
+FROM golang:1.12-alpine as builder
 
 RUN apk add --no-cache git make curl openssl
 
@@ -38,6 +38,9 @@ RUN set -x \
  && k26r version
 
 FROM alpine:latest
-
 RUN apk add --no-cache ca-certificates
+
 COPY --from=builder /usr/local/bin/* /usr/local/bin/
+
+RUN adduser -D k26r
+USER k26r
