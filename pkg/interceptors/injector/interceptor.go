@@ -44,8 +44,8 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 	cmd := exec.Command(
 		"linkerd", "inject",
 		"--linkerd-version", i.options.LinkerdVersion,
-		"--proxy-memory", "20Mi",
-		"--proxy-cpu", "35m",
+		"--proxy-memory-request", "20Mi",
+		"--proxy-cpu-request", "35m",
 		"-")
 	cmd.Stdin = bytes.NewBuffer(marshalled)
 	cmd.Stderr = os.Stderr
