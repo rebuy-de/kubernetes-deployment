@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	jsonnet "github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet"
 	"github.com/google/go-jsonnet/ast"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -73,9 +73,13 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 	}
 
 	var objects []runtime.Object
-	splitted := regexp.MustCompile("[\n\r]---").Split(rendered, -1)
+	split := regexp.MustCompile("[\n\r]---").Split(rendered, -1)
 
-	for _, part := range splitted {
+	for _, part := range split {
+		// remove comments
+		re := regexp.MustCompile("(?m)^\\s*\\#.*$")
+		part := re.ReplaceAllString(part, "")
+
 		if strings.TrimSpace(part) == "" {
 			log.WithFields(log.Fields{
 				"Name": file.Name(),
