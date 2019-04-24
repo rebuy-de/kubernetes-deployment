@@ -66,14 +66,9 @@ func NewRootCommand() *cobra.Command {
 			return fmt.Errorf("You have to specify a GitHubToken.")
 		}
 
-		if strings.TrimSpace(params.Filename) == "" {
-			return fmt.Errorf("You have to specify a filename.")
-		}
-
 		log.WithFields(log.Fields{
 			"GitHubToken": fmt.Sprintf("%s****", params.GitHubToken[0:4]),
 			"Kubeconfig":  params.Kubeconfig,
-			"Filename":    params.Filename,
 		}).Debug("config loaded")
 
 		return nil

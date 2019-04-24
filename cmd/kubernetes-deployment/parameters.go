@@ -11,7 +11,6 @@ const (
 	FlagKubeconfig    = "kubeconfig"
 	FlagKubectlPath   = "kubectl-path"
 	FlagGitHubToken   = "github-token"
-	FlagFilename      = "filename"
 	FlagGELFAddress   = "gelf-address"
 	FlagStatsdAddress = "statsd-address"
 )
@@ -42,12 +41,6 @@ func BindParameters(cmd *cobra.Command) *api.Parameters {
 		"oauth token for GitHub ($GITHUB_TOKEN)")
 	viper.BindPFlag(FlagGitHubToken, cmd.PersistentFlags().Lookup(FlagGitHubToken))
 	viper.BindEnv(FlagGitHubToken, "GITHUB_TOKEN")
-
-	// filename
-	cmd.PersistentFlags().StringP(
-		FlagFilename, "f", "",
-		"path to service definitions; might start with './' for local file or 'github.com' for files on GitHub")
-	viper.BindPFlag(FlagFilename, cmd.PersistentFlags().Lookup(FlagFilename))
 
 	// gelf address
 	cmd.PersistentFlags().String(

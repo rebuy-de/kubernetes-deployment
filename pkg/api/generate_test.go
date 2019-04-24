@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"flag"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -48,7 +49,12 @@ func TestMain(m *testing.M) {
 }
 
 func generateApp(t *testing.T) *api.App {
-	exampleSettings, err := settings.ReadFromFile("test-fixtures/deployments.yaml")
+	content, err := ioutil.ReadFile("./test-fixtures/deployments.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	exampleSettings, err := settings.FromBytes(content)
 	if err != nil {
 		t.Fatal(err)
 	}

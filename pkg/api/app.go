@@ -51,7 +51,7 @@ func New(p *Parameters) (*App, error) {
 		return nil, err
 	}
 
-	app.Settings, err = settings.Read(p.Filename, app.Clients.GitHub, app.Clients.Kubernetes)
+	app.Settings, err = settings.Read(app.Clients.Kubernetes)
 	if err != nil {
 		return nil, err
 	}
