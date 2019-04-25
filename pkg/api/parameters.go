@@ -7,6 +7,4 @@ type Parameters struct {
 	GitHubToken   string `mapstructure:"github-token"`
 	GELFAddress   string `mapstructure:"gelf-address"`
 	StatsdAddress string `mapstructure:"statsd-address"`
-
-	Filename string
 }

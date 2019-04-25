@@ -12,16 +12,9 @@ import (
 	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
 
-func TestReadFile(t *testing.T) {
-	settings, err := Read("./test-fixtures/services.yaml", nil, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+func testCreateSettings(t *testing.T) *Settings {
+	t.Helper()
 
-	testutil.AssertGoldenYAML(t, "test-fixtures/services-plain-golden.yaml", settings)
-}
-
-func TestReadConfigMap(t *testing.T) {
 	original, err := ioutil.ReadFile("./test-fixtures/services.yaml")
 	if err != nil {
 		t.Fatal(err)
@@ -38,33 +31,28 @@ func TestReadConfigMap(t *testing.T) {
 	}
 
 	kube := fake.NewSimpleClientset(cm)
-	settings, err := Read("/api/v1/namespaces/default/configmaps/kubernetes-deployment", nil, kube)
+	settings, err := Read(kube)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// This uses the same golden file as TestReadFile, but this is fine since
-	// they actually should look the same.
+	return settings
+}
+
+func TestReadConfigMap(t *testing.T) {
+	settings := testCreateSettings(t)
 	testutil.AssertGoldenYAML(t, "test-fixtures/services-plain-golden.yaml", settings)
 }
 
 func TestClean(t *testing.T) {
-	settings, err := Read("./test-fixtures/services.yaml", nil, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	settings := testCreateSettings(t)
 	settings.Clean()
 
 	testutil.AssertGoldenYAML(t, "test-fixtures/services-clean-golden.yaml", settings)
 }
 
 func TestServiceGuessing(t *testing.T) {
-	settings, err := Read("./test-fixtures/services.yaml", nil, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	settings := testCreateSettings(t)
 	settings.Clean()
 
 	cases := []struct {

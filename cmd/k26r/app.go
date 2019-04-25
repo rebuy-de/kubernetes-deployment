@@ -34,23 +34,18 @@ func (app *App) Bind(cmd *cobra.Command) {
 		"authentication token for the GitHub API")
 }
 
-func (app *App) MustReadSettings() *settings.Settings {
-	settings, err := settings.ReadFromFile(app.SettingsFile)
-	cmdutil.Must(err)
-	settings.Clean()
-	return settings
-}
-
 func (app *App) Run(ctx context.Context, cmd *cobra.Command, args []string) {
 	var err error
 
 	api := new(API)
-	api.Settings = app.MustReadSettings()
 	api.GitHub = gh.New(app.GitHubToken, statsdw.NullClient{})
 
 	api.Kubectl = kubectl.New("kubectl", app.Kubeconfig)
 
 	api.Kubernetes, err = newKubernetesClient(app.Kubeconfig)
+	cmdutil.Must(err)
+
+	api.Settings, err = settings.Read(api.Kubernetes)
 	cmdutil.Must(err)
 
 	server := &http.Server{
