@@ -3,10 +3,6 @@ package cmd
 import (
 	"fmt"
 	"math/rand"
-
-	log "github.com/sirupsen/logrus"
-
-	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 )
 
 const (
@@ -38,21 +34,4 @@ func randomID() string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
-}
-
-func checkError(err error) {
-	if err == nil {
-		return
-	}
-
-	log.WithFields(log.Fields{
-		"StackTrace": fmt.Sprintf("%+v", err),
-	}).Debug("a fatal error occured")
-	log.Error(err)
-
-	cmdutil.Exit(1)
-}
-
-func must(fn func() error) {
-	checkError(fn())
 }

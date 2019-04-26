@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/rebuy-de/kubernetes-deployment/pkg/api"
+	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func NewApplyCommand(params *api.Parameters) *cobra.Command {
+func NewApplyCommand(params *Parameters) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "apply PROJECT [BRANCH]",
 		Short: "Deploys a project to Kubernetes",
@@ -18,9 +18,9 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 			return err
 		}
 
-		app, err := api.New(params)
-		checkError(err)
-		defer must(app.Close)
+		app, err := params.Build()
+		cmdutil.Must(err)
+		defer app.Close()
 
 		log.WithFields(log.Fields{
 			"Project": project,
@@ -28,7 +28,7 @@ func NewApplyCommand(params *api.Parameters) *cobra.Command {
 		}).Info("deploying project")
 
 		err = app.Apply(project, branch)
-		checkError(err)
+		cmdutil.Must(err)
 
 		log.WithFields(log.Fields{
 			"Project": project,

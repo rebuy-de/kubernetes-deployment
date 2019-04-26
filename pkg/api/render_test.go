@@ -109,9 +109,7 @@ func TestDecode(t *testing.T) {
 
 			app := App{
 				Interceptors: &interceptors.Multi{},
-				Clients: &Clients{
-					GitHub: github,
-				},
+				GitHub:       github,
 			}
 
 			objects, err := app.decode(files, vars)

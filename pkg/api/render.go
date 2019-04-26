@@ -106,7 +106,7 @@ func (app *App) decodeYAML(file gh.File, vars templates.Variables) ([]runtime.Ob
 func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.File) ([]runtime.Object, error) {
 	var objects []runtime.Object
 
-	importer := gh.NewJsonnetImporter(app.Clients.GitHub)
+	importer := gh.NewJsonnetImporter(app.GitHub)
 
 	vm := jsonnet.MakeVM()
 	vm.Importer(importer)
@@ -123,7 +123,7 @@ func (app *App) decodeJsonnet(file gh.File, vars templates.Variables, all []gh.F
 				return nil, err
 			}
 
-			branch, err := app.Clients.GitHub.GetBranch(location)
+			branch, err := app.GitHub.GetBranch(location)
 			if err != nil {
 				return nil, err
 			}

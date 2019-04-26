@@ -31,7 +31,7 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 
 	service.Location.Ref = branchName
 
-	branch, err := app.Clients.GitHub.GetBranch(&service.Location)
+	branch, err := app.GitHub.GetBranch(&service.Location)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to get branch information")
 	}
@@ -48,7 +48,7 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 
 	service.Location.Ref = branch.SHA
 
-	files, err := app.Clients.GitHub.GetFiles(&service.Location)
+	files, err := app.GitHub.GetFiles(&service.Location)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
