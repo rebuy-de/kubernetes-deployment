@@ -32,7 +32,7 @@ func NewServerCommand(params *Parameters) *cobra.Command {
 			Handler: controller.Mux(),
 		}
 
-		ctx := context.TODO()
+		ctx := cmdutil.SignalRootContext()
 		ctx, cancel := context.WithCancel(ctx)
 
 		go func() {
