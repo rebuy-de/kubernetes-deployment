@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 )
@@ -27,7 +26,6 @@ type PreStopSleepInterceptor struct {
 
 type InjectorInterceptor struct {
 	Enabled TriState         `yaml:"enabled"`
-	Options injector.Options `yaml:"options"`
 }
 
 type GHStatusCheckerInterceptor struct {

@@ -19,8 +19,6 @@ defaults:
       enabled: null
     injector:
       enabled: null
-      options:
-        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -54,8 +52,6 @@ services:
       enabled: null
     injector:
       enabled: null
-      options:
-        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -86,8 +82,6 @@ services:
       enabled: null
     injector:
       enabled: null
-      options:
-        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -118,8 +112,6 @@ services:
       enabled: null
     injector:
       enabled: null
-      options:
-        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -150,8 +142,6 @@ services:
       enabled: null
     injector:
       enabled: null
-      options:
-        linkerdVersion: ""
     ghStatusChecker:
       enabled: null
       options:
@@ -160,4 +150,3 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
-
