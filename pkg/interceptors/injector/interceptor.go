@@ -12,12 +12,10 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
-type Interceptor struct {
-	options Options
-}
+type Interceptor struct {}
 
-func New(options Options) *Interceptor {
-	return &Interceptor{options: options}
+func New() *Interceptor {
+	return &Interceptor{}
 }
 
 func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, error) {
@@ -43,7 +41,6 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 	cmd := exec.Command(
 		"linkerd", "inject",
-		"--linkerd-version", i.options.LinkerdVersion,
 		"--proxy-memory-request", "20Mi",
 		"--proxy-cpu-request", "35m",
 		"-")
