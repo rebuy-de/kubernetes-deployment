@@ -34,8 +34,7 @@ RUN set -x \
  && cp --dereference /src/dist/* /usr/local/bin/
 
 RUN set -x \
- && kubernetes-deployment version \
- && k26r version
+ && kubernetes-deployment version
 
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates

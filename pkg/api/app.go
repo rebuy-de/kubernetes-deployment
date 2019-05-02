@@ -1,10 +1,8 @@
 package api
 
 import (
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
@@ -21,44 +19,15 @@ import (
 )
 
 type Clients struct {
-	GitHub     gh.Interface
-	Kubectl    kubectl.Interface
-	Kubernetes kubernetes.Interface
-	Statsd     statsdw.Interface
 }
 
 type App struct {
-	Parameters   *Parameters
-	Clients      *Clients
+	GitHub       gh.Interface
+	Kubectl      kubectl.Interface
+	Kubernetes   kubernetes.Interface
+	Statsd       statsdw.Interface
 	Settings     *settings.Settings
 	Interceptors *interceptors.Multi
-}
-
-func New(p *Parameters) (*App, error) {
-	var err error
-
-	app := new(App)
-
-	app.Parameters = p
-
-	app.Clients = &Clients{}
-	app.Clients.Statsd = statsdw.New(p.StatsdAddress)
-	app.Clients.GitHub = gh.New(p.GitHubToken, app.Clients.Statsd)
-	app.Clients.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
-
-	app.Clients.Kubernetes, err = newKubernetesClient(p.Kubeconfig)
-	if err != nil {
-		return nil, err
-	}
-
-	app.Settings, err = settings.Read(app.Clients.Kubernetes)
-	if err != nil {
-		return nil, err
-	}
-
-	app.Settings.Clean()
-
-	return app, nil
 }
 
 func (app *App) StartInterceptors(service *settings.Service) {
@@ -70,7 +39,7 @@ func (app *App) StartInterceptors(service *settings.Service) {
 		log.WithFields(log.Fields{
 			"Interceptor": "waiter",
 		}).Debug("enabling waiter interceptor")
-		app.Interceptors.Add(waiter.NewDeploymentWaitInterceptor(app.Clients.Kubernetes))
+		app.Interceptors.Add(waiter.NewDeploymentWaitInterceptor(app.Kubernetes))
 	}
 
 	if interceptors.PreStopSleep.Enabled == settings.Enabled {
@@ -94,7 +63,7 @@ func (app *App) StartInterceptors(service *settings.Service) {
 			"Options":     interceptors.GHStatusChecker.Options,
 		}).Debug("enabling ghStatusChecker interceptor")
 		app.Interceptors.Add(statuschecker.New(
-			app.Clients.GitHub,
+			app.GitHub,
 			interceptors.GHStatusChecker.Options,
 		))
 	}
@@ -104,7 +73,7 @@ func (app *App) StartInterceptors(service *settings.Service) {
 			"Interceptor": "removeOldJob",
 		}).Debug("enabling removeOldJob interceptor")
 		app.Interceptors.Add(rmoldjob.New(
-			app.Clients.Kubernetes,
+			app.Kubernetes,
 		))
 	}
 
@@ -125,18 +94,4 @@ func (app *App) StartInterceptors(service *settings.Service) {
 
 func (app *App) Close() error {
 	return app.Interceptors.Close()
-}
-
-func newKubernetesClient(kubeconfig string) (kubernetes.Interface, error) {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to load kubernetes config")
-	}
-
-	client, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to initialize kubernetes client")
-	}
-
-	return client, nil
 }

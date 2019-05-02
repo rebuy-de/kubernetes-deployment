@@ -60,12 +60,9 @@ func generateApp(t *testing.T) *api.App {
 	}
 
 	app := &api.App{
-		Clients: &api.Clients{
-			GitHub: ExampleGitHub,
-			Statsd: statsdw.NullClient{},
-		},
+		GitHub:       ExampleGitHub,
+		Statsd:       statsdw.NullClient{},
 		Settings:     exampleSettings,
-		Parameters:   new(api.Parameters),
 		Interceptors: interceptors.New(),
 	}
 	app.Settings.Clean()

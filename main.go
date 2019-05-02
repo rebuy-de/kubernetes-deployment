@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/rebuy-de/kubernetes-deployment/cmd/kubernetes-deployment"
+	"github.com/rebuy-de/kubernetes-deployment/cmd"
 	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 )
 

@@ -12,7 +12,7 @@ func (app *App) Apply(project, branchName string) error {
 		"Branch":  branchName,
 	}).Debug("applying manifests")
 
-	app.Clients.Statsd.Increment("apply",
+	app.Statsd.Increment("apply",
 		statsdw.Tag{Name: "project", Value: project},
 		statsdw.Tag{Name: "branch", Value: branchName})
 
@@ -32,7 +32,7 @@ func (app *App) Apply(project, branchName string) error {
 			return errors.WithStack(err)
 		}
 
-		upstreamObj, err := app.Clients.Kubectl.Apply(obj)
+		upstreamObj, err := app.Kubectl.Apply(obj)
 		if err != nil {
 			return errors.Wrap(err, "unable to apply manifest")
 		}

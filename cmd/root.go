@@ -23,7 +23,8 @@ func NewRootCommand() *cobra.Command {
 	jsonLogs := false
 	cmd.PersistentFlags().BoolVar(&jsonLogs, "json-logs", false, "prints the logs as JSON")
 
-	params := BindParameters(cmd)
+	params := new(Parameters)
+	params.Bind(cmd)
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		log.SetLevel(log.InfoLevel)
@@ -41,7 +42,7 @@ func NewRootCommand() *cobra.Command {
 			})
 		}
 
-		err := ReadInParameters(params)
+		err := params.ReadIn()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -78,6 +79,7 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(NewDumpConfigCommand())
 	cmd.AddCommand(NewDumpSettingsCommand(params))
 	cmd.AddCommand(NewApplyCommand(params))
+	cmd.AddCommand(NewServerCommand(params))
 
 	return cmd
 }

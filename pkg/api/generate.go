@@ -14,7 +14,7 @@ func (app *App) Generate(project, branchName string) ([]runtime.Object, error) {
 		"Branch":  branchName,
 	}).Debugf("generating manifests")
 
-	app.Clients.Statsd.Increment("generate",
+	app.Statsd.Increment("generate",
 		statsdw.Tag{Name: "project", Value: project},
 		statsdw.Tag{Name: "branch", Value: branchName})
 
