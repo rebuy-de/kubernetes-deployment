@@ -4,5 +4,5 @@ workflow "Push" {
 }
 
 action "Verify Golang Template" {
-  uses = "rebuy-de/golang-template@v3.1.0"
+  uses = "rebuy-de/golang-template@v3.2.0"
 }
