@@ -31,6 +31,14 @@ func (app *App) Fetch(project, branchName string) (*FetchResult, error) {
 
 	service.Location.Ref = branchName
 
+	isArchived, err := app.GitHub.IsArchived(&service.Location)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to check for archived repo")
+	}
+	if isArchived {
+		return nil, errors.Wrap(err, "repo is archived, please use active repo")
+	}
+
 	branch, err := app.GitHub.GetBranch(&service.Location)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to get branch information")
