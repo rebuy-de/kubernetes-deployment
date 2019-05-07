@@ -80,3 +80,7 @@ func (d *GitHub) GetFiles(l *gh.Location) ([]gh.File, error) {
 func (d *GitHub) GetStatuses(location *gh.Location) ([]github.RepoStatus, error) {
 	return nil, fmt.Errorf("not implemented, yet")
 }
+
+func (d *GitHub) IsArchived(location *gh.Location) (bool, error) {
+	return false, nil
+}

@@ -22,6 +22,7 @@ type Interface interface {
 	GetFile(location *Location) (File, error)
 	GetFiles(location *Location) ([]File, error)
 	GetStatuses(location *Location) ([]github.RepoStatus, error)
+	IsArchived(location *Location) (bool, error)
 }
 
 type API struct {
@@ -267,4 +268,23 @@ func (gh *API) GetStatuses(location *Location) ([]github.RepoStatus, error) {
 	gh.statsd.Gauge("github.rate.remaining", resp.Rate.Remaining)
 
 	return combined.Statuses, nil
+}
+
+func (gh *API) IsArchived(location *Location) (bool, error) {
+	log.WithFields(
+		log.Fields(structs.Map(location)),
+	).Debug("checking if repo is archived")
+
+	repo, _, err := gh.client.Repositories.Get(
+		context.Background(), location.Owner, location.Repo,
+	)
+
+	if err != nil {
+		return false, errors.Wrapf(err,
+			"unable to get archived status for '%v' from GitHub", location)
+	}
+
+	isArchived := repo.GetArchived()
+
+	return isArchived, nil
 }
