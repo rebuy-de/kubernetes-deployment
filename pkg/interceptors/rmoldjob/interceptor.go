@@ -70,14 +70,14 @@ func (i *Interceptor) PreManifestApply(obj runtime.Object) (runtime.Object, erro
 	}
 
 	return obj, i.client.
-		Batch().
+		BatchV1().
 		Jobs(namespace).
 		Delete(name, opts)
 }
 
 func (i *Interceptor) hasJob(namespace, name string) (bool, error) {
 	_, err := i.client.
-		Batch().
+		BatchV1().
 		Jobs(namespace).
 		Get(name, v1meta.GetOptions{})
 

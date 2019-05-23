@@ -76,7 +76,7 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 	// number and then update the deployment to see the current revision.
 	time.Sleep(1 * time.Second)
 	deployment, err := dwi.client.
-		Extensions().
+		ExtensionsV1beta1().
 		Deployments(deployment.ObjectMeta.Namespace).
 		Get(deployment.ObjectMeta.Name, v1meta.GetOptions{})
 

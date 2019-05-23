@@ -34,7 +34,7 @@ func Read(client kubernetes.Interface) (*Settings, error) {
 		name      = "kubernetes-deployment"
 	)
 
-	cm, err := client.Core().ConfigMaps("default").Get("kubernetes-deployment", meta.GetOptions{})
+	cm, err := client.CoreV1().ConfigMaps("default").Get("kubernetes-deployment", meta.GetOptions{})
 	if err != nil {
 		return nil, errors.Wrapf(err, "Could read ConfigMap '%s/%s'", namespace, name)
 	}
