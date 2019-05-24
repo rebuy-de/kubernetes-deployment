@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
@@ -12,7 +12,7 @@ import (
 
 func WatchPods(ctx context.Context, client kubernetes.Interface, selector fields.Selector) chan *v1.Pod {
 	lw := cache.NewListWatchFromClient(
-		client.Core().RESTClient(),
+		client.CoreV1().RESTClient(),
 		"pods",
 		v1.NamespaceAll,
 		selector)

@@ -33,7 +33,7 @@ func DeploymentRolloutComplete(deployment *v1beta1.Deployment) bool {
 
 func GetReplicaSetForDeployment(client kubernetes.Interface, deployment *v1beta1.Deployment) (*v1beta1.ReplicaSet, error) {
 	replicaSets, err := client.
-		Extensions().
+		ExtensionsV1beta1().
 		ReplicaSets(deployment.ObjectMeta.Namespace).
 		List(v1meta.ListOptions{})
 	if err != nil {

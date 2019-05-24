@@ -18,8 +18,7 @@
         }
     },
     "spec": {
-        "resources": {},
-        "dataSource": null
+        "resources": {}
     },
     "status": {}
 }

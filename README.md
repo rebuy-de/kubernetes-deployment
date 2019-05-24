@@ -63,4 +63,11 @@ These are the generated values:
 * `gitCommitID` - The full git commit hash, eg `afad13cf1941af4ad3101bdf30f087f7dfe27c99`. Useful for image tags.
 
 
+## Development
 
+### Update Kubernetes Library
+
+```
+go get k8s.io/client-go@kubernetes-1.14.2
+go get k8s.io/apimachinery@release-1.14
+```
