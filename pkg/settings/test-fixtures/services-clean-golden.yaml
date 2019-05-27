@@ -18,6 +18,12 @@ defaults:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -50,6 +56,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -81,6 +93,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -112,6 +130,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -143,6 +167,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -174,6 +204,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -205,6 +241,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -236,6 +278,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -267,6 +315,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -298,6 +352,12 @@ services:
       enabled: true
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:

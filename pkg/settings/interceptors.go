@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/grafannotator"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 )
@@ -11,6 +12,7 @@ type Interceptors struct {
 	RemoveOldJob        Interceptor                `yaml:"removeOldJob"`
 	Waiter              Interceptor                `yaml:"waiter"`
 	Annotater           Interceptor                `yaml:"annotater"`
+	Grafannotator       GrafannotatorInterceptor   `yaml:"grafannotator"`
 	Injector            InjectorInterceptor        `yaml:"injector"`
 	GHStatusChecker     GHStatusCheckerInterceptor `yaml:"ghStatusChecker"`
 }
@@ -25,10 +27,15 @@ type PreStopSleepInterceptor struct {
 }
 
 type InjectorInterceptor struct {
-	Enabled TriState         `yaml:"enabled"`
+	Enabled TriState `yaml:"enabled"`
 }
 
 type GHStatusCheckerInterceptor struct {
 	Enabled TriState              `yaml:"enabled"`
 	Options statuschecker.Options `yaml:"options"`
+}
+
+type GrafannotatorInterceptor struct {
+	Enabled TriState              `yaml:"enabled"`
+	Options grafannotator.Options `yaml:"options"`
 }

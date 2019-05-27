@@ -17,6 +17,12 @@ defaults:
       enabled: null
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -50,6 +56,12 @@ services:
       enabled: null
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -80,6 +92,12 @@ services:
       enabled: null
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -110,6 +128,12 @@ services:
       enabled: null
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
@@ -140,6 +164,12 @@ services:
       enabled: null
     annotater:
       enabled: null
+    grafannotator:
+      enabled: null
+      options:
+        targetURL: ""
+        username: ""
+        password: ""
     injector:
       enabled: null
     ghStatusChecker:
