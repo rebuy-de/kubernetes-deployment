@@ -2,6 +2,7 @@ package annotater
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/benbjohnson/clock"
@@ -106,7 +107,7 @@ func (i *Interceptor) annotate(workload string, obj v1meta.Object, isRoot bool) 
 		labels = map[string]string{}
 	}
 
-	labels[key("workload-name")] = workload
+	labels[key("workload-name")] = strings.Replace(workload, ":", "-", -1)
 	labels[key("repo")] = i.branch.Location.Repo
 	labels[key("branch")] = i.branch.Name
 
