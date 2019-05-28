@@ -7,6 +7,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/annotater"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/grafannotator"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmoldjob"
@@ -82,6 +83,16 @@ func (app *App) StartInterceptors(service *settings.Service) {
 			"Interceptor": "annotater",
 		}).Debug("enabling annotater interceptor")
 		app.Interceptors.Add(annotater.New())
+	}
+
+	if interceptors.Grafannotator.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "grafannotator",
+			"Options":     interceptors.Grafannotator.Options,
+		}).Debug("enabling grafannotator interceptor")
+		app.Interceptors.Add(grafannotator.New(
+			interceptors.Grafannotator.Options,
+		))
 	}
 
 	if interceptors.Injector.Enabled == settings.Enabled {
