@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path"
+	"sort"
 	"strings"
 	"time"
 
@@ -238,6 +239,8 @@ func (gh *API) GetFiles(location *Location) ([]File, error) {
 
 		files = append(files, file)
 	}
+
+	sort.Sort(FileByName(files))
 
 	return files, nil
 }
