@@ -7,12 +7,14 @@ import (
 	"os/exec"
 
 	"github.com/pkg/errors"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
+
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 )
 
-type Interceptor struct {}
+type Interceptor struct{}
 
 func New() *Interceptor {
 	return &Interceptor{}
