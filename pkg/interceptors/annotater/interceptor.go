@@ -7,17 +7,13 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	apps_v1 "k8s.io/api/apps/v1"
-	apps_v1beta1 "k8s.io/api/apps/v1beta1"
-	apps_v1beta2 "k8s.io/api/apps/v1beta2"
-	batch_v1 "k8s.io/api/batch/v1"
-	batch_v1beta1 "k8s.io/api/batch/v1beta1"
-	extensions_v1beta1 "k8s.io/api/extensions/v1beta1"
+	core_v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 )
 
 type Interceptor struct {
@@ -46,38 +42,9 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 		return nil, err
 	}
 
-	i.annotate(workload.GetName(), workload, true)
-
-	switch typed := obj.(type) {
-	case *apps_v1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *apps_v1beta2.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *apps_v1beta1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *extensions_v1beta1.Deployment:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-
-	case *apps_v1.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *apps_v1beta2.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *extensions_v1beta1.DaemonSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-
-	case *apps_v1.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *apps_v1beta2.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-	case *apps_v1beta1.StatefulSet:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
-
-	case *batch_v1beta1.CronJob:
-		i.annotate(workload.GetName(), &typed.Spec.JobTemplate, false)
-		i.annotate(workload.GetName(), &typed.Spec.JobTemplate.Spec.Template, false)
-
-	case *batch_v1.Job:
-		i.annotate(workload.GetName(), &typed.Spec.Template, false)
+	subObjects := kubeutil.SubObjectAccessor(obj)
+	for j, sub := range subObjects {
+		i.annotate(workload.GetName(), sub, j == 0)
 	}
 
 	return obj, nil
@@ -85,6 +52,11 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 func (i *Interceptor) annotate(workload string, obj v1meta.Object, isRoot bool) {
 	key := func(n string) string { return fmt.Sprintf("rebuy.com/kubernetes-deployment.%s", n) }
+
+	template, ok := obj.(*core_v1.PodTemplateSpec)
+	if ok {
+		fmt.Println(template.Spec.Containers)
+	}
 
 	annotations := obj.GetAnnotations()
 	if annotations == nil {

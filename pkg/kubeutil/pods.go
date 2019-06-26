@@ -3,7 +3,7 @@ package kubeutil
 import (
 	"fmt"
 
-	"k8s.io/api/core/v1"
+	core_v1 "k8s.io/api/core/v1"
 )
 
 const (
@@ -11,7 +11,7 @@ const (
 	ErrorReason        = "Error"
 )
 
-func PodWarnings(pod *v1.Pod) error {
+func PodWarnings(pod *core_v1.Pod) error {
 	if pod.ObjectMeta.DeletionTimestamp != nil {
 		// ignore Pods with pending deletion
 		return nil
@@ -52,7 +52,7 @@ func (err ErrCrash) Error() string {
 		err.Name, err.ExitCode, err.RestartCount)
 }
 
-func containerWarnings(status v1.ContainerStatus) error {
+func containerWarnings(status core_v1.ContainerStatus) error {
 	if status.State.Waiting != nil && status.State.Waiting.Reason == ErrImagePullReason {
 		return ErrImagePull{}
 	}
