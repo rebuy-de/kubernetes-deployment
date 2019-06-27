@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/aws/aws-sdk-go/aws/session"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -105,6 +106,10 @@ func (p *Parameters) Build() (*api.App, error) {
 	app.Statsd = statsdw.New(p.StatsdAddress)
 	app.GitHub = gh.New(p.GitHubToken, app.Statsd)
 	app.Kubectl = kubectl.New(p.KubectlPath, p.Kubeconfig)
+	app.AWS, err = session.NewSession()
+	if err != nil {
+		return nil, err
+	}
 
 	app.Kubernetes, err = p.Kubernetes()
 	if err != nil {

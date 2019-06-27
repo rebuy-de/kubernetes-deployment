@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/aws/aws-sdk-go/aws/session"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/annotater"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/grafannotator"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/imagechecker"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/rmoldjob"
@@ -24,6 +26,7 @@ type Clients struct {
 
 type App struct {
 	GitHub       gh.Interface
+	AWS          *session.Session
 	Kubectl      kubectl.Interface
 	Kubernetes   kubernetes.Interface
 	Statsd       statsdw.Interface
@@ -66,6 +69,17 @@ func (app *App) StartInterceptors(service *settings.Service) {
 		app.Interceptors.Add(statuschecker.New(
 			app.GitHub,
 			interceptors.GHStatusChecker.Options,
+		))
+	}
+
+	if interceptors.ImageChecker.Enabled == settings.Enabled {
+		log.WithFields(log.Fields{
+			"Interceptor": "imageChecker",
+			"Options":     interceptors.ImageChecker.Options,
+		}).Debug("enabling imageChecker interceptor")
+		app.Interceptors.Add(imagechecker.New(
+			app.AWS,
+			interceptors.ImageChecker.Options,
 		))
 	}
 
