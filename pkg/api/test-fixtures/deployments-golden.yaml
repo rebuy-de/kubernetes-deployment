@@ -33,6 +33,12 @@ defaults:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 services:
 - name: foobar
   aliases:
@@ -72,6 +78,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: repo-no-exist
   owner: rebuy-de
   repo: repo-no-exist
@@ -108,6 +120,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: no-files
   owner: rebuy-de
   repo: foobar
@@ -144,6 +162,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: invalid-file
   owner: rebuy-de
   repo: foobar
@@ -180,4 +204,10 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 

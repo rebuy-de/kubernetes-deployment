@@ -7,7 +7,6 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	core_v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -52,11 +51,6 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 func (i *Interceptor) annotate(workload string, obj v1meta.Object, isRoot bool) {
 	key := func(n string) string { return fmt.Sprintf("rebuy.com/kubernetes-deployment.%s", n) }
-
-	template, ok := obj.(*core_v1.PodTemplateSpec)
-	if ok {
-		fmt.Println(template.Spec.Containers)
-	}
 
 	annotations := obj.GetAnnotations()
 	if annotations == nil {

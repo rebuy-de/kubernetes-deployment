@@ -34,6 +34,12 @@ defaults:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 services:
 - name: bish
   owner: rebuy-de
@@ -72,6 +78,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: bash
   owner: rebuy-de
   repo: bash
@@ -109,6 +121,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: bosh-deployment-foo
   owner: rebuy-de
   repo: bosh
@@ -146,6 +164,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: foo
   owner: rebuy-de
   repo: bar
@@ -183,6 +207,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: kubernetes-blub
   owner: kubernetes
   repo: blub
@@ -220,6 +250,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: meh
   owner: rebuy-de
   repo: meh
@@ -257,6 +293,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: bim
   owner: rebuy-de
   repo: aka
@@ -294,6 +336,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: guess
   owner: rebuy-de
   repo: k8s-guess
@@ -331,6 +379,12 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 - name: cloud
   owner: rebuy-de
   repo: cloud
@@ -368,4 +422,10 @@ services:
         initialDelay: 20s
         pullInterval: 10s
         notificationInterval: 3m0s
+    imageChecker:
+      enabled: null
+      options:
+        waitTimeout: 10m0s
+        checkInterval: 15s
+        checkTimeout: 10s
 
