@@ -7,15 +7,15 @@ import (
 	graylog "gopkg.in/gemnasium/logrus-graylog-hook.v2"
 
 	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
+	cmdutilv2 "github.com/rebuy-de/rebuy-go-sdk/v2/cmdutil"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 func NewRootCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "kubernetes-deployment",
-		Short: "Manages deployments to our Kubernetes cluster",
-	}
+	cmd := cmdutilv2.New(
+		"kubernetes-deployment", "Manages deployments to our Kubernetes cluster",
+	)
 
 	debug := false
 	cmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "show debug log messages")
