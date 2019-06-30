@@ -17,10 +17,8 @@ func NewRootCommand() *cobra.Command {
 		"kubernetes-deployment", "Manages deployments to our Kubernetes cluster",
 		cmdutilv2.WithVersionCommand(),
 		cmdutilv2.WithVersionLog(logrus.DebugLevel),
+		cmdutilv2.WithLogVerboseFlag(),
 	)
-
-	debug := false
-	cmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "show debug log messages")
 
 	jsonLogs := false
 	cmd.PersistentFlags().BoolVar(&jsonLogs, "json-logs", false, "prints the logs as JSON")
@@ -29,11 +27,6 @@ func NewRootCommand() *cobra.Command {
 	params.Bind(cmd)
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		log.SetLevel(log.InfoLevel)
-		if debug {
-			log.SetLevel(log.DebugLevel)
-		}
-
 		if jsonLogs {
 			log.SetFormatter(&log.JSONFormatter{
 				FieldMap: log.FieldMap{
