@@ -11,7 +11,7 @@ BUILD_MACHINE=$(shell echo $$HOSTNAME)
 BUILD_USER=$(shell whoami)
 BUILD_ENVIRONMENT=$(BUILD_USER)@$(BUILD_MACHINE)
 
-BUILD_XDST=github.com/rebuy-de/rebuy-go-sdk/cmdutil
+BUILD_XDST=github.com/rebuy-de/rebuy-go-sdk/v2/cmdutil
 BUILD_FLAGS=-ldflags "\
 	$(ADDITIONAL_LDFLAGS) \
 	-X '$(BUILD_XDST).BuildName=$(NAME)' \

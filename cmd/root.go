@@ -15,6 +15,7 @@ import (
 func NewRootCommand() *cobra.Command {
 	cmd := cmdutilv2.New(
 		"kubernetes-deployment", "Manages deployments to our Kubernetes cluster",
+		cmdutilv2.VersionOption{}.Bind,
 	)
 
 	debug := false
@@ -75,7 +76,6 @@ func NewRootCommand() *cobra.Command {
 		return nil
 	}
 
-	cmd.AddCommand(cmdutil.NewVersionCommand())
 	cmd.AddCommand(NewDumpConfigCommand())
 	cmd.AddCommand(NewDumpSettingsCommand(params))
 	cmd.AddCommand(NewApplyCommand(params))
