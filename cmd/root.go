@@ -6,8 +6,8 @@ import (
 
 	graylog "gopkg.in/gemnasium/logrus-graylog-hook.v2"
 
-	"github.com/rebuy-de/rebuy-go-sdk/cmdutil"
 	cmdutilv2 "github.com/rebuy-de/rebuy-go-sdk/v2/cmdutil"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,8 @@ import (
 func NewRootCommand() *cobra.Command {
 	cmd := cmdutilv2.New(
 		"kubernetes-deployment", "Manages deployments to our Kubernetes cluster",
-		cmdutilv2.VersionOption{}.Bind,
+		cmdutilv2.WithVersionCommand(),
+		cmdutilv2.WithVersionLog(logrus.DebugLevel),
 	)
 
 	debug := false
@@ -57,12 +58,6 @@ func NewRootCommand() *cobra.Command {
 			hook.Level = log.DebugLevel
 			log.AddHook(hook)
 		}
-
-		log.WithFields(log.Fields{
-			"Version": cmdutil.BuildVersion,
-			"Date":    cmdutil.BuildDate,
-			"Commit":  cmdutil.BuildHash,
-		}).Debugf("kubernetes-deployment started")
 
 		if strings.TrimSpace(params.GitHubToken) == "" {
 			return fmt.Errorf("You have to specify a GitHubToken.")

@@ -29,7 +29,7 @@ require (
 	github.com/rebuy-de/rebuy-go-sdk v1.6.0
 	github.com/rebuy-de/rebuy-go-sdk/v2 v2.0.0
 	github.com/sergi/go-diff v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.0.6
+	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.2.0 // indirect
 	github.com/spf13/cobra v0.0.3
