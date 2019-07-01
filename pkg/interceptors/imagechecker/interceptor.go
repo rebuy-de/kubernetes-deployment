@@ -58,6 +58,7 @@ func (i *Interceptor) PreApply(objects []runtime.Object) error {
 	eg, ctx := errgroup.WithContext(ctx)
 
 	for image := range images {
+		image := image // https://golang.org/doc/faq#closures_and_goroutines
 		eg.Go(func() error {
 			return i.wait(ctx, image)
 		})
