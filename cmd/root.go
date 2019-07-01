@@ -12,30 +12,44 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func WithLogJSON() cmdutilv2.Option {
+	var (
+		enabled bool
+	)
+
+	return func(cmd *cobra.Command) error {
+		cmd.PersistentFlags().BoolVar(
+			&enabled, "json-logs", false, "prints the logs as JSON")
+
+		cmd.PreRun = func(cmd *cobra.Command, args []string) {
+			if enabled {
+				log.SetFormatter(&log.JSONFormatter{
+					FieldMap: log.FieldMap{
+						log.FieldKeyTime:  "Time",
+						log.FieldKeyLevel: "Level",
+						log.FieldKeyMsg:   "Message",
+					},
+				})
+			}
+		}
+
+		return nil
+	}
+}
+
 func NewRootCommand() *cobra.Command {
 	cmd := cmdutilv2.New(
 		"kubernetes-deployment", "Manages deployments to our Kubernetes cluster",
 		cmdutilv2.WithVersionCommand(),
 		cmdutilv2.WithVersionLog(logrus.DebugLevel),
 		cmdutilv2.WithLogVerboseFlag(),
+		WithLogJSON(),
 	)
-
-	jsonLogs := false
-	cmd.PersistentFlags().BoolVar(&jsonLogs, "json-logs", false, "prints the logs as JSON")
 
 	params := new(Parameters)
 	params.Bind(cmd)
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		if jsonLogs {
-			log.SetFormatter(&log.JSONFormatter{
-				FieldMap: log.FieldMap{
-					log.FieldKeyTime:  "Time",
-					log.FieldKeyLevel: "Level",
-					log.FieldKeyMsg:   "Message",
-				},
-			})
-		}
 
 		err := params.ReadIn()
 		if err != nil {
