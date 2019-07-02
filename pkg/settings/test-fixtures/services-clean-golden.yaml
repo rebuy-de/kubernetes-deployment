@@ -26,6 +26,13 @@ defaults:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -70,6 +77,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -113,6 +127,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -156,6 +177,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -199,6 +227,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -242,6 +277,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -285,6 +327,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -328,6 +377,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -371,6 +427,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:
@@ -414,6 +477,13 @@ services:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments:
+        - --proxy-memory-request
+        - 20Mi
+        - --proxy-cpu-request
+        - 35m
+        connectTimeout: 10s
     ghStatusChecker:
       enabled: null
       options:

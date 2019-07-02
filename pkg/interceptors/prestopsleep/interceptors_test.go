@@ -32,11 +32,12 @@ func TestModify(t *testing.T) {
 			},
 		},
 	}
-	_, err := New(5).PostManifestRender(deployment)
+
+	intercepted, err := New(5).PostManifestRender(deployment)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	testutil.AssertGoldenJSON(t, "test-fixtures/deployment-golden.json", deployment)
+	testutil.AssertGoldenJSON(t, "test-fixtures/deployment-golden.json", intercepted)
 }

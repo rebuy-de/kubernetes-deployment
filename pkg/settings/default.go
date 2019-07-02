@@ -3,6 +3,7 @@ package settings
 import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/imagechecker"
+	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 )
@@ -24,6 +25,9 @@ var (
 			},
 			ImageChecker: ImageCheckerInterceptor{
 				Options: imagechecker.DefaultOptions,
+			},
+			Injector: InjectorInterceptor{
+				Options: injector.DefaultOptions,
 			},
 		},
 	}
