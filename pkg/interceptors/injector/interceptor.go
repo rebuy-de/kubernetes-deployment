@@ -64,21 +64,23 @@ func (i *Interceptor) PostManifestRender(obj runtime.Object) (runtime.Object, er
 
 	template := kubeutil.PodTemplateSpecAccessor(newObj)
 	if template != nil {
-		for _, c := range template.Spec.Containers {
+		for j, c := range template.Spec.Containers {
 			if c.Name != "linkerd-proxy" {
 				continue
 			}
 
-			i.addLinkerdEnvVariables(c)
+			template.Spec.Containers[j] = i.addLinkerdEnvVariables(c)
 		}
 	}
 
 	return newObj, errors.Wrapf(err, "failed to decode result json")
 }
 
-func (i *Interceptor) addLinkerdEnvVariables(c v1.Container) {
+func (i *Interceptor) addLinkerdEnvVariables(c v1.Container) v1.Container {
 	c.Env = append(c.Env, v1.EnvVar{
 		Name:  "LINKERD2_PROXY_OUTBOUND_CONNECT_TIMEOUT",
 		Value: i.Options.ConnectTimeout,
 	})
+
+	return c
 }

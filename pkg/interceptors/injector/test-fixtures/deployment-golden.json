@@ -129,6 +129,10 @@
                             {
                                 "name": "LINKERD2_PROXY_IDENTITY_DISABLED",
                                 "value": "disabled"
+                            },
+                            {
+                                "name": "LINKERD2_PROXY_OUTBOUND_CONNECT_TIMEOUT",
+                                "value": "10s"
                             }
                         ],
                         "resources": {
