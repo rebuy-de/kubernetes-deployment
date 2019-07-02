@@ -25,6 +25,9 @@ defaults:
         password: ""
     injector:
       enabled: null
+      options:
+        injectArguments: []
+        connectTimeout: ""
     ghStatusChecker:
       enabled: null
       options:
