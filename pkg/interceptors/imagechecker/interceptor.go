@@ -70,6 +70,7 @@ func (i *Interceptor) PreApply(objects []runtime.Object) error {
 func (i *Interceptor) wait(ctx context.Context, image string) error {
 	t := time.NewTicker(i.Options.CheckInterval)
 	defer t.Stop()
+	try := 0
 
 	logrus.WithFields(logrus.Fields{
 		"image": image,
@@ -85,8 +86,17 @@ func (i *Interceptor) wait(ctx context.Context, image string) error {
 			if found {
 				return nil
 			}
+			if try == 0 {
+				logrus.Info("Deployment is waiting for image to be built.")
+				try++
+				continue
+			}
+			if (try % 4) == 0 {
+				logrus.Info("Still waiting for image to be available...")
+			}
+			try++
 		case <-ctx.Done():
-			return fmt.Errorf("aborted")
+			return fmt.Errorf("Deployment aborted because image is still missing")
 		}
 	}
 }
