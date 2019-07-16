@@ -1,11 +1,12 @@
 package injector
 
 import (
-	v1apps "k8s.io/api/apps/v1"
-	"k8s.io/api/core/v1"
-	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os/exec"
 	"testing"
+
+	v1apps "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
+	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/rebuy-de/rebuy-go-sdk/testutil"
 )
@@ -50,7 +51,8 @@ func TestInterceptor_PostManifestRender(t *testing.T) {
 			"--proxy-memory-request", "20Mi",
 			"--proxy-cpu-request", "35m",
 			"--ignore-cluster=true",
-			"--linkerd-version=2.3.0",
+			"--manual",
+			"--proxy-version=2.4.0",
 			"--disable-identity",
 		},
 		ConnectTimeout: "10s",

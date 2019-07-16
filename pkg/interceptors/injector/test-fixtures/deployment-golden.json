@@ -17,19 +17,20 @@
                     "linkerd.io/proxy-deployment": "linkerd-test"
                 },
                 "annotations": {
+                    "config.linkerd.io/disable-identity": "true",
                     "config.linkerd.io/proxy-cpu-request": "35m",
                     "config.linkerd.io/proxy-memory-request": "20Mi",
-                    "config.linkerd.io/proxy-version": "2.3.0",
-                    "linkerd.io/created-by": "linkerd/cli stable-2.3.0",
+                    "config.linkerd.io/proxy-version": "2.4.0",
+                    "linkerd.io/created-by": "linkerd/cli stable-2.4.0",
                     "linkerd.io/identity-mode": "disabled",
-                    "linkerd.io/proxy-version": "2.3.0"
+                    "linkerd.io/proxy-version": "2.4.0"
                 }
             },
             "spec": {
                 "initContainers": [
                     {
                         "name": "linkerd-init",
-                        "image": "gcr.io/linkerd-io/proxy-init:2.3.0",
+                        "image": "gcr.io/linkerd-io/proxy-init:v1.0.0",
                         "args": [
                             "--incoming-proxy-port",
                             "4143",
@@ -40,18 +41,30 @@
                             "--inbound-ports-to-ignore",
                             "4190,4191"
                         ],
-                        "resources": {},
+                        "resources": {
+                            "limits": {
+                                "cpu": "100m",
+                                "memory": "50Mi"
+                            },
+                            "requests": {
+                                "cpu": "10m",
+                                "memory": "10Mi"
+                            }
+                        },
                         "terminationMessagePolicy": "FallbackToLogsOnError",
                         "imagePullPolicy": "IfNotPresent",
                         "securityContext": {
                             "capabilities": {
                                 "add": [
-                                    "NET_ADMIN"
+                                    "NET_ADMIN",
+                                    "NET_RAW"
                                 ]
                             },
                             "privileged": false,
                             "runAsUser": 0,
-                            "runAsNonRoot": false
+                            "runAsNonRoot": false,
+                            "readOnlyRootFilesystem": true,
+                            "allowPrivilegeEscalation": false
                         }
                     }
                 ],
@@ -66,7 +79,7 @@
                     },
                     {
                         "name": "linkerd-proxy",
-                        "image": "gcr.io/linkerd-io/proxy:2.3.0",
+                        "image": "gcr.io/linkerd-io/proxy:2.4.0",
                         "ports": [
                             {
                                 "name": "linkerd-proxy",
@@ -158,7 +171,9 @@
                         "terminationMessagePolicy": "FallbackToLogsOnError",
                         "imagePullPolicy": "IfNotPresent",
                         "securityContext": {
-                            "runAsUser": 2102
+                            "runAsUser": 2102,
+                            "readOnlyRootFilesystem": true,
+                            "allowPrivilegeEscalation": false
                         }
                     }
                 ]

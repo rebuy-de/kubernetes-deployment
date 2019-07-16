@@ -27,6 +27,7 @@ defaults:
       enabled: null
       options:
         injectArguments:
+        - --manual
         - --proxy-memory-request
         - 20Mi
         - --proxy-cpu-request
@@ -79,6 +80,7 @@ services:
       enabled: null
       options:
         injectArguments:
+        - --manual
         - --proxy-memory-request
         - 20Mi
         - --proxy-cpu-request
@@ -128,6 +130,7 @@ services:
       enabled: null
       options:
         injectArguments:
+        - --manual
         - --proxy-memory-request
         - 20Mi
         - --proxy-cpu-request
@@ -177,6 +180,7 @@ services:
       enabled: null
       options:
         injectArguments:
+        - --manual
         - --proxy-memory-request
         - 20Mi
         - --proxy-cpu-request
@@ -226,6 +230,7 @@ services:
       enabled: null
       options:
         injectArguments:
+        - --manual
         - --proxy-memory-request
         - 20Mi
         - --proxy-cpu-request
