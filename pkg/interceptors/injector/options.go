@@ -6,6 +6,6 @@ type Options struct {
 }
 
 var DefaultOptions = Options{
-	InjectArguments: []string{"--proxy-memory-request", "20Mi", "--proxy-cpu-request", "35m"},
+	InjectArguments: []string{"--manual", "--proxy-memory-request", "20Mi", "--proxy-cpu-request", "35m"},
 	ConnectTimeout:  "10s",
 }

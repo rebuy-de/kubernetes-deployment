@@ -13,9 +13,9 @@ RUN GO111MODULE= go get -u golang.org/x/lint/golint
 
 # Install Linkerd
 RUN set -x \
- && curl -Lo /usr/local/bin/linkerd https://github.com/linkerd/linkerd2/releases/download/stable-2.3.0/linkerd2-cli-stable-2.3.0-linux \
+ && curl -Lo /usr/local/bin/linkerd https://github.com/linkerd/linkerd2/releases/download/stable-2.4.0/linkerd2-cli-stable-2.4.0-linux \
  && sha256sum /usr/local/bin/linkerd \
- && echo "82bbd4e994231d0cb7532144851c84a5ce84811468e1eb7ceeebd21aec1d98fa  /usr/local/bin/linkerd" | sha256sum -c \
+ && echo "464a33563b2b6c882c46bdf510971e4f8982f2ff52117b318df2abeb3d8f398d  /usr/local/bin/linkerd" | sha256sum -c \
  && chmod +x /usr/local/bin/linkerd \
  && linkerd version --client --api-addr="localhost"
 
