@@ -5,19 +5,17 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/imagechecker"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 )
 
 type Interceptors struct {
-	PreStopSleep        PreStopSleepInterceptor    `yaml:"preStopSleep"`
-	RemoveResourceSpecs Interceptor                `yaml:"removeResourceSpecs"`
-	RemoveOldJob        Interceptor                `yaml:"removeOldJob"`
-	Waiter              Interceptor                `yaml:"waiter"`
-	Annotater           Interceptor                `yaml:"annotater"`
-	Grafannotator       GrafannotatorInterceptor   `yaml:"grafannotator"`
-	Injector            InjectorInterceptor        `yaml:"injector"`
-	GHStatusChecker     GHStatusCheckerInterceptor `yaml:"ghStatusChecker"`
-	ImageChecker        ImageCheckerInterceptor    `yaml:"imageChecker"`
+	PreStopSleep        PreStopSleepInterceptor  `yaml:"preStopSleep"`
+	RemoveResourceSpecs Interceptor              `yaml:"removeResourceSpecs"`
+	RemoveOldJob        Interceptor              `yaml:"removeOldJob"`
+	Waiter              Interceptor              `yaml:"waiter"`
+	Annotater           Interceptor              `yaml:"annotater"`
+	Grafannotator       GrafannotatorInterceptor `yaml:"grafannotator"`
+	Injector            InjectorInterceptor      `yaml:"injector"`
+	ImageChecker        ImageCheckerInterceptor  `yaml:"imageChecker"`
 }
 
 type Interceptor struct {
@@ -32,11 +30,6 @@ type PreStopSleepInterceptor struct {
 type InjectorInterceptor struct {
 	Enabled TriState         `yaml:"enabled"`
 	Options injector.Options `yaml:"options"`
-}
-
-type GHStatusCheckerInterceptor struct {
-	Enabled TriState              `yaml:"enabled"`
-	Options statuschecker.Options `yaml:"options"`
 }
 
 type ImageCheckerInterceptor struct {

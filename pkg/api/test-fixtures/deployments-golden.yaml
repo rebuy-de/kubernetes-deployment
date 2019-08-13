@@ -33,14 +33,6 @@ defaults:
         - --proxy-cpu-request
         - 35m
         connectTimeout: 10s
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: .*
-        contextRegex: .*
-        initialDelay: 20s
-        pullInterval: 10s
-        notificationInterval: 3m0s
     imageChecker:
       enabled: null
       options:
@@ -86,14 +78,6 @@ services:
         - --proxy-cpu-request
         - 35m
         connectTimeout: 10s
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: .*
-        contextRegex: .*
-        initialDelay: 20s
-        pullInterval: 10s
-        notificationInterval: 3m0s
     imageChecker:
       enabled: null
       options:
@@ -136,14 +120,6 @@ services:
         - --proxy-cpu-request
         - 35m
         connectTimeout: 10s
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: .*
-        contextRegex: .*
-        initialDelay: 20s
-        pullInterval: 10s
-        notificationInterval: 3m0s
     imageChecker:
       enabled: null
       options:
@@ -186,14 +162,6 @@ services:
         - --proxy-cpu-request
         - 35m
         connectTimeout: 10s
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: .*
-        contextRegex: .*
-        initialDelay: 20s
-        pullInterval: 10s
-        notificationInterval: 3m0s
     imageChecker:
       enabled: null
       options:
@@ -236,14 +204,6 @@ services:
         - --proxy-cpu-request
         - 35m
         connectTimeout: 10s
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: .*
-        contextRegex: .*
-        initialDelay: 20s
-        pullInterval: 10s
-        notificationInterval: 3m0s
     imageChecker:
       enabled: null
       options:
