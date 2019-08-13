@@ -5,7 +5,6 @@ import (
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/imagechecker"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/injector"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/prestopsleep"
-	"github.com/rebuy-de/kubernetes-deployment/pkg/interceptors/statuschecker"
 )
 
 var (
@@ -19,9 +18,6 @@ var (
 				Options: prestopsleep.Options{
 					Seconds: 3,
 				},
-			},
-			GHStatusChecker: GHStatusCheckerInterceptor{
-				Options: statuschecker.DefaultOptions,
 			},
 			ImageChecker: ImageCheckerInterceptor{
 				Options: imagechecker.DefaultOptions,

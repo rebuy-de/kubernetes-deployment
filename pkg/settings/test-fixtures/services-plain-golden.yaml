@@ -28,14 +28,6 @@ defaults:
       options:
         injectArguments: []
         connectTimeout: ""
-    ghStatusChecker:
-      enabled: null
-      options:
-        targetUrlRegex: ""
-        contextRegex: ""
-        initialDelay: 0s
-        pullInterval: 0s
-        notificationInterval: 0s
     imageChecker:
       enabled: null
       options:

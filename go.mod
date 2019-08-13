@@ -2,21 +2,17 @@ module github.com/rebuy-de/kubernetes-deployment
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/aws/aws-sdk-go v1.20.8
+	github.com/aws/aws-sdk-go v1.22.4
 	github.com/benbjohnson/clock v0.0.0-20161215174838-7dc76406b6d3
-	github.com/docker/spdystream v0.0.0-20160310174837-449fdfce4d96 // indirect
-	github.com/elazarl/goproxy v0.0.0-20170405201442-c4fc26588b6e // indirect
 	github.com/evanphx/json-patch v4.2.0+incompatible // indirect
 	github.com/fatih/structs v1.0.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/gogo/protobuf v1.1.1 // indirect
 	github.com/golang/groupcache v0.0.0-20181024230925-c65c006176ff // indirect
-	github.com/google/go-cmp v0.3.0 // indirect
 	github.com/google/go-github v15.0.0+incompatible
 	github.com/google/go-jsonnet v0.12.1
 	github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135 // indirect
 	github.com/google/gofuzz v1.0.0 // indirect
-	github.com/google/uuid v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.2.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
@@ -29,7 +25,6 @@ require (
 	github.com/mitchellh/mapstructure v0.0.0-20180715050151-f15292f7a699 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/rebuy-de/rebuy-go-sdk v1.6.0
