@@ -21,7 +21,7 @@
                     "config.linkerd.io/proxy-cpu-request": "35m",
                     "config.linkerd.io/proxy-memory-request": "20Mi",
                     "config.linkerd.io/proxy-version": "2.4.0",
-                    "linkerd.io/created-by": "linkerd/cli stable-2.4.0",
+                    "linkerd.io/created-by": "linkerd/cli stable-2.5.0",
                     "linkerd.io/identity-mode": "disabled",
                     "linkerd.io/proxy-version": "2.4.0"
                 }
@@ -30,7 +30,7 @@
                 "initContainers": [
                     {
                         "name": "linkerd-init",
-                        "image": "gcr.io/linkerd-io/proxy-init:v1.0.0",
+                        "image": "gcr.io/linkerd-io/proxy-init:v1.1.0",
                         "args": [
                             "--incoming-proxy-port",
                             "4143",
@@ -39,7 +39,9 @@
                             "--proxy-uid",
                             "2102",
                             "--inbound-ports-to-ignore",
-                            "4190,4191"
+                            "4190,4191",
+                            "--outbound-ports-to-ignore",
+                            "443"
                         ],
                         "resources": {
                             "limits": {
