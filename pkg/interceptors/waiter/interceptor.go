@@ -52,21 +52,28 @@ func (dwi *DeploymentWaitInterceptor) Close() error {
 }
 
 func (dwi *DeploymentWaitInterceptor) PostManifestApply(obj runtime.Object) error {
-	deployment, ok := obj.(*v1beta1.Deployment)
-	if !ok {
+	if !isDeployment(obj) {
 		return nil
 	}
 
+	metas := kubeutil.SubObjectAccessor(obj)
+	if len(metas) == 0 {
+		return nil
+	}
+
+	meta := metas[0]
+
 	log.WithFields(log.Fields{
-		"Manifest": deployment,
+		"Namespace": meta.GetNamespace(),
+		"Name":      meta.GetName(),
 	}).Debugf("registering waiter for deployment")
 
 	dwi.waitgroup.Add(1)
-	go dwi.run(deployment)
+	go dwi.run(meta.GetNamespace(), meta.GetName())
 	return nil
 }
 
-func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
+func (dwi *DeploymentWaitInterceptor) run(namespace, name string) {
 	defer dwi.waitgroup.Done()
 
 	ctx, done := context.WithCancel(dwi.ctx)
@@ -77,8 +84,8 @@ func (dwi *DeploymentWaitInterceptor) run(deployment *v1beta1.Deployment) {
 	time.Sleep(1 * time.Second)
 	deployment, err := dwi.client.
 		ExtensionsV1beta1().
-		Deployments(deployment.ObjectMeta.Namespace).
-		Get(deployment.ObjectMeta.Name, v1meta.GetOptions{})
+		Deployments(namespace).
+		Get(name, v1meta.GetOptions{})
 
 	rs, err := kubeutil.GetReplicaSetForDeployment(dwi.client, deployment)
 	if err != nil {
