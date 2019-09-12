@@ -13,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/sync/errgroup"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
@@ -55,22 +54,40 @@ func (i *Interceptor) PreApply(objects []runtime.Object) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), i.Options.WaitTimeout)
 	defer cancel()
-	eg, ctx := errgroup.WithContext(ctx)
+	go notifier(ctx)
 
 	for image := range images {
-		image := image // https://golang.org/doc/faq#closures_and_goroutines
-		eg.Go(func() error {
-			return i.wait(ctx, image)
-		})
+		err := i.wait(ctx, image)
+		if err != nil {
+			return err
+		}
 	}
 
-	return eg.Wait()
+	return nil
+}
+
+func notifier(ctx context.Context) {
+	firstTry := true
+	t := time.NewTicker(1 * time.Minute)
+	defer t.Stop()
+
+	for {
+		select {
+		case <-t.C:
+			if firstTry {
+				firstTry = false
+				continue
+			}
+			logrus.Info("Deployment is waiting for image to be built.")
+		case <-ctx.Done():
+			return
+		}
+	}
 }
 
 func (i *Interceptor) wait(ctx context.Context, image string) error {
 	t := time.NewTicker(i.Options.CheckInterval)
 	defer t.Stop()
-	try := 0
 
 	logrus.WithFields(logrus.Fields{
 		"image": image,
@@ -86,17 +103,8 @@ func (i *Interceptor) wait(ctx context.Context, image string) error {
 			if found {
 				return nil
 			}
-			if try == 0 {
-				logrus.Info("Deployment is waiting for image to be built.")
-				try++
-				continue
-			}
-			if (try % 4) == 0 {
-				logrus.Info("Still waiting for image to be available...")
-			}
-			try++
 		case <-ctx.Done():
-			return fmt.Errorf("Deployment aborted because image is still missing")
+			return fmt.Errorf("Deployment aborted because image %s is still missing", image)
 		}
 	}
 }
