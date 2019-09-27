@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v28/github"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/gh"
 )
 
