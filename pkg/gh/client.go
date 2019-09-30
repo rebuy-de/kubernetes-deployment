@@ -12,7 +12,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/fatih/structs"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v28/github"
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	log "github.com/sirupsen/logrus"
