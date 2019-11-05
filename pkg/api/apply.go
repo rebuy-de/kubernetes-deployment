@@ -2,35 +2,31 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 	"strings"
 
-	argo "github.com/argoproj/argo-cd/pkg/client/clientset/versioned"
 	"github.com/pkg/errors"
 	"github.com/rebuy-de/kubernetes-deployment/pkg/statsdw"
 	log "github.com/sirupsen/logrus"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/rest"
 )
 
 func checkForArgoApp(project string) (bool, error) {
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return true, errors.Wrap(err, "failed to load kubernetes config for Argo")
+	req, _ := http.NewRequest("GET", "https://argocd.production.rebuy.cloud/api/v1/applications/"+project, nil)
+	argoToken := os.Getenv("ARGOCD_API_TOKEN")
+	if argoToken == "" {
+		return true, errors.New("unable to find Argo token, please set ARGOCD_API_TOKEN")
 	}
-
-	clientset, err := argo.NewForConfig(config)
+	req.AddCookie(&http.Cookie{Name: "argocd.token", Value: argoToken})
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return true, errors.Wrap(err, "failed to initialize kubernetes client for Argo")
+		return true, errors.Wrap(err, "Unable to query ArgoCD API for application")
 	}
+	defer res.Body.Close()
 
-	argoClient := clientset.ArgoprojV1alpha1()
-
-	appsClient := argoClient.Applications("")
-	_, err = appsClient.Get(project, v1.GetOptions{})
-	if err != nil {
+	if res.StatusCode != 200 {
 		log.WithFields(log.Fields{
 			"Project": project,
-			"Error":   err.Error(),
 		}).Debug("failed to get argo app - legacy project")
 		return false, nil
 	}
