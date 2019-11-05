@@ -15,7 +15,10 @@ func checkForArgoApp(project string) (bool, error) {
 	req, _ := http.NewRequest("GET", "https://argocd.production.rebuy.cloud/api/v1/applications/"+project, nil)
 	argoToken := os.Getenv("ARGOCD_API_TOKEN")
 	if argoToken == "" {
-		return true, errors.New("unable to find Argo token, please set ARGOCD_API_TOKEN")
+		log.WithFields(log.Fields{
+			"Project": project,
+		}).Debug("No ArgoCD API token found - continuing deployment")
+		return false, nil
 	}
 	req.AddCookie(&http.Cookie{Name: "argocd.token", Value: argoToken})
 	res, err := http.DefaultClient.Do(req)
