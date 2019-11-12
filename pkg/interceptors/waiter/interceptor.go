@@ -8,7 +8,7 @@ import (
 
 	"github.com/rebuy-de/kubernetes-deployment/pkg/kubeutil"
 	log "github.com/sirupsen/logrus"
-	"k8s.io/api/extensions/v1beta1"
+	apps "k8s.io/api/apps/v1"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -83,7 +83,7 @@ func (dwi *DeploymentWaitInterceptor) run(namespace, name string) {
 	// number and then update the deployment to see the current revision.
 	time.Sleep(1 * time.Second)
 	deployment, err := dwi.client.
-		ExtensionsV1beta1().
+		AppsV1().
 		Deployments(namespace).
 		Get(name, v1meta.GetOptions{})
 
@@ -117,7 +117,7 @@ func (dwi *DeploymentWaitInterceptor) run(namespace, name string) {
 	}).Debugf("deployment succeeded")
 }
 
-func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *v1beta1.ReplicaSet) {
+func (dwi *DeploymentWaitInterceptor) podNotifier(ctx context.Context, rs *apps.ReplicaSet) {
 	defer dwi.waitgroup.Done()
 
 	for pod := range kubeutil.WatchPods(ctx, dwi.client, fields.Everything()) {

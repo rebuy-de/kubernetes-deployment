@@ -3,7 +3,7 @@ module github.com/rebuy-de/kubernetes-deployment
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.25.0
+	github.com/aws/aws-sdk-go v1.25.32
 	github.com/benbjohnson/clock v0.0.0-20161215174838-7dc76406b6d3
 	github.com/fatih/structs v1.1.0
 	github.com/ghodss/yaml v1.0.0
@@ -20,8 +20,8 @@ require (
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	gopkg.in/alexcesaro/statsd.v2 v2.0.0
 	gopkg.in/gemnasium/logrus-graylog-hook.v2 v2.0.7
-	gopkg.in/yaml.v2 v2.2.2
-	k8s.io/api v0.0.0-20190620084959-7cf5895f2711
-	k8s.io/apimachinery v0.0.0-20190612205821-1799e75a0719
-	k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
+	gopkg.in/yaml.v2 v2.2.4
+	k8s.io/api v0.0.0-20191016110408-35e52d86657a
+	k8s.io/apimachinery v0.0.0-20191004115801-a2eda9f80ab8
+	k8s.io/client-go v0.0.0-20191016111102-bec269661e48
 )

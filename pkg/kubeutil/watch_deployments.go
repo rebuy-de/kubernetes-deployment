@@ -4,41 +4,41 @@ import (
 	"context"
 	"time"
 
-	"k8s.io/api/core/v1"
-	"k8s.io/api/extensions/v1beta1"
+	apps "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 )
 
-func WatchDeployments(ctx context.Context, client kubernetes.Interface, selector fields.Selector) chan *v1beta1.Deployment {
+func WatchDeployments(ctx context.Context, client kubernetes.Interface, selector fields.Selector) chan *apps.Deployment {
 	lw := cache.NewListWatchFromClient(
-		client.ExtensionsV1beta1().RESTClient(),
+		client.AppsV1().RESTClient(),
 		"deployments",
 		v1.NamespaceAll,
 		selector)
 
 	stop := make(chan struct{}, 1)
-	results := make(chan *v1beta1.Deployment)
+	results := make(chan *apps.Deployment)
 
 	store, controller := cache.NewInformer(
 		lw,
-		&v1beta1.Deployment{},
+		&apps.Deployment{},
 		60*time.Second,
 		cache.ResourceEventHandlerFuncs{
 			AddFunc: func(obj interface{}) {
-				results <- obj.(*v1beta1.Deployment)
+				results <- obj.(*apps.Deployment)
 			},
 			UpdateFunc: func(old, obj interface{}) {
-				results <- obj.(*v1beta1.Deployment)
+				results <- obj.(*apps.Deployment)
 			},
 			DeleteFunc: func(obj interface{}) {
-				results <- obj.(*v1beta1.Deployment)
+				results <- obj.(*apps.Deployment)
 			},
 		})
 
 	for _, obj := range store.List() {
-		results <- obj.(*v1beta1.Deployment)
+		results <- obj.(*apps.Deployment)
 	}
 
 	go controller.Run(stop)

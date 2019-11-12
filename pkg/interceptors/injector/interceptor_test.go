@@ -20,7 +20,7 @@ func TestInterceptor_PostManifestRender(t *testing.T) {
 
 	deployment := &v1apps.Deployment{
 		TypeMeta: meta.TypeMeta{
-			APIVersion: "extensions/v1beta1",
+			APIVersion: "apps/v1",
 			Kind:       "Deployment",
 		},
 		ObjectMeta: meta.ObjectMeta{
