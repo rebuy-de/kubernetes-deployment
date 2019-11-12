@@ -3,12 +3,12 @@ package kubeutil
 import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"k8s.io/api/extensions/v1beta1"
+	apps "k8s.io/api/apps/v1"
 	v1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
-func DeploymentRolloutComplete(deployment *v1beta1.Deployment) bool {
+func DeploymentRolloutComplete(deployment *apps.Deployment) bool {
 	logger := log.WithFields(log.Fields{
 		"Namespace":          deployment.ObjectMeta.Namespace,
 		"Name":               deployment.ObjectMeta.Name,
@@ -31,9 +31,9 @@ func DeploymentRolloutComplete(deployment *v1beta1.Deployment) bool {
 	return false
 }
 
-func GetReplicaSetForDeployment(client kubernetes.Interface, deployment *v1beta1.Deployment) (*v1beta1.ReplicaSet, error) {
+func GetReplicaSetForDeployment(client kubernetes.Interface, deployment *apps.Deployment) (*apps.ReplicaSet, error) {
 	replicaSets, err := client.
-		ExtensionsV1beta1().
+		AppsV1().
 		ReplicaSets(deployment.ObjectMeta.Namespace).
 		List(v1meta.ListOptions{})
 	if err != nil {
