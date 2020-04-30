@@ -34,7 +34,7 @@ func checkForArgoApp(project string) (bool, error) {
 		return false, nil
 	}
 
-	return true, errors.New(fmt.Sprintf("Found argo app '%s', abort deployment", project))
+	return true, errors.New(fmt.Sprintf("Project is managed by ArgoCD. Please deploy with `/kubot-deploy %s`.", project))
 }
 
 func (app *App) Apply(project, branchName string) error {
